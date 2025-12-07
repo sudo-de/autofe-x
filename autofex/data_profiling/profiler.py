@@ -168,14 +168,18 @@ class DataProfiler:
                     }
                 )
 
-                # Normality test
+                # Normality test (requires at least 8 samples)
                 try:
-                    _, p_value = stats.normaltest(
-                        series.sample(min(self.sample_size, len(series)))
-                    )
-                    col_dist["normality_p_value"] = p_value
-                    col_dist["is_normal"] = p_value > 0.05
-                except:
+                    sample_series = series.sample(min(self.sample_size, len(series)))
+                    if len(sample_series) >= 8:
+                        with warnings.catch_warnings():
+                            warnings.simplefilter("ignore", category=RuntimeWarning)
+                            _, p_value = stats.normaltest(sample_series)
+                        col_dist["normality_p_value"] = p_value
+                        col_dist["is_normal"] = p_value > 0.05
+                    else:
+                        col_dist["normality_test_skipped"] = "Insufficient samples (< 8)"
+                except Exception:
                     col_dist["normality_test_failed"] = True
 
             else:
