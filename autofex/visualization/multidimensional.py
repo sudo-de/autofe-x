@@ -10,13 +10,11 @@ Goes beyond basic Matplotlib and Plotly with:
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Union, Any, Tuple
+from typing import List, Optional, Union, Any
 import warnings
 
 try:
     import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
-    from matplotlib.colors import LinearSegmentedColormap
 
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
@@ -26,7 +24,6 @@ except ImportError:
 try:
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
-    import plotly.express as px
 
     PLOTLY_AVAILABLE = True
 except ImportError:

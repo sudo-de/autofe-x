@@ -187,7 +187,7 @@ class AutoFEX:
                 return self.data_profiler.analyze(X, y)
 
             quality_report = self.cache.cache_function(
-                "data_profiling", _profile_data, X, y
+                "data_profiling", _profile_data
             )
         else:
             quality_report = self.data_profiler.analyze(X, y)
@@ -219,7 +219,7 @@ class AutoFEX:
                     return self.leakage_detector.detect(X, y)
 
                 leakage_report = self.cache.cache_function(
-                    "leakage_detection", _detect_leakage, X, y
+                    "leakage_detection", _detect_leakage
                 )
             else:
                 leakage_report = self.leakage_detector.detect(X, y)
@@ -260,7 +260,7 @@ class AutoFEX:
                 return self.feature_engineer.fit_transform(X, y)
 
             engineered_features = self.cache.cache_function(
-                "feature_engineering", _engineer_features, X, y
+                "feature_engineering", _engineer_features
             )
         else:
             engineered_features = self.feature_engineer.fit_transform(X, y)
@@ -298,7 +298,7 @@ class AutoFEX:
                     return self.benchmarker.benchmark_features(X, y, X_test)
 
                 benchmark_results = self.cache.cache_function(
-                    "benchmarking", _benchmark_features, X, y, X_test
+                    "benchmarking", _benchmark_features
                 )
             else:
                 benchmark_results = self.benchmarker.benchmark_features(X, y, X_test)
