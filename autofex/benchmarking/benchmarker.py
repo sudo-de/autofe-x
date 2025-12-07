@@ -647,12 +647,20 @@ class FeatureBenchmarker:
                 # Fallback to simple train/test split if not enough samples
                 from sklearn.model_selection import train_test_split
 
+                # Check if we can use stratify (need at least 2 samples per class)
+                can_stratify = (
+                    is_classification
+                    and y.value_counts().min() >= 2
+                    if len(y.value_counts()) > 0
+                    else False
+                )
+
                 X_train, X_test, y_train, y_test = train_test_split(
                     X_filled,
                     y,
                     test_size=0.3,
                     random_state=self.random_state,
-                    stratify=y,
+                    stratify=y if can_stratify else None,
                 )
                 model.fit(X_train, y_train)
                 from sklearn.metrics import accuracy_score, r2_score
