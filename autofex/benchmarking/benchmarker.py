@@ -114,17 +114,21 @@ class FeatureBenchmarker:
             if len(features) == 0:
                 continue
 
-            X_subset = X[features] if isinstance(features, list) else X
+            X_subset = (X[features] if isinstance(features, list) else X).copy()
             # Basic imputation handling mixed data types
             for col in X_subset.columns:
-                if X_subset[col].dtype in ["int64", "float64"]:
-                    X_subset[col] = X_subset[col].fillna(X_subset[col].mean())
+                if pd.api.types.is_numeric_dtype(X_subset[col]):
+                    X_subset.loc[:, col] = X_subset[col].fillna(X_subset[col].mean())
                 else:
-                    X_subset[col] = X_subset[col].fillna(
+                    mode_val = (
                         X_subset[col].mode().iloc[0]
                         if not X_subset[col].mode().empty
                         else "Unknown"
                     )
+                    X_subset.loc[:, col] = X_subset[col].fillna(mode_val)
+            
+            # Encode categorical columns before passing to sklearn
+            X_subset = self._encode_categorical(X_subset)
 
             set_results = self._benchmark_single_set(
                 X_subset, y, set_name, is_classification
@@ -200,11 +204,14 @@ class FeatureBenchmarker:
                     "classifier" if is_classification else "regressor"
                 ]
 
+                # Encode categorical columns before cross-validation
+                X_encoded = self._encode_categorical(X)
+                
                 # Perform cross-validation
                 start_time = time.time()
                 cv_scores = cross_val_score(
                     model,
-                    X,
+                    X_encoded,
                     y,
                     cv=cv,
                     scoring=self._get_sklearn_scorer(is_classification),
@@ -562,7 +569,24 @@ class FeatureBenchmarker:
         model = self.model_configs["rf"][
             "classifier" if is_classification else "regressor"
         ]
-        X_filled = X.fillna(X.mean())
+        # Only fillna for numeric columns
+        X_filled = X.copy()
+        numeric_cols = X_filled.select_dtypes(include=[np.number]).columns
+        for col in numeric_cols:
+            X_filled.loc[:, col] = X_filled[col].fillna(X_filled[col].mean())
+        
+        # Fill categorical columns with mode
+        categorical_cols = X_filled.select_dtypes(exclude=[np.number]).columns
+        for col in categorical_cols:
+            mode_val = (
+                X_filled[col].mode().iloc[0]
+                if not X_filled[col].mode().empty
+                else "Unknown"
+            )
+            X_filled.loc[:, col] = X_filled[col].fillna(mode_val)
+        
+        # Encode categorical columns
+        X_filled = self._encode_categorical(X_filled)
 
         cv = (
             StratifiedKFold(n_splits=3, shuffle=True, random_state=self.random_state)
@@ -578,6 +602,35 @@ class FeatureBenchmarker:
         )
 
         return float(scores.mean())  # type: ignore[no-any-return]
+
+    def _encode_categorical(self, X: pd.DataFrame) -> pd.DataFrame:
+        """
+        Encode categorical columns to numeric for sklearn compatibility.
+        
+        Args:
+            X: DataFrame with potentially categorical columns
+            
+        Returns:
+            DataFrame with categorical columns encoded
+        """
+        X_encoded = X.copy()
+        
+        # Get categorical columns
+        categorical_cols = X_encoded.select_dtypes(
+            include=["object", "category", "string"]
+        ).columns
+        
+        # Use label encoding for categorical columns
+        for col in categorical_cols:
+            if X_encoded[col].dtype == "object" or X_encoded[col].dtype.name == "category":
+                # Convert to category and use codes
+                X_encoded[col] = pd.Categorical(X_encoded[col]).codes
+                # Handle -1 (NaN) codes by replacing with most frequent
+                if (X_encoded[col] == -1).any():
+                    most_frequent = X_encoded[col].mode()[0] if len(X_encoded[col].mode()) > 0 else 0
+                    X_encoded.loc[X_encoded[col] == -1, col] = most_frequent
+        
+        return X_encoded
 
     def _get_sklearn_scorer(self, is_classification: bool) -> str:
         """Get appropriate sklearn scorer."""
