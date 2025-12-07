@@ -67,7 +67,7 @@ class FeatureQualityScorer:
         if len(feature) < 3:
             return {"error": "Insufficient data"}
 
-        scores = {
+        scores: Dict[str, Any] = {
             "feature": feature_name,
             "predictive_power": 0.0,
             "stability": 1.0,
@@ -155,10 +155,12 @@ class FeatureQualityScorer:
             "efficiency": 0.2,
         }
 
-        scores["overall_score"] = sum(
-            float(scores.get(key, 0)) * float(weights.get(key, 0))
-            for key in weights.keys()
-        )
+        overall_score: float = 0.0
+        for key in weights.keys():
+            score_val: Any = scores.get(key, 0.0)
+            weight_val: float = float(weights.get(key, 0.0))
+            overall_score += float(score_val) * weight_val
+        scores["overall_score"] = overall_score
 
         return scores
 

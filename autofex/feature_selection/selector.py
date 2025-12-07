@@ -210,7 +210,7 @@ class AdvancedFeatureSelector:
         Returns:
             List of selected feature names
         """
-        all_selections: Dict[str, List[str]] = {}
+        all_selections: Dict[str, int] = {}
 
         # Run all strategies
         if "l1" in self.strategies:
