@@ -94,7 +94,7 @@ class AdvancedFeatureSelector:
         selector = SelectFromModel(model, prefit=True)
         selected_features = X.columns[selector.get_support()].tolist()
 
-        return selected_features
+        return list(selected_features)  # type: ignore[no-any-return]
 
     def select_features_rfe(
         self, X: pd.DataFrame, y: pd.Series, n_features: Optional[int] = None
