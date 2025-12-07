@@ -23,7 +23,7 @@ class TestAutoFEX:
     def test_process_basic(self, sample_data):
         """Test basic AutoFEX pipeline processing."""
         X, y = sample_data
-        afx = AutoFEX()
+        afx = AutoFEX(enable_cache=False)
 
         result = afx.process(X, y)
 
@@ -47,7 +47,7 @@ class TestAutoFEX:
     def test_process_without_target(self, sample_data):
         """Test AutoFEX pipeline without target variable."""
         X, y = sample_data
-        afx = AutoFEX()
+        afx = AutoFEX(enable_cache=False)
 
         # Process without target (unsupervised)
         result = afx.process(X)
@@ -67,7 +67,7 @@ class TestAutoFEX:
         y_train = y.iloc[:80]
         y_test = y.iloc[80:]
 
-        afx = AutoFEX()
+        afx = AutoFEX(enable_cache=False)
         result = afx.process(X_train, y_train, X_test)
 
         assert result.original_data.shape == X_train.shape

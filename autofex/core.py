@@ -186,9 +186,7 @@ class AutoFEX:
             def _profile_data():
                 return self.data_profiler.analyze(X, y)
 
-            quality_report = self.cache.cache_function(
-                "data_profiling", _profile_data
-            )
+            quality_report = self.cache.cache_function("data_profiling", _profile_data)
         else:
             quality_report = self.data_profiler.analyze(X, y)
 
