@@ -298,11 +298,11 @@ class FeatureEngineer:
 
             poly_features = poly.fit_transform(X_numeric)
             # Get feature names - use input_features parameter if available
-        try:
-            feature_names = poly.get_feature_names_out(input_features=numeric_cols)
-        except TypeError:
-            # Fallback for older sklearn versions
-            feature_names = poly.get_feature_names_out()
+            try:
+                feature_names = poly.get_feature_names_out(input_features=numeric_cols)
+            except TypeError:
+                # Fallback for older sklearn versions
+                feature_names = poly.get_feature_names_out()
 
             # Create DataFrame with interaction features only (exclude originals)
             interaction_df = pd.DataFrame(
