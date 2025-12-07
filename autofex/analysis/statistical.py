@@ -178,12 +178,14 @@ class AdvancedStatisticalAnalyzer:
         if len(group1_clean) < 3 or len(group2_clean) < 3:
             return {"error": "Insufficient data for comparison"}
 
-        results = {
+        results: Dict[str, Any] = {
             "tests": {},
             "effect_sizes": {},
             "interpretation": "",
             "recommendation": "",
         }
+        # Type annotation for tests dict to help mypy
+        tests_dict: Dict[str, Any] = results["tests"]  # type: ignore
 
         # Check normality for both groups
         norm1 = self.comprehensive_normality_test(group1_clean)
