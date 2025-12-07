@@ -108,7 +108,7 @@ class AdvancedScipyOperations:
                 features.loc[X.index[i], "distance_to_mean_euclidean"] = euclidean
 
                 # Manhattan distance
-                manhattan = np.sum(np.abs(row - mean_vector))
+                manhattan: float = float(np.sum(np.abs(row - mean_vector)))
                 features.loc[X.index[i], "distance_to_mean_manhattan"] = manhattan
 
                 # Cosine distance

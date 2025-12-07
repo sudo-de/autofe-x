@@ -155,7 +155,7 @@ def calculate_entropy(value_counts: pd.Series) -> float:
         Shannon entropy value
     """
     probabilities = value_counts / value_counts.sum()
-    entropy = -np.sum(probabilities * np.log2(probabilities))
+    entropy: float = float(-np.sum(probabilities * np.log2(probabilities)))
     return entropy
 
 
@@ -308,7 +308,7 @@ def split_data_stratified(
     else:
         stratify = None
 
-    return train_test_split(
+    return train_test_split(  # type: ignore[no-any-return]
         X, y, test_size=test_size, random_state=random_state, stratify=stratify
     )
 

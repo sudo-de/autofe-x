@@ -536,7 +536,7 @@ class MathematicalModelingEngine:
                 try:
                     params = dist.fit(series)
                     # Calculate log-likelihood
-                    log_likelihood = np.sum(dist.logpdf(series, *params))
+                    log_likelihood: float = float(np.sum(dist.logpdf(series, *params)))
                     dist_features[f"{col}_{dist_name}_loglik"] = log_likelihood
 
                     # AIC (Akaike Information Criterion)
@@ -554,7 +554,7 @@ class MathematicalModelingEngine:
             try:
                 hist, _ = np.histogram(series, bins=min(50, len(series.unique())))
                 hist = hist / hist.sum() if hist.sum() > 0 else hist
-                entropy = -np.sum(hist * np.log(hist + 1e-10))
+                entropy: float = float(-np.sum(hist * np.log(hist + 1e-10)))
                 dist_features[f"{col}_entropy"] = entropy
             except Exception:
                 pass

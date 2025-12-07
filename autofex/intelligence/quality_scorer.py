@@ -156,7 +156,7 @@ class FeatureQualityScorer:
         }
 
         scores["overall_score"] = sum(
-            float(scores[key]) * float(weights.get(key, 0)) for key in weights.keys()
+            float(scores.get(key, 0)) * float(weights.get(key, 0)) for key in weights.keys()
         )
 
         return scores
