@@ -640,11 +640,10 @@ class FeatureBenchmarker:
                     X_filled, y, test_size=0.3, random_state=self.random_state, stratify=y
                 )
                 model.fit(X_train, y_train)
+                from sklearn.metrics import accuracy_score, r2_score
                 if is_classification:
-                    from sklearn.metrics import accuracy_score
                     score = accuracy_score(y_test, model.predict(X_test))
                 else:
-                    from sklearn.metrics import r2_score
                     score = r2_score(y_test, model.predict(X_test))
                 return float(score)
             cv = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=self.random_state)
