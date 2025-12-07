@@ -14,6 +14,7 @@ from .plotter import FeatureVisualizer
 
 try:
     from .dashboard import InteractiveDashboard
+
     _DASHBOARD_AVAILABLE = True
 except ImportError:
     _DASHBOARD_AVAILABLE = False
@@ -21,6 +22,7 @@ except ImportError:
 
 try:
     from .multidimensional import MultiDimensionalVisualizer
+
     _MULTIDIM_AVAILABLE = True
 except ImportError:
     _MULTIDIM_AVAILABLE = False

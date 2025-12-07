@@ -127,7 +127,10 @@ class AdvancedPandasOperations:
                         # Merge back to original index
                         agg_result = agg_result.reset_index()
                         merged = X[group_cols].merge(
-                            agg_result, on=group_cols, how="left", suffixes=("", f"_{func}")
+                            agg_result,
+                            on=group_cols,
+                            how="left",
+                            suffixes=("", f"_{func}"),
                         )
                         # Select only new columns
                         new_cols = [col for col in merged.columns if f"_{func}" in col]
@@ -138,7 +141,9 @@ class AdvancedPandasOperations:
 
             # Count per group
             try:
-                count_result = X.groupby(group_cols).size().reset_index(name="group_count")
+                count_result = (
+                    X.groupby(group_cols).size().reset_index(name="group_count")
+                )
                 merged = X[group_cols].merge(count_result, on=group_cols, how="left")
                 features.append(
                     pd.DataFrame({"group_count": merged["group_count"]}, index=X.index)
@@ -285,18 +290,30 @@ class AdvancedPandasOperations:
                 dt_features[f"{col}_dayofyear"] = dt_series.dt.dayofyear
                 dt_features[f"{col}_week"] = dt_series.dt.isocalendar().week
                 dt_features[f"{col}_quarter"] = dt_series.dt.quarter
-                dt_features[f"{col}_is_weekend"] = (dt_series.dt.dayofweek >= 5).astype(int)
+                dt_features[f"{col}_is_weekend"] = (dt_series.dt.dayofweek >= 5).astype(
+                    int
+                )
 
                 # Cyclical encoding
-                dt_features[f"{col}_month_sin"] = np.sin(2 * np.pi * dt_series.dt.month / 12)
-                dt_features[f"{col}_month_cos"] = np.cos(2 * np.pi * dt_series.dt.month / 12)
-                dt_features[f"{col}_dayofweek_sin"] = np.sin(2 * np.pi * dt_series.dt.dayofweek / 7)
-                dt_features[f"{col}_dayofweek_cos"] = np.cos(2 * np.pi * dt_series.dt.dayofweek / 7)
+                dt_features[f"{col}_month_sin"] = np.sin(
+                    2 * np.pi * dt_series.dt.month / 12
+                )
+                dt_features[f"{col}_month_cos"] = np.cos(
+                    2 * np.pi * dt_series.dt.month / 12
+                )
+                dt_features[f"{col}_dayofweek_sin"] = np.sin(
+                    2 * np.pi * dt_series.dt.dayofweek / 7
+                )
+                dt_features[f"{col}_dayofweek_cos"] = np.cos(
+                    2 * np.pi * dt_series.dt.dayofweek / 7
+                )
 
                 # Time since reference
                 if len(dt_series.dropna()) > 0:
                     reference_date = dt_series.min()
-                    dt_features[f"{col}_days_since_ref"] = (dt_series - reference_date).dt.days
+                    dt_features[f"{col}_days_since_ref"] = (
+                        dt_series - reference_date
+                    ).dt.days
 
                 features.append(dt_features)
 
@@ -341,15 +358,27 @@ class AdvancedPandasOperations:
             col_features[f"{col}_length"] = series.str.len()
             col_features[f"{col}_word_count"] = series.str.split().str.len()
             col_features[f"{col}_char_count"] = series.str.replace(" ", "").str.len()
-            col_features[f"{col}_uppercase_count"] = series.str.findall(r"[A-Z]").str.len()
-            col_features[f"{col}_lowercase_count"] = series.str.findall(r"[a-z]").str.len()
+            col_features[f"{col}_uppercase_count"] = series.str.findall(
+                r"[A-Z]"
+            ).str.len()
+            col_features[f"{col}_lowercase_count"] = series.str.findall(
+                r"[a-z]"
+            ).str.len()
             col_features[f"{col}_digit_count"] = series.str.findall(r"\d").str.len()
-            col_features[f"{col}_special_count"] = series.str.findall(r"[^a-zA-Z0-9\s]").str.len()
+            col_features[f"{col}_special_count"] = series.str.findall(
+                r"[^a-zA-Z0-9\s]"
+            ).str.len()
 
             # Pattern features
-            col_features[f"{col}_has_email"] = series.str.contains(r"@", na=False).astype(int)
-            col_features[f"{col}_has_url"] = series.str.contains(r"http", na=False).astype(int)
-            col_features[f"{col}_has_phone"] = series.str.contains(r"\d{3}-\d{3}-\d{4}", na=False).astype(int)
+            col_features[f"{col}_has_email"] = series.str.contains(
+                r"@", na=False
+            ).astype(int)
+            col_features[f"{col}_has_url"] = series.str.contains(
+                r"http", na=False
+            ).astype(int)
+            col_features[f"{col}_has_phone"] = series.str.contains(
+                r"\d{3}-\d{3}-\d{4}", na=False
+            ).astype(int)
 
             # N-grams (simple version)
             try:

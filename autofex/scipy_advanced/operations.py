@@ -26,9 +26,7 @@ class AdvancedScipyOperations:
         """
         self.config = config or {}
 
-    def create_special_function_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_special_function_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using scipy.special functions.
 
@@ -82,9 +80,7 @@ class AdvancedScipyOperations:
             return pd.concat(features, axis=1)
         return pd.DataFrame(index=X.index)
 
-    def create_distance_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_distance_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using scipy distance metrics.
 
@@ -127,9 +123,7 @@ class AdvancedScipyOperations:
 
         return features
 
-    def create_optimization_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_optimization_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using scipy optimization.
 
@@ -155,8 +149,12 @@ class AdvancedScipyOperations:
                 try:
                     # Fit polynomial
                     coeffs = np.polyfit(x, row, deg=min(2, len(row) - 1))
-                    features.loc[X.index[i], "polyfit_coeff0"] = coeffs[0] if len(coeffs) > 0 else 0
-                    features.loc[X.index[i], "polyfit_coeff1"] = coeffs[1] if len(coeffs) > 1 else 0
+                    features.loc[X.index[i], "polyfit_coeff0"] = (
+                        coeffs[0] if len(coeffs) > 0 else 0
+                    )
+                    features.loc[X.index[i], "polyfit_coeff1"] = (
+                        coeffs[1] if len(coeffs) > 1 else 0
+                    )
 
                     # Fit exponential
                     def exp_func(x, a, b, c):
@@ -203,7 +201,9 @@ class AdvancedScipyOperations:
             try:
                 fft = np.fft.fft(series)
                 fft_magnitude = np.abs(fft)
-                col_features[f"{col}_fft_peak_freq"] = np.argmax(fft_magnitude[1:len(series)//2]) + 1
+                col_features[f"{col}_fft_peak_freq"] = (
+                    np.argmax(fft_magnitude[1 : len(series) // 2]) + 1
+                )
                 col_features[f"{col}_fft_peak_magnitude"] = np.max(fft_magnitude)
             except Exception:
                 pass
@@ -211,9 +211,18 @@ class AdvancedScipyOperations:
             # Spectral features
             try:
                 freqs, psd = signal.welch(series, nperseg=min(256, len(series)))
-                col_features[f"{col}_spectral_centroid"] = np.sum(freqs * psd) / (np.sum(psd) + 1e-10)
+                col_features[f"{col}_spectral_centroid"] = np.sum(freqs * psd) / (
+                    np.sum(psd) + 1e-10
+                )
                 col_features[f"{col}_spectral_bandwidth"] = np.sqrt(
-                    np.sum(((freqs - col_features[f"{col}_spectral_centroid"].iloc[0]) ** 2) * psd) / (np.sum(psd) + 1e-10)
+                    np.sum(
+                        (
+                            (freqs - col_features[f"{col}_spectral_centroid"].iloc[0])
+                            ** 2
+                        )
+                        * psd
+                    )
+                    / (np.sum(psd) + 1e-10)
                 )
             except Exception:
                 pass
@@ -223,7 +232,9 @@ class AdvancedScipyOperations:
                 autocorr = signal.correlate(series, series, mode="full")
                 autocorr = autocorr[len(autocorr) // 2 :]
                 autocorr = autocorr / autocorr[0] if autocorr[0] != 0 else autocorr
-                col_features[f"{col}_autocorr_lag1"] = autocorr[1] if len(autocorr) > 1 else 0
+                col_features[f"{col}_autocorr_lag1"] = (
+                    autocorr[1] if len(autocorr) > 1 else 0
+                )
             except Exception:
                 pass
 
@@ -237,9 +248,7 @@ class AdvancedScipyOperations:
             return result
         return pd.DataFrame(index=X.index)
 
-    def create_integration_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_integration_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using scipy integration.
 

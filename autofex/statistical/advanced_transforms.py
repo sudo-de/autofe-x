@@ -162,9 +162,7 @@ class AdvancedStatisticalTransforms:
             warnings.warn(f"Power transformation failed: {e}")
             return pd.Series(index=series.index)
 
-    def rank_transform(
-        self, series: pd.Series, method: str = "average"
-    ) -> pd.Series:
+    def rank_transform(self, series: pd.Series, method: str = "average") -> pd.Series:
         """
         Apply rank transformation.
 
@@ -203,9 +201,7 @@ class AdvancedStatisticalTransforms:
         iqr = series.quantile(0.75) - series.quantile(0.25)
         return (series - median) / (iqr + 1e-8)
 
-    def create_statistical_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_statistical_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create comprehensive statistical features.
 
@@ -226,7 +222,9 @@ class AdvancedStatisticalTransforms:
             col_features[f"{col}_mean"] = series.mean()
             col_features[f"{col}_std"] = series.std()
             col_features[f"{col}_median"] = series.median()
-            col_features[f"{col}_mad"] = (series - series.median()).abs().median()  # MAD
+            col_features[f"{col}_mad"] = (
+                (series - series.median()).abs().median()
+            )  # MAD
             col_features[f"{col}_iqr"] = series.quantile(0.75) - series.quantile(0.25)
 
             # Percentiles
@@ -255,9 +253,7 @@ class AdvancedStatisticalTransforms:
             outliers = ((series < (q1 - 1.5 * iqr)) | (series > (q3 + 1.5 * iqr))).sum()
             col_features[f"{col}_outlier_count"] = outliers
 
-            features.append(
-                pd.DataFrame(col_features, index=[X.index[0]])
-            )
+            features.append(pd.DataFrame(col_features, index=[X.index[0]]))
 
         if features:
             result = pd.concat(features, axis=1)
@@ -309,9 +305,7 @@ class AdvancedStatisticalTransforms:
             return result
         return pd.DataFrame(index=X.index)
 
-    def apply_all_transforms(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def apply_all_transforms(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Apply all statistical transformations.
 

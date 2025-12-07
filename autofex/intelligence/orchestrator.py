@@ -17,6 +17,7 @@ try:
     from ..numpy_advanced.operations import AdvancedNumpyOperations
     from ..scipy_advanced.operations import AdvancedScipyOperations
     from ..feature_engineering.advanced import AdvancedFeatureEngineer
+
     _ALL_MODULES_AVAILABLE = True
 except ImportError:
     _ALL_MODULES_AVAILABLE = False
@@ -58,10 +59,13 @@ class IntelligentOrchestrator:
             "n_samples": len(X),
             "n_features": X.shape[1],
             "numeric_count": len(X.select_dtypes(include=[np.number]).columns),
-            "categorical_count": len(X.select_dtypes(include=["object", "category"]).columns),
+            "categorical_count": len(
+                X.select_dtypes(include=["object", "category"]).columns
+            ),
             "datetime_count": 0,
             "string_count": 0,
-            "missing_percent": (X.isnull().sum().sum() / (X.shape[0] * X.shape[1])) * 100,
+            "missing_percent": (X.isnull().sum().sum() / (X.shape[0] * X.shape[1]))
+            * 100,
             "high_cardinality": [],
             "skewed_features": [],
             "recommendations": [],
@@ -97,9 +101,13 @@ class IntelligentOrchestrator:
         if len(characteristics["skewed_features"]) > 0:
             characteristics["recommendations"].append("Apply power transformations")
         if characteristics["numeric_count"] > 10:
-            characteristics["recommendations"].append("Use PCA for dimensionality reduction")
+            characteristics["recommendations"].append(
+                "Use PCA for dimensionality reduction"
+            )
         if len(characteristics["high_cardinality"]) > 0:
-            characteristics["recommendations"].append("Use target encoding for high cardinality")
+            characteristics["recommendations"].append(
+                "Use target encoding for high cardinality"
+            )
 
         return characteristics
 
@@ -138,11 +146,13 @@ class IntelligentOrchestrator:
         # 2. Pandas operations for datetime and strings
         if characteristics["datetime_count"] > 0 or characteristics["string_count"] > 0:
             try:
-                pandas_ops = AdvancedPandasOperations({
-                    "datetime_features": characteristics["datetime_count"] > 0,
-                    "string_features": characteristics["string_count"] > 0,
-                    "window_features": True,
-                })
+                pandas_ops = AdvancedPandasOperations(
+                    {
+                        "datetime_features": characteristics["datetime_count"] > 0,
+                        "string_features": characteristics["string_count"] > 0,
+                        "window_features": True,
+                    }
+                )
                 pandas_features = pandas_ops.fit_transform(X)
                 if not pandas_features.empty:
                     all_features.append(pandas_features)
@@ -152,11 +162,15 @@ class IntelligentOrchestrator:
         # 3. Mathematical modeling for high-dimensional data
         if characteristics["numeric_count"] > 10:
             try:
-                math_engine = MathematicalModelingEngine({
-                    "pca_features": True,
-                    "polynomial_features": True,
-                    "n_components_pca": min(5, characteristics["numeric_count"] // 2),
-                })
+                math_engine = MathematicalModelingEngine(
+                    {
+                        "pca_features": True,
+                        "polynomial_features": True,
+                        "n_components_pca": min(
+                            5, characteristics["numeric_count"] // 2
+                        ),
+                    }
+                )
                 math_features = math_engine.fit_transform(X, y)
                 if not math_features.empty:
                     all_features.append(math_features)
@@ -166,10 +180,12 @@ class IntelligentOrchestrator:
         # 4. Numpy operations for array-wide features
         if characteristics["numeric_count"] >= 3:
             try:
-                numpy_ops = AdvancedNumpyOperations({
-                    "array_features": True,
-                    "aggregation_features": True,
-                })
+                numpy_ops = AdvancedNumpyOperations(
+                    {
+                        "array_features": True,
+                        "aggregation_features": True,
+                    }
+                )
                 numpy_features = numpy_ops.fit_transform(X)
                 if not numpy_features.empty:
                     all_features.append(numpy_features)
@@ -178,10 +194,12 @@ class IntelligentOrchestrator:
 
         # 5. Advanced feature engineering
         try:
-            advanced_fe = AdvancedFeatureEngineer({
-                "statistical_aggregations": True,
-                "cross_features": True,
-            })
+            advanced_fe = AdvancedFeatureEngineer(
+                {
+                    "statistical_aggregations": True,
+                    "cross_features": True,
+                }
+            )
             advanced_features = advanced_fe.fit_transform(X, y)
             if not advanced_features.empty:
                 all_features.append(advanced_features)

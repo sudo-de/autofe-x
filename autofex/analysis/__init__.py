@@ -8,10 +8,11 @@ from .statistical import AdvancedStatisticalAnalyzer
 
 try:
     from .advanced_stats import UltraAdvancedStatisticalAnalyzer
+
     _ULTRA_ADVANCED_AVAILABLE = True
 except ImportError:
     _ULTRA_ADVANCED_AVAILABLE = False
-    UltraAdvancedStatisticalAnalyzer = None
+    UltraAdvancedStatisticalAnalyzer = None  # type: ignore
 
 __all__ = ["AdvancedStatisticalAnalyzer"]
 

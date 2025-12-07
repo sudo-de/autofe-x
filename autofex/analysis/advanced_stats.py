@@ -33,6 +33,7 @@ import warnings
 
 try:
     from scipy.stats import manova
+
     MANOVA_AVAILABLE = True
 except ImportError:
     MANOVA_AVAILABLE = False
@@ -97,7 +98,9 @@ class UltraAdvancedStatisticalAnalyzer:
             # Calculate effect size: Eta-squared
             all_data = np.concatenate(groups_clean)
             grand_mean = np.mean(all_data)
-            ss_between = sum(len(g) * (np.mean(g) - grand_mean) ** 2 for g in groups_clean)
+            ss_between = sum(
+                len(g) * (np.mean(g) - grand_mean) ** 2 for g in groups_clean
+            )
             ss_total = sum((x - grand_mean) ** 2 for x in all_data)
             eta_squared = ss_between / ss_total if ss_total > 0 else 0
 
@@ -113,7 +116,9 @@ class UltraAdvancedStatisticalAnalyzer:
             else:
                 effect_interpretation = "large"
 
-            results["effect_sizes"]["eta_squared_interpretation"] = effect_interpretation
+            results["effect_sizes"][
+                "eta_squared_interpretation"
+            ] = effect_interpretation
 
         except Exception as e:
             results["anova"]["one_way"] = {"error": str(e)}
@@ -136,8 +141,13 @@ class UltraAdvancedStatisticalAnalyzer:
                 for j in range(i + 1, len(groups_clean)):
                     try:
                         # Bonferroni correction
-                        t_stat, p_value = stats.ttest_ind(groups_clean[i], groups_clean[j])
-                        p_corrected = min(p_value * (len(groups_clean) * (len(groups_clean) - 1) / 2), 1.0)
+                        t_stat, p_value = stats.ttest_ind(
+                            groups_clean[i], groups_clean[j]
+                        )
+                        p_corrected = min(
+                            p_value * (len(groups_clean) * (len(groups_clean) - 1) / 2),
+                            1.0,
+                        )
 
                         post_hoc_results[f"group_{i}_vs_group_{j}"] = {
                             "t_statistic": t_stat,
@@ -154,10 +164,14 @@ class UltraAdvancedStatisticalAnalyzer:
         anova_sig = results["anova"].get("one_way", {}).get("significant", False)
         if anova_sig:
             results["interpretation"] = "Groups are significantly different"
-            results["recommendations"].append("Reject null hypothesis - groups differ significantly")
+            results["recommendations"].append(
+                "Reject null hypothesis - groups differ significantly"
+            )
         else:
             results["interpretation"] = "No significant difference between groups"
-            results["recommendations"].append("Fail to reject null hypothesis - groups are similar")
+            results["recommendations"].append(
+                "Fail to reject null hypothesis - groups are similar"
+            )
 
         return results
 
@@ -211,10 +225,16 @@ class UltraAdvancedStatisticalAnalyzer:
             }
 
             if results["manova"]["significant"]:
-                results["interpretation"] = "Groups differ significantly on multivariate measures"
-                results["recommendations"].append("Perform univariate ANOVAs to identify which variables differ")
+                results["interpretation"] = (
+                    "Groups differ significantly on multivariate measures"
+                )
+                results["recommendations"].append(
+                    "Perform univariate ANOVAs to identify which variables differ"
+                )
             else:
-                results["interpretation"] = "No significant multivariate difference between groups"
+                results["interpretation"] = (
+                    "No significant multivariate difference between groups"
+                )
 
         except Exception as e:
             results["manova"] = {"error": str(e)}
@@ -268,7 +288,9 @@ class UltraAdvancedStatisticalAnalyzer:
                     results["interpretation"] += "Series is stationary. "
                 else:
                     results["interpretation"] += "Series is non-stationary. "
-                    results["recommendations"].append("Consider differencing or transformation")
+                    results["recommendations"].append(
+                        "Consider differencing or transformation"
+                    )
 
             except ImportError:
                 results["stationarity"]["adf"] = {
@@ -282,12 +304,14 @@ class UltraAdvancedStatisticalAnalyzer:
             try:
                 # Simple trend test using linear regression
                 x = np.arange(len(series_clean))
-                slope, intercept, r_value, p_value, std_err = stats.linregress(x, series_clean)
+                slope, intercept, r_value, p_value, std_err = stats.linregress(
+                    x, series_clean
+                )
 
                 results["trend"]["linear"] = {
                     "slope": slope,
                     "p_value": p_value,
-                    "r_squared": r_value ** 2,
+                    "r_squared": r_value**2,
                     "has_trend": p_value < self.alpha,
                 }
 
@@ -302,16 +326,22 @@ class UltraAdvancedStatisticalAnalyzer:
         # Autocorrelation
         try:
             autocorr_lag1 = series_clean.autocorr(lag=1)
-            autocorr_lag5 = series_clean.autocorr(lag=5) if len(series_clean) > 5 else None
+            autocorr_lag5 = (
+                series_clean.autocorr(lag=5) if len(series_clean) > 5 else None
+            )
 
             results["autocorrelation"] = {
                 "lag_1": autocorr_lag1,
                 "lag_5": autocorr_lag5,
-                "has_autocorrelation": abs(autocorr_lag1) > 0.3 if not np.isnan(autocorr_lag1) else False,
+                "has_autocorrelation": (
+                    abs(autocorr_lag1) > 0.3 if not np.isnan(autocorr_lag1) else False
+                ),
             }
 
             if results["autocorrelation"]["has_autocorrelation"]:
-                results["recommendations"].append("Series shows autocorrelation - consider ARIMA models")
+                results["recommendations"].append(
+                    "Series shows autocorrelation - consider ARIMA models"
+                )
 
         except Exception as e:
             results["autocorrelation"] = {"error": str(e)}
@@ -357,11 +387,11 @@ class UltraAdvancedStatisticalAnalyzer:
 
         # Posterior distribution parameters
         # Using conjugate prior (normal-normal)
-        posterior_mean = (prior_mean / prior_std ** 2 + (mean1 - mean2) / (std1 ** 2 / n1 + std2 ** 2 / n2)) / (
-            1 / prior_std ** 2 + 1 / (std1 ** 2 / n1 + std2 ** 2 / n2)
-        )
+        posterior_mean = (
+            prior_mean / prior_std**2 + (mean1 - mean2) / (std1**2 / n1 + std2**2 / n2)
+        ) / (1 / prior_std**2 + 1 / (std1**2 / n1 + std2**2 / n2))
         posterior_std = np.sqrt(
-            1 / (1 / prior_std ** 2 + 1 / (std1 ** 2 / n1 + std2 ** 2 / n2))
+            1 / (1 / prior_std**2 + 1 / (std1**2 / n1 + std2**2 / n2))
         )
 
         results["posterior"] = {
@@ -448,7 +478,9 @@ class UltraAdvancedStatisticalAnalyzer:
 
             n_required = 2 * ((z_alpha + z_power) / effect_size) ** 2
             results["sample_size"]["required"] = int(np.ceil(n_required))
-            results["interpretation"] = f"Required sample size: {results['sample_size']['required']} per group"
+            results["interpretation"] = (
+                f"Required sample size: {results['sample_size']['required']} per group"
+            )
 
         # Calculate achieved power if sample size provided
         else:
@@ -456,7 +488,9 @@ class UltraAdvancedStatisticalAnalyzer:
 
             z_alpha = norm.ppf(1 - alpha / 2)
             z_effect = effect_size * np.sqrt(n / 2)
-            achieved_power = norm.cdf(z_effect - z_alpha) + norm.cdf(-z_effect - z_alpha)
+            achieved_power = norm.cdf(z_effect - z_alpha) + norm.cdf(
+                -z_effect - z_alpha
+            )
 
             results["sample_size"]["provided"] = n
             results["power"] = {
@@ -516,7 +550,8 @@ class UltraAdvancedStatisticalAnalyzer:
         results["bootstrap"] = {
             "mean": np.mean(bootstrap_stats),
             "std": np.std(bootstrap_stats),
-            "bias": np.mean(bootstrap_stats) - (np.mean(data_clean) if statistic == "mean" else np.median(data_clean)),
+            "bias": np.mean(bootstrap_stats)
+            - (np.mean(data_clean) if statistic == "mean" else np.median(data_clean)),
         }
 
         # Confidence interval
@@ -530,6 +565,8 @@ class UltraAdvancedStatisticalAnalyzer:
             "level": confidence_level,
         }
 
-        results["interpretation"] = f"Bootstrap {statistic}: {results['bootstrap']['mean']:.3f} [{lower:.3f}, {upper:.3f}]"
+        results["interpretation"] = (
+            f"Bootstrap {statistic}: {results['bootstrap']['mean']:.3f} [{lower:.3f}, {upper:.3f}]"
+        )
 
         return results

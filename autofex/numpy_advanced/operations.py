@@ -24,9 +24,7 @@ class AdvancedNumpyOperations:
         """
         self.config = config or {}
 
-    def create_array_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_array_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using numpy array operations.
 
@@ -74,9 +72,7 @@ class AdvancedNumpyOperations:
 
         return features
 
-    def create_broadcasting_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_broadcasting_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using numpy broadcasting.
 
@@ -102,7 +98,9 @@ class AdvancedNumpyOperations:
 
         # Distance from mean (broadcasted)
         features["mean_distance"] = np.mean(np.abs(X_array - col_means), axis=1)
-        features["std_distance"] = np.mean(np.abs((X_array - col_means) / col_stds), axis=1)
+        features["std_distance"] = np.mean(
+            np.abs((X_array - col_means) / col_stds), axis=1
+        )
 
         # Pairwise operations (sample of pairs)
         if X_array.shape[1] >= 2:
@@ -117,9 +115,7 @@ class AdvancedNumpyOperations:
 
         return features
 
-    def create_matrix_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_matrix_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using numpy matrix operations.
 
@@ -161,9 +157,7 @@ class AdvancedNumpyOperations:
 
         return features
 
-    def create_advanced_math_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_advanced_math_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using advanced numpy mathematical functions.
 
@@ -195,7 +189,9 @@ class AdvancedNumpyOperations:
             col_features[f"{col}_tanh"] = np.tanh(series)
 
             # Exponential and logarithmic
-            col_features[f"{col}_exp"] = np.exp(np.clip(series, -10, 10))  # Clip to avoid overflow
+            col_features[f"{col}_exp"] = np.exp(
+                np.clip(series, -10, 10)
+            )  # Clip to avoid overflow
             col_features[f"{col}_expm1"] = np.expm1(np.clip(series, -10, 10))
             col_features[f"{col}_log1p"] = np.log1p(series.clip(lower=0))
 
@@ -217,9 +213,7 @@ class AdvancedNumpyOperations:
             return pd.concat(features, axis=1)
         return pd.DataFrame(index=X.index)
 
-    def create_aggregation_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_aggregation_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create features using numpy aggregation functions.
 
@@ -257,8 +251,8 @@ class AdvancedNumpyOperations:
         mean = np.mean(X_array, axis=1, keepdims=True)
         std = np.std(X_array, axis=1, keepdims=True) + 1e-8
         normalized = (X_array - mean) / std
-        features["agg_skew"] = np.mean(normalized ** 3, axis=1)
-        features["agg_kurtosis"] = np.mean(normalized ** 4, axis=1) - 3
+        features["agg_skew"] = np.mean(normalized**3, axis=1)
+        features["agg_kurtosis"] = np.mean(normalized**4, axis=1) - 3
 
         return features
 

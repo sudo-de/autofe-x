@@ -13,6 +13,7 @@ import warnings
 
 try:
     from ..utils.parallel import parallel_transform_columns, get_n_jobs
+
     PARALLEL_AVAILABLE = True
 except ImportError:
     PARALLEL_AVAILABLE = False
@@ -47,9 +48,11 @@ class FeatureEngineer:
         self.interaction_degree = self.config.get("interaction_degree", 2)
         self.max_features = self.config.get("max_features", 1000)
         self.supervised = self.config.get("supervised", True)
-        
+
         # Parallel processing configuration
-        self.n_jobs = self.config.get("n_jobs", None)  # None = sequential, -1 = all CPUs
+        self.n_jobs = self.config.get(
+            "n_jobs", None
+        )  # None = sequential, -1 = all CPUs
         self.parallel_backend = self.config.get("parallel_backend", "threading")
 
         self.fitted_encoders: Dict[str, pd.Series] = {}
@@ -161,7 +164,7 @@ class FeatureEngineer:
             feature_df = self._select_top_features(feature_df, y=None)
 
         return feature_df
-    
+
     def set_progress_callback(self, callback: Optional[Callable]):
         """
         Set progress callback for parallel processing.

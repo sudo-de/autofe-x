@@ -39,9 +39,7 @@ class AdvancedStatisticalAnalyzer:
         """
         self.alpha = alpha
 
-    def comprehensive_normality_test(
-        self, series: pd.Series
-    ) -> Dict[str, Any]:
+    def comprehensive_normality_test(self, series: pd.Series) -> Dict[str, Any]:
         """
         Comprehensive normality testing with multiple tests and effect sizes.
 
@@ -56,35 +54,37 @@ class AdvancedStatisticalAnalyzer:
         if len(series_clean) < 3:
             return {"error": "Insufficient data for normality testing"}
 
-        results = {
+        results: Dict[str, Any] = {
             "tests": {},
             "interpretation": "",
             "recommendation": "",
         }
+        # Type annotation for tests dict to help mypy
+        tests_dict: Dict[str, Any] = results["tests"]  # type: ignore
 
         # Shapiro-Wilk test (best for small samples)
         if 3 <= len(series_clean) <= 5000:
             try:
                 stat, p_value = shapiro(series_clean)
-                results["tests"]["shapiro_wilk"] = {
+                tests_dict["shapiro_wilk"] = {
                     "statistic": stat,
                     "p_value": p_value,
                     "significant": p_value < self.alpha,
                 }
             except Exception as e:
-                results["tests"]["shapiro_wilk"] = {"error": str(e)}
+                tests_dict["shapiro_wilk"] = {"error": str(e)}
 
         # D'Agostino's normality test (good for larger samples)
         if len(series_clean) >= 8:
             try:
                 stat, p_value = normaltest(series_clean)
-                results["tests"]["dagostino"] = {
+                tests_dict["dagostino"] = {
                     "statistic": stat,
                     "p_value": p_value,
                     "significant": p_value < self.alpha,
                 }
             except Exception as e:
-                results["tests"]["dagostino"] = {"error": str(e)}
+                tests_dict["dagostino"] = {"error": str(e)}
 
         # Kolmogorov-Smirnov test
         if len(series_clean) >= 4:
@@ -93,25 +93,25 @@ class AdvancedStatisticalAnalyzer:
                 stat, p_value = kstest(
                     series_clean, lambda x: stats.norm.cdf(x, mean, std)
                 )
-                results["tests"]["kolmogorov_smirnov"] = {
+                tests_dict["kolmogorov_smirnov"] = {
                     "statistic": stat,
                     "p_value": p_value,
                     "significant": p_value < self.alpha,
                 }
             except Exception as e:
-                results["tests"]["kolmogorov_smirnov"] = {"error": str(e)}
+                tests_dict["kolmogorov_smirnov"] = {"error": str(e)}
 
         # Jarque-Bera test (tests skewness and kurtosis)
         if len(series_clean) >= 4:
             try:
                 stat, p_value = jarque_bera(series_clean)
-                results["tests"]["jarque_bera"] = {
+                tests_dict["jarque_bera"] = {
                     "statistic": stat,
                     "p_value": p_value,
                     "significant": p_value < self.alpha,
                 }
             except Exception as e:
-                results["tests"]["jarque_bera"] = {"error": str(e)}
+                tests_dict["jarque_bera"] = {"error": str(e)}
 
         # Calculate skewness and kurtosis
         skewness = series_clean.skew()
@@ -132,7 +132,11 @@ class AdvancedStatisticalAnalyzer:
             if isinstance(test, dict) and test.get("significant", False)
         )
         total_tests = len(
-            [t for t in results["tests"].values() if isinstance(t, dict) and "p_value" in t]
+            [
+                t
+                for t in results["tests"].values()
+                if isinstance(t, dict) and "p_value" in t
+            ]
         )
 
         if significant_tests == 0 and total_tests > 0:
@@ -142,8 +146,12 @@ class AdvancedStatisticalAnalyzer:
             results["interpretation"] = "Data is NOT normally distributed"
             results["recommendation"] = "Use non-parametric tests or transformations"
         else:
-            results["interpretation"] = "Mixed results - use caution with parametric tests"
-            results["recommendation"] = "Consider transformations or non-parametric alternatives"
+            results["interpretation"] = (
+                "Mixed results - use caution with parametric tests"
+            )
+            results["recommendation"] = (
+                "Consider transformations or non-parametric alternatives"
+            )
 
         return results
 
@@ -202,8 +210,10 @@ class AdvancedStatisticalAnalyzer:
         # Parametric tests
         if use_parametric:
             try:
-                t_stat, t_p = stats.ttest_ind(group1_clean, group2_clean, equal_var=equal_var)
-                results["tests"]["t_test"] = {
+                t_stat, t_p = stats.ttest_ind(
+                    group1_clean, group2_clean, equal_var=equal_var
+                )
+                tests_dict["t_test"] = {
                     "statistic": t_stat,
                     "p_value": t_p,
                     "significant": t_p < self.alpha,
@@ -231,16 +241,20 @@ class AdvancedStatisticalAnalyzer:
                 else:
                     effect_interpretation = "large"
 
-                results["effect_sizes"]["cohens_d_interpretation"] = effect_interpretation
+                results["effect_sizes"][
+                    "cohens_d_interpretation"
+                ] = effect_interpretation
 
             except Exception as e:
-                results["tests"]["t_test"] = {"error": str(e)}
+                tests_dict["t_test"] = {"error": str(e)}
 
         # Non-parametric tests
         if not use_parametric or test_type == "nonparametric":
             try:
-                u_stat, u_p = mannwhitneyu(group1_clean, group2_clean, alternative="two-sided")
-                results["tests"]["mann_whitney_u"] = {
+                u_stat, u_p = mannwhitneyu(
+                    group1_clean, group2_clean, alternative="two-sided"
+                )
+                tests_dict["mann_whitney_u"] = {
                     "statistic": u_stat,
                     "p_value": u_p,
                     "significant": u_p < self.alpha,
@@ -252,7 +266,7 @@ class AdvancedStatisticalAnalyzer:
                 results["effect_sizes"]["rank_biserial"] = r_biserial
 
             except Exception as e:
-                results["tests"]["mann_whitney_u"] = {"error": str(e)}
+                tests_dict["mann_whitney_u"] = {"error": str(e)}
 
         # Descriptive statistics
         results["descriptive"] = {
@@ -279,9 +293,9 @@ class AdvancedStatisticalAnalyzer:
 
         if significant:
             results["interpretation"] = "Groups are significantly different"
-            effect_size = results["effect_sizes"].get("cohens_d") or results["effect_sizes"].get(
-                "rank_biserial", 0
-            )
+            effect_size = results["effect_sizes"].get("cohens_d") or results[
+                "effect_sizes"
+            ].get("rank_biserial", 0)
             if abs(effect_size) > 0.5:
                 results["recommendation"] = "Large effect size - practical significance"
             else:
@@ -350,13 +364,19 @@ class AdvancedStatisticalAnalyzer:
                     if y.dtype in ["object", "category"] or y.nunique() < 20:
                         # Categorical target - use point-biserial or Cramér's V
                         if y.nunique() == 2:
-                            corr, p_val = stats.pointbiserialr(X[col].fillna(X[col].mean()), y)
+                            corr, p_val = stats.pointbiserialr(
+                                X[col].fillna(X[col].mean()), y
+                            )
                         else:
                             # Use ANOVA F-statistic as correlation proxy
                             groups = [X[col][y == cls].dropna() for cls in y.unique()]
                             if len(groups) > 1:
                                 f_stat, p_val = stats.f_oneway(*groups)
-                                corr = np.sqrt(f_stat / (f_stat + len(X))) if f_stat > 0 else 0
+                                corr = (
+                                    np.sqrt(f_stat / (f_stat + len(X)))
+                                    if f_stat > 0
+                                    else 0
+                                )
                             else:
                                 continue
                     else:

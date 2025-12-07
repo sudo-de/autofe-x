@@ -15,12 +15,13 @@ from .helpers import (
 try:
     from .progress import ProgressTracker, RealTimeFeedback
     from .cache import OperationCache
+
     _UTILS_AVAILABLE = True
 except ImportError:
     _UTILS_AVAILABLE = False
-    ProgressTracker = None
-    RealTimeFeedback = None
-    OperationCache = None
+    ProgressTracker = None  # type: ignore
+    RealTimeFeedback = None  # type: ignore
+    OperationCache = None  # type: ignore
 
 __all__ = [
     "safe_divide",
@@ -31,8 +32,10 @@ __all__ = [
 ]
 
 if _UTILS_AVAILABLE:
-    __all__.extend([
-        "ProgressTracker",
-        "RealTimeFeedback",
-        "OperationCache",
-    ])
+    __all__.extend(
+        [
+            "ProgressTracker",
+            "RealTimeFeedback",
+            "OperationCache",
+        ]
+    )

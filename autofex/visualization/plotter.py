@@ -14,6 +14,7 @@ import warnings
 try:
     import plotly.graph_objects as go
     import plotly.express as px
+
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False

@@ -43,7 +43,7 @@ class ProgressTracker:
         self.step_times = []
         self.step_names = []
         self.messages = []
-        
+
         if self.show_progress:
             print(f"\n🚀 {message}")
             print("=" * 60)
@@ -65,26 +65,28 @@ class ProgressTracker:
             show_eta: Whether to show estimated time remaining
         """
         step_start = time.time()
-        
+
         if step_name:
             self.step_names.append(step_name)
-        
+
         if message:
             self.messages.append(message)
 
         self.current_step = step
-        
+
         if self.show_progress:
             percentage = (step / self.total_steps) * 100 if self.total_steps > 0 else 0
-            
+
             # Progress bar
             bar_length = 40
-            filled = int(bar_length * step / self.total_steps) if self.total_steps > 0 else 0
+            filled = (
+                int(bar_length * step / self.total_steps) if self.total_steps > 0 else 0
+            )
             bar = "█" * filled + "░" * (bar_length - filled)
-            
+
             # Time information
             elapsed = time.time() - self.start_time if self.start_time else 0
-            
+
             if show_eta and step > 0 and self.total_steps > 0:
                 avg_time_per_step = elapsed / step
                 remaining_steps = self.total_steps - step
@@ -92,16 +94,16 @@ class ProgressTracker:
                 eta_str = f" | ETA: {self._format_time(eta)}"
             else:
                 eta_str = ""
-            
+
             # Print progress
             progress_line = f"\r[{bar}] {percentage:5.1f}% | Step {step}/{self.total_steps} | Elapsed: {self._format_time(elapsed)}{eta_str}"
-            
+
             if message:
                 progress_line += f" | {message}"
-            
+
             sys.stdout.write(progress_line)
             sys.stdout.flush()
-        
+
         step_time = time.time() - step_start
         self.step_times.append(step_time)
 
@@ -113,18 +115,18 @@ class ProgressTracker:
             message: Completion message
         """
         total_time = time.time() - self.start_time if self.start_time else 0
-        
+
         if self.show_progress:
             print()  # New line after progress bar
             print("=" * 60)
             print(f"✅ {message}")
             print(f"⏱️  Total time: {self._format_time(total_time)}")
-            
+
             if self.step_times:
                 avg_step_time = sum(self.step_times) / len(self.step_times)
                 print(f"📊 Average step time: {self._format_time(avg_step_time)}")
                 print(f"📈 Total steps: {len(self.step_times)}")
-        
+
         return {
             "total_time": total_time,
             "step_times": self.step_times,
@@ -157,7 +159,7 @@ class ProgressTracker:
         timestamp = datetime.now().strftime("%H:%M:%S")
         log_message = f"[{timestamp}] [{level}] {message}"
         self.messages.append(log_message)
-        
+
         if self.show_progress:
             print(f"\n{log_message}")
 
@@ -189,18 +191,20 @@ class RealTimeFeedback:
         """
         if timestamp is None:
             timestamp = time.time()
-        
+
         self.metrics[name] = {
             "value": value,
             "timestamp": timestamp,
         }
-        
-        self.history.append({
-            "name": name,
-            "value": value,
-            "timestamp": timestamp,
-        })
-        
+
+        self.history.append(
+            {
+                "name": name,
+                "value": value,
+                "timestamp": timestamp,
+            }
+        )
+
         if self.callback:
             self.callback(name, value, timestamp)
 

@@ -39,12 +39,12 @@ class OperationCache:
         self.cache_dir = Path(cache_dir or ".autofex_cache")
         self.max_size_mb = max_size_mb
         self.ttl_seconds = ttl_seconds
-        
+
         if self.enabled:
             self.cache_dir.mkdir(exist_ok=True)
             self.metadata_file = self.cache_dir / "cache_metadata.json"
             self.metadata = self._load_metadata()
-            
+
             # Clean expired entries on initialization
             self._clean_expired()
 
@@ -84,7 +84,7 @@ class OperationCache:
             "args": args,
             "kwargs": kwargs,
         }
-        
+
         # Use pickle to handle complex objects, then hash
         try:
             key_bytes = pickle.dumps(key_data, protocol=pickle.HIGHEST_PROTOCOL)
@@ -103,10 +103,10 @@ class OperationCache:
         """Check if cache entry is expired."""
         if self.ttl_seconds is None:
             return False
-        
+
         if cache_key not in self.metadata:
             return True
-        
+
         entry_time = self.metadata[cache_key].get("timestamp", 0)
         elapsed = time.time() - entry_time
         return elapsed > self.ttl_seconds
@@ -115,12 +115,12 @@ class OperationCache:
         """Remove expired cache entries."""
         if not self.enabled:
             return
-        
+
         expired_keys = []
         for cache_key in list(self.metadata.keys()):
             if self._is_expired(cache_key):
                 expired_keys.append(cache_key)
-        
+
         for key in expired_keys:
             self._remove_entry(key)
 
@@ -132,7 +132,7 @@ class OperationCache:
                 cache_path.unlink()
             except Exception:
                 pass
-        
+
         if cache_key in self.metadata:
             del self.metadata[cache_key]
             self._save_metadata()
@@ -141,33 +141,33 @@ class OperationCache:
         """Get current cache size in MB."""
         if not self.cache_dir.exists():
             return 0.0
-        
+
         total_size = 0
         for file_path in self.cache_dir.glob("*.pkl"):
             try:
                 total_size += file_path.stat().st_size
             except Exception:
                 pass
-        
+
         return total_size / (1024 * 1024)  # Convert to MB
 
     def _evict_oldest(self):
         """Evict oldest cache entries to make room."""
         if not self.metadata:
             return
-        
+
         # Sort by timestamp (oldest first)
         sorted_entries = sorted(
             self.metadata.items(),
             key=lambda x: x[1].get("timestamp", 0),
         )
-        
+
         # Remove oldest entries until under limit
         current_size = self._get_cache_size_mb()
         for cache_key, _ in sorted_entries:
             if current_size <= self.max_size_mb:
                 break
-            
+
             entry_path = self._get_cache_path(cache_key)
             if entry_path.exists():
                 try:
@@ -196,29 +196,29 @@ class OperationCache:
         """
         if not self.enabled:
             return None
-        
+
         cache_key = self._get_cache_key(operation, *args, **kwargs)
         cache_path = self._get_cache_path(cache_key)
-        
+
         # Check if expired
         if self._is_expired(cache_key):
             self._remove_entry(cache_key)
             return None
-        
+
         # Check if file exists
         if not cache_path.exists():
             return None
-        
+
         # Load cached result
         try:
             with open(cache_path, "rb") as f:
                 result = pickle.load(f)
-            
+
             # Update access time
             if cache_key in self.metadata:
                 self.metadata[cache_key]["last_accessed"] = time.time()
                 self._save_metadata()
-            
+
             return result
         except Exception as e:
             warnings.warn(f"Failed to load cache entry: {e}")
@@ -242,20 +242,20 @@ class OperationCache:
         """
         if not self.enabled:
             return
-        
+
         # Check cache size and evict if needed
         current_size = self._get_cache_size_mb()
         if current_size >= self.max_size_mb:
             self._evict_oldest()
-        
+
         cache_key = self._get_cache_key(operation, *args, **kwargs)
         cache_path = self._get_cache_path(cache_key)
-        
+
         try:
             # Save result
             with open(cache_path, "wb") as f:
                 pickle.dump(result, f, protocol=pickle.HIGHEST_PROTOCOL)
-            
+
             # Update metadata
             self.metadata[cache_key] = {
                 "operation": operation,
@@ -276,7 +276,7 @@ class OperationCache:
         """
         if not self.enabled:
             return
-        
+
         if operation is None:
             # Clear all
             for cache_key in list(self.metadata.keys()):
@@ -300,7 +300,7 @@ class OperationCache:
         """
         if not self.enabled:
             return {"enabled": False}
-        
+
         return {
             "enabled": True,
             "cache_dir": str(self.cache_dir),
@@ -333,11 +333,11 @@ class OperationCache:
         cached_result = self.get(operation, *args, **kwargs)
         if cached_result is not None:
             return cached_result
-        
+
         # Execute function
         result = func(*args, **kwargs)
-        
+
         # Cache result
         self.set(operation, result, *args, **kwargs)
-        
+
         return result

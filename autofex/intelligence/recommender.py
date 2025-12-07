@@ -52,21 +52,27 @@ class FeatureEngineeringRecommender:
             # Skewness-based recommendations
             skew = series.skew()
             if abs(skew) > 2:
-                col_recommendations.append({
-                    "column": col,
-                    "transformation": "boxcox" if series.min() > 0 else "yeojohnson",
-                    "reason": f"Highly skewed (skew={skew:.2f})",
-                    "priority": "high",
-                    "expected_impact": "Normalize distribution, improve model performance",
-                })
+                col_recommendations.append(
+                    {
+                        "column": col,
+                        "transformation": (
+                            "boxcox" if series.min() > 0 else "yeojohnson"
+                        ),
+                        "reason": f"Highly skewed (skew={skew:.2f})",
+                        "priority": "high",
+                        "expected_impact": "Normalize distribution, improve model performance",
+                    }
+                )
             elif abs(skew) > 1:
-                col_recommendations.append({
-                    "column": col,
-                    "transformation": "log" if series.min() > 0 else "sqrt",
-                    "reason": f"Moderately skewed (skew={skew:.2f})",
-                    "priority": "medium",
-                    "expected_impact": "Reduce skewness",
-                })
+                col_recommendations.append(
+                    {
+                        "column": col,
+                        "transformation": "log" if series.min() > 0 else "sqrt",
+                        "reason": f"Moderately skewed (skew={skew:.2f})",
+                        "priority": "medium",
+                        "expected_impact": "Reduce skewness",
+                    }
+                )
 
             # Outlier-based recommendations
             q1, q3 = series.quantile(0.25), series.quantile(0.75)
@@ -75,23 +81,27 @@ class FeatureEngineeringRecommender:
             outlier_pct = outliers / len(series)
 
             if outlier_pct > 0.1:
-                col_recommendations.append({
-                    "column": col,
-                    "transformation": "robust_scale",
-                    "reason": f"High outlier percentage ({outlier_pct*100:.1f}%)",
-                    "priority": "high",
-                    "expected_impact": "Reduce outlier impact",
-                })
+                col_recommendations.append(
+                    {
+                        "column": col,
+                        "transformation": "robust_scale",
+                        "reason": f"High outlier percentage ({outlier_pct*100:.1f}%)",
+                        "priority": "high",
+                        "expected_impact": "Reduce outlier impact",
+                    }
+                )
 
             # Scale-based recommendations
             if series.std() / (series.mean() + 1e-8) > 1:
-                col_recommendations.append({
-                    "column": col,
-                    "transformation": "standardize",
-                    "reason": "High coefficient of variation",
-                    "priority": "medium",
-                    "expected_impact": "Normalize scale",
-                })
+                col_recommendations.append(
+                    {
+                        "column": col,
+                        "transformation": "standardize",
+                        "reason": "High coefficient of variation",
+                        "priority": "medium",
+                        "expected_impact": "Normalize scale",
+                    }
+                )
 
             recommendations.extend(col_recommendations)
 
@@ -128,12 +138,14 @@ class FeatureEngineeringRecommender:
 
         # Dimensionality recommendations
         if numeric_count > 20:
-            recommendations["strategies"].append({
-                "strategy": "pca",
-                "reason": f"High dimensionality ({numeric_count} numeric features)",
-                "priority": "high",
-                "config": {"n_components": min(10, numeric_count // 2)},
-            })
+            recommendations["strategies"].append(
+                {
+                    "strategy": "pca",
+                    "reason": f"High dimensionality ({numeric_count} numeric features)",
+                    "priority": "high",
+                    "config": {"n_components": min(10, numeric_count // 2)},
+                }
+            )
 
         # Categorical recommendations
         if categorical_count > 0:
@@ -143,39 +155,47 @@ class FeatureEngineeringRecommender:
                 if X[col].nunique() > 20
             ]
             if high_cardinality:
-                recommendations["strategies"].append({
-                    "strategy": "target_encoding",
-                    "reason": f"High cardinality features: {len(high_cardinality)}",
-                    "priority": "high",
-                    "features": high_cardinality,
-                })
+                recommendations["strategies"].append(
+                    {
+                        "strategy": "target_encoding",
+                        "reason": f"High cardinality features: {len(high_cardinality)}",
+                        "priority": "high",
+                        "features": high_cardinality,
+                    }
+                )
 
         # Time-series recommendations
         if datetime_count > 0:
-            recommendations["strategies"].append({
-                "strategy": "datetime_features",
-                "reason": f"Datetime columns detected: {datetime_count}",
-                "priority": "high",
-                "config": {"extract_components": True, "cyclical_encoding": True},
-            })
+            recommendations["strategies"].append(
+                {
+                    "strategy": "datetime_features",
+                    "reason": f"Datetime columns detected: {datetime_count}",
+                    "priority": "high",
+                    "config": {"extract_components": True, "cyclical_encoding": True},
+                }
+            )
 
         # Interaction recommendations
         if numeric_count >= 2:
-            recommendations["strategies"].append({
-                "strategy": "polynomial_interactions",
-                "reason": "Multiple numeric features available",
-                "priority": "medium",
-                "config": {"degree": 2},
-            })
+            recommendations["strategies"].append(
+                {
+                    "strategy": "polynomial_interactions",
+                    "reason": "Multiple numeric features available",
+                    "priority": "medium",
+                    "config": {"degree": 2},
+                }
+            )
 
         # Window features for time-series
         if datetime_count > 0 or len(X) > 100:
-            recommendations["strategies"].append({
-                "strategy": "rolling_windows",
-                "reason": "Time-series or large dataset",
-                "priority": "medium",
-                "config": {"window_sizes": [3, 7, 14, 30]},
-            })
+            recommendations["strategies"].append(
+                {
+                    "strategy": "rolling_windows",
+                    "reason": "Time-series or large dataset",
+                    "priority": "medium",
+                    "config": {"window_sizes": [3, 7, 14, 30]},
+                }
+            )
 
         # Warnings
         missing_pct = (X.isnull().sum().sum() / (X.shape[0] * X.shape[1])) * 100
@@ -232,14 +252,19 @@ class FeatureEngineeringRecommender:
             if rec.get("priority") == "high"
         ]
 
-        if "boxcox" in high_priority_transforms or "yeojohnson" in high_priority_transforms:
+        if (
+            "boxcox" in high_priority_transforms
+            or "yeojohnson" in high_priority_transforms
+        ):
             config["statistical_transforms"]["power_transforms"] = True
 
         # Apply strategy recommendations
         for strategy in recommendations["strategies"]:
             if strategy["strategy"] == "pca":
                 config["mathematical_modeling"]["pca_features"] = True
-                config["mathematical_modeling"]["n_components_pca"] = strategy["config"]["n_components"]
+                config["mathematical_modeling"]["n_components_pca"] = strategy[
+                    "config"
+                ]["n_components"]
             elif strategy["strategy"] == "datetime_features":
                 config["pandas_operations"]["datetime_features"] = True
             elif strategy["strategy"] == "rolling_windows":

@@ -19,6 +19,7 @@ try:
     from .feature_engineering.advanced import AdvancedFeatureEngineer
     from .feature_selection.selector import AdvancedFeatureSelector
     from .visualization import FeatureVisualizer
+
     _NEXTGEN_AVAILABLE = True
 except ImportError:
     _NEXTGEN_AVAILABLE = False
@@ -86,7 +87,7 @@ class AutoFEX:
         """
         self.random_state = random_state
         np.random.seed(random_state)
-        
+
         # Set up parallel processing in feature engineering config
         if feature_engineering_config is None:
             feature_engineering_config = {}
@@ -98,24 +99,38 @@ class AutoFEX:
         self.data_profiler = DataProfiler(config=profiling_config or {})
         self.leakage_detector = LeakageDetector(config=leakage_config or {})
         self.benchmarker = FeatureBenchmarker(config=benchmarking_config or {})
-        
+
         # Initialize progress tracking and caching
         self.enable_progress = enable_progress
-        self.progress_tracker = ProgressTracker(show_progress=enable_progress) if enable_progress else None
+        self.progress_tracker = (
+            ProgressTracker(show_progress=enable_progress) if enable_progress else None
+        )
         self.real_time_feedback = RealTimeFeedback() if enable_progress else None
-        
-        self.cache = OperationCache(
-            cache_dir=cache_dir,
-            ttl_seconds=cache_ttl,
-            enabled=enable_cache,
-        ) if enable_cache else None
+
+        self.cache = (
+            OperationCache(
+                cache_dir=cache_dir,
+                ttl_seconds=cache_ttl,
+                enabled=enable_cache,
+            )
+            if enable_cache
+            else None
+        )
         self.lineage_tracker = FeatureLineageTracker(config=lineage_config or {})
-        
+
         # NextGen components (if available)
-        self.use_advanced_features = feature_engineering_config.get("use_advanced", False) if feature_engineering_config else False
+        self.use_advanced_features = (
+            feature_engineering_config.get("use_advanced", False)
+            if feature_engineering_config
+            else False
+        )
         if _NEXTGEN_AVAILABLE and self.use_advanced_features:
-            self.advanced_feature_engineer = AdvancedFeatureEngineer(config=feature_engineering_config or {})
-            self.feature_selector = AdvancedFeatureSelector(config=feature_engineering_config.get("selection_config", {}) or {})
+            self.advanced_feature_engineer = AdvancedFeatureEngineer(
+                config=feature_engineering_config or {}
+            )
+            self.feature_selector = AdvancedFeatureSelector(
+                config=feature_engineering_config.get("selection_config", {}) or {}
+            )
             self.visualizer = FeatureVisualizer()
 
     def process(
@@ -140,33 +155,51 @@ class AutoFEX:
         import time
 
         start_time = time.time()
-        total_steps = 5 if y is not None else 3  # Adjust based on whether target is available
+        total_steps = (
+            5 if y is not None else 3
+        )  # Adjust based on whether target is available
 
         # Initialize progress tracking
         if self.progress_tracker:
-            self.progress_tracker.start(f"AutoFE-X Pipeline Processing ({X.shape[0]} rows, {X.shape[1]} features)")
+            self.progress_tracker.start(
+                f"AutoFE-X Pipeline Processing ({X.shape[0]} rows, {X.shape[1]} features)"
+            )
             self.progress_tracker.total_steps = total_steps
 
         # Initialize lineage tracking
         step = 1
         if self.progress_tracker:
-            self.progress_tracker.update(step, "Initializing lineage tracking", "lineage_init")
+            self.progress_tracker.update(
+                step, "Initializing lineage tracking", "lineage_init"
+            )
         self.lineage_tracker.start_session(X.columns.tolist())
 
         # Step 1: Data profiling (with caching)
         step = 2
         if self.progress_tracker:
-            self.progress_tracker.update(step, "Analyzing data quality", "data_profiling")
-        
+            self.progress_tracker.update(
+                step, "Analyzing data quality", "data_profiling"
+            )
+
         if self.cache:
+
             def _profile_data():
                 return self.data_profiler.analyze(X, y)
-            quality_report = self.cache.cache_function("data_profiling", _profile_data, X, y)
+
+            quality_report = self.cache.cache_function(
+                "data_profiling", _profile_data, X, y
+            )
         else:
             quality_report = self.data_profiler.analyze(X, y)
-        
+
         if self.real_time_feedback:
-            missing_pct = quality_report.get("missing_values", {}).get("total_missing_cells", 0) / (X.shape[0] * X.shape[1]) * 100 if X.shape[0] * X.shape[1] > 0 else 0
+            missing_pct = (
+                quality_report.get("missing_values", {}).get("total_missing_cells", 0)
+                / (X.shape[0] * X.shape[1])
+                * 100
+                if X.shape[0] * X.shape[1] > 0
+                else 0
+            )
             self.real_time_feedback.update_metric("missing_data_percent", missing_pct)
             self.real_time_feedback.update_metric("n_features", X.shape[1])
             self.real_time_feedback.update_metric("n_samples", X.shape[0])
@@ -176,48 +209,72 @@ class AutoFEX:
         if y is not None:
             step = 3
             if self.progress_tracker:
-                self.progress_tracker.update(step, "Detecting data leakage", "leakage_detection")
-            
+                self.progress_tracker.update(
+                    step, "Detecting data leakage", "leakage_detection"
+                )
+
             if self.cache:
+
                 def _detect_leakage():
                     return self.leakage_detector.detect(X, y)
-                leakage_report = self.cache.cache_function("leakage_detection", _detect_leakage, X, y)
+
+                leakage_report = self.cache.cache_function(
+                    "leakage_detection", _detect_leakage, X, y
+                )
             else:
                 leakage_report = self.leakage_detector.detect(X, y)
-            
+
             if self.real_time_feedback and leakage_report:
-                risk_level = leakage_report.get("overall_assessment", {}).get("risk_level", "unknown")
-                risk_score = leakage_report.get("overall_assessment", {}).get("risk_score", 0)
+                risk_level = leakage_report.get("overall_assessment", {}).get(
+                    "risk_level", "unknown"
+                )
+                risk_score = leakage_report.get("overall_assessment", {}).get(
+                    "risk_score", 0
+                )
                 self.real_time_feedback.update_metric("leakage_risk_level", risk_level)
                 self.real_time_feedback.update_metric("leakage_risk_score", risk_score)
 
         # Step 3: Feature engineering (with caching and parallel processing)
         step = 4 if y is not None else 3
         if self.progress_tracker:
-            self.progress_tracker.update(step, "Engineering features", "feature_engineering")
-        
+            self.progress_tracker.update(
+                step, "Engineering features", "feature_engineering"
+            )
+
         # Set up progress callback for feature engineering
         if self.progress_tracker:
+
             def _progress_callback(completed: int, total: int):
                 if self.progress_tracker:
                     self.progress_tracker.update(
                         step,
                         f"Engineering features: {completed}/{total} columns",
-                        "feature_engineering"
+                        "feature_engineering",
                     )
+
             self.feature_engineer.set_progress_callback(_progress_callback)
-        
+
         if self.cache:
+
             def _engineer_features():
                 return self.feature_engineer.fit_transform(X, y)
-            engineered_features = self.cache.cache_function("feature_engineering", _engineer_features, X, y)
+
+            engineered_features = self.cache.cache_function(
+                "feature_engineering", _engineer_features, X, y
+            )
         else:
             engineered_features = self.feature_engineer.fit_transform(X, y)
-        
+
         if self.real_time_feedback:
-            expansion_ratio = engineered_features.shape[1] / X.shape[1] if X.shape[1] > 0 else 0
-            self.real_time_feedback.update_metric("feature_expansion_ratio", expansion_ratio)
-            self.real_time_feedback.update_metric("n_engineered_features", engineered_features.shape[1])
+            expansion_ratio = (
+                engineered_features.shape[1] / X.shape[1] if X.shape[1] > 0 else 0
+            )
+            self.real_time_feedback.update_metric(
+                "feature_expansion_ratio", expansion_ratio
+            )
+            self.real_time_feedback.update_metric(
+                "n_engineered_features", engineered_features.shape[1]
+            )
 
         # Step 4: Update lineage with engineered features
         self.lineage_tracker.add_transformation(
@@ -231,20 +288,32 @@ class AutoFEX:
         if y is not None:
             step = 5
             if self.progress_tracker:
-                self.progress_tracker.update(step, "Benchmarking feature sets", "benchmarking")
-            
+                self.progress_tracker.update(
+                    step, "Benchmarking feature sets", "benchmarking"
+                )
+
             if self.cache:
+
                 def _benchmark_features():
                     return self.benchmarker.benchmark_features(X, y, X_test)
-                benchmark_results = self.cache.cache_function("benchmarking", _benchmark_features, X, y, X_test)
+
+                benchmark_results = self.cache.cache_function(
+                    "benchmarking", _benchmark_features, X, y, X_test
+                )
             else:
                 benchmark_results = self.benchmarker.benchmark_features(X, y, X_test)
-            
+
             if self.real_time_feedback and benchmark_results:
-                best_config = benchmark_results.get("best_configurations", {}).get("best_overall", {})
+                best_config = benchmark_results.get("best_configurations", {}).get(
+                    "best_overall", {}
+                )
                 if best_config:
-                    self.real_time_feedback.update_metric("best_model", best_config.get("model", "N/A"))
-                    self.real_time_feedback.update_metric("best_performance", best_config.get("performance", 0))
+                    self.real_time_feedback.update_metric(
+                        "best_model", best_config.get("model", "N/A")
+                    )
+                    self.real_time_feedback.update_metric(
+                        "best_performance", best_config.get("performance", 0)
+                    )
 
         processing_time = time.time() - start_time
 

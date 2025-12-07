@@ -14,13 +14,22 @@ try:
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
     import plotly.express as px
+
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
+    # Create a dummy type for type checking when plotly is not available
+    from typing import TYPE_CHECKING
+
+    if TYPE_CHECKING:
+        from typing import Any as go  # type: ignore
+    else:
+        go = None  # type: ignore
 
 try:
     import matplotlib.pyplot as plt
     import seaborn as sns
+
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
@@ -65,7 +74,7 @@ class InteractiveDashboard:
 
     def _create_plotly_dashboard(
         self, result: Any, save_path: Optional[str], title: str
-    ) -> go.Figure:
+    ) -> Any:  # type: ignore
         """Create interactive Plotly dashboard."""
         # Create subplots
         fig = make_subplots(
@@ -111,11 +120,17 @@ class InteractiveDashboard:
         # 2. Data Quality Indicators
         quality = result.data_quality_report
         missing_pct = (
-            quality.get("missing_values", {})
-            .get("total_missing_cells", 0)
-            / (quality.get("overview", {}).get("n_rows", 1) * quality.get("overview", {}).get("n_features", 1))
-            * 100
-        ) if quality.get("overview") else 0
+            (
+                quality.get("missing_values", {}).get("total_missing_cells", 0)
+                / (
+                    quality.get("overview", {}).get("n_rows", 1)
+                    * quality.get("overview", {}).get("n_features", 1)
+                )
+                * 100
+            )
+            if quality.get("overview")
+            else 0
+        )
 
         fig.add_trace(
             go.Indicator(
@@ -247,11 +262,17 @@ class InteractiveDashboard:
         ax2 = fig.add_subplot(gs[0, 2])
         quality = result.data_quality_report
         missing_pct = (
-            quality.get("missing_values", {})
-            .get("total_missing_cells", 0)
-            / (quality.get("overview", {}).get("n_rows", 1) * quality.get("overview", {}).get("n_features", 1))
-            * 100
-        ) if quality.get("overview") else 0
+            (
+                quality.get("missing_values", {}).get("total_missing_cells", 0)
+                / (
+                    quality.get("overview", {}).get("n_rows", 1)
+                    * quality.get("overview", {}).get("n_features", 1)
+                )
+                * 100
+            )
+            if quality.get("overview")
+            else 0
+        )
         quality_score = 100 - missing_pct
         ax2.text(
             0.5,
@@ -339,11 +360,17 @@ class InteractiveDashboard:
         # Data quality insights
         quality = result.data_quality_report
         missing_pct = (
-            quality.get("missing_values", {})
-            .get("total_missing_cells", 0)
-            / (quality.get("overview", {}).get("n_rows", 1) * quality.get("overview", {}).get("n_features", 1))
-            * 100
-        ) if quality.get("overview") else 0
+            (
+                quality.get("missing_values", {}).get("total_missing_cells", 0)
+                / (
+                    quality.get("overview", {}).get("n_rows", 1)
+                    * quality.get("overview", {}).get("n_features", 1)
+                )
+                * 100
+            )
+            if quality.get("overview")
+            else 0
+        )
 
         if missing_pct > 10:
             insights["warnings"].append(

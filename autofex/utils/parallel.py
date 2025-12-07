@@ -11,6 +11,7 @@ import warnings
 
 try:
     from joblib import Parallel, delayed
+
     JOBLIB_AVAILABLE = True
 except ImportError:
     JOBLIB_AVAILABLE = False
@@ -18,6 +19,7 @@ except ImportError:
 
 try:
     import multiprocessing as mp
+
     MULTIPROCESSING_AVAILABLE = True
 except ImportError:
     MULTIPROCESSING_AVAILABLE = False
@@ -35,12 +37,12 @@ def get_n_jobs(n_jobs: Optional[int] = None) -> int:
     """
     if n_jobs is None:
         return 1
-    
+
     if n_jobs == -1:
         if MULTIPROCESSING_AVAILABLE:
             return mp.cpu_count()
         return 1
-    
+
     return max(1, n_jobs)
 
 
@@ -75,18 +77,18 @@ def parallel_apply(
             if progress_callback:
                 progress_callback(i + 1, len(items))
         return results
-    
+
     # Parallel processing
     n_jobs = get_n_jobs(n_jobs)
-    
+
     # Use joblib for parallel processing
     results = Parallel(n_jobs=n_jobs, backend=backend, verbose=verbose)(
         delayed(func)(item) for item in items
     )
-    
+
     if progress_callback:
         progress_callback(len(items), len(items))
-    
+
     return results
 
 
@@ -116,11 +118,11 @@ def parallel_transform_columns(
     """
     if not columns:
         return []
-    
+
     def _transform_column(col_name: str) -> List[pd.DataFrame]:
         """Transform a single column."""
         return transform_func(X[col_name], col_name)
-    
+
     # Process columns in parallel
     if n_jobs is None or n_jobs == 1 or not JOBLIB_AVAILABLE:
         # Sequential processing
@@ -170,12 +172,13 @@ def parallel_feature_creation(
     Returns:
         List of feature DataFrames
     """
+
     def _create_features(func: Callable) -> pd.DataFrame:
         """Create features using a function."""
         if y is not None:
             return func(X, y)
         return func(X)
-    
+
     if n_jobs is None or n_jobs == 1 or not JOBLIB_AVAILABLE:
         # Sequential processing
         results = []
@@ -185,14 +188,14 @@ def parallel_feature_creation(
             if progress_callback:
                 progress_callback(i + 1, len(feature_funcs))
         return results
-    
+
     # Parallel processing
     n_jobs = get_n_jobs(n_jobs)
     results = Parallel(n_jobs=n_jobs, backend=backend, verbose=verbose)(
         delayed(_create_features)(func) for func in feature_funcs
     )
-    
+
     if progress_callback:
         progress_callback(len(feature_funcs), len(feature_funcs))
-    
+
     return results

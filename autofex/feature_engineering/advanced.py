@@ -146,8 +146,8 @@ class AdvancedFeatureEngineer:
             # Differences
             if len(series) > 1:
                 diff1 = series.diff(1)
-                diff7 = series.diff(7) if len(series) > 7 else pd.Series(
-                    index=series.index
+                diff7 = (
+                    series.diff(7) if len(series) > 7 else pd.Series(index=series.index)
                 )
                 features.append(
                     pd.DataFrame(
@@ -238,17 +238,13 @@ class AdvancedFeatureEngineer:
                     # Ratio
                     ratio = X[col1] / (X[col2] + 1e-8)
                     features.append(
-                        pd.DataFrame(
-                            {f"{col1}_div_{col2}": ratio}, index=X.index
-                        )
+                        pd.DataFrame({f"{col1}_div_{col2}": ratio}, index=X.index)
                     )
 
                     # Product
                     product = X[col1] * X[col2]
                     features.append(
-                        pd.DataFrame(
-                            {f"{col1}_mul_{col2}": product}, index=X.index
-                        )
+                        pd.DataFrame({f"{col1}_mul_{col2}": product}, index=X.index)
                     )
 
                     # Sum
@@ -260,9 +256,7 @@ class AdvancedFeatureEngineer:
                     # Difference
                     diff = X[col1] - X[col2]
                     features.append(
-                        pd.DataFrame(
-                            {f"{col1}_sub_{col2}": diff}, index=X.index
-                        )
+                        pd.DataFrame({f"{col1}_sub_{col2}": diff}, index=X.index)
                     )
 
         if features:
@@ -286,9 +280,7 @@ class AdvancedFeatureEngineer:
         for col in numeric_cols:
             # Percentile rank
             rank_pct = X[col].rank(pct=True)
-            features.append(
-                pd.DataFrame({f"{col}_rank_pct": rank_pct}, index=X.index)
-            )
+            features.append(pd.DataFrame({f"{col}_rank_pct": rank_pct}, index=X.index))
 
             # Standard rank
             rank = X[col].rank()
@@ -339,9 +331,7 @@ class AdvancedFeatureEngineer:
             poly_df = pd.DataFrame(poly_features, columns=feature_names, index=X.index)
 
             # Remove original features (keep only new ones)
-            new_features = [
-                col for col in poly_df.columns if col not in numeric_cols
-            ]
+            new_features = [col for col in poly_df.columns if col not in numeric_cols]
 
             return poly_df[new_features]
 
@@ -379,9 +369,7 @@ class AdvancedFeatureEngineer:
                 if len(returns) > 7:
                     volatility = returns.rolling(7).std()
                     features.append(
-                        pd.DataFrame(
-                            {f"{col}_volatility": volatility}, index=X.index
-                        )
+                        pd.DataFrame({f"{col}_volatility": volatility}, index=X.index)
                     )
 
         elif domain == "spatial":

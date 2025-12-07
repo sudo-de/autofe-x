@@ -24,12 +24,14 @@ try:
     from .feature_selection.selector import AdvancedFeatureSelector
     from .visualization import FeatureVisualizer
     from .analysis.statistical import AdvancedStatisticalAnalyzer
+
     _NEXTGEN_AVAILABLE = True
 except ImportError:
     _NEXTGEN_AVAILABLE = False
 
 try:
     from .visualization.dashboard import InteractiveDashboard
+
     _DASHBOARD_AVAILABLE = True
 except ImportError:
     _DASHBOARD_AVAILABLE = False
@@ -37,6 +39,7 @@ except ImportError:
 
 try:
     from .visualization.multidimensional import MultiDimensionalVisualizer
+
     _MULTIDIM_AVAILABLE = True
 except ImportError:
     _MULTIDIM_AVAILABLE = False
@@ -44,6 +47,7 @@ except ImportError:
 
 try:
     from .analysis.advanced_stats import UltraAdvancedStatisticalAnalyzer
+
     _ULTRA_STATS_AVAILABLE = True
 except ImportError:
     _ULTRA_STATS_AVAILABLE = False
@@ -51,6 +55,7 @@ except ImportError:
 
 try:
     from .mathematical.modeling import MathematicalModelingEngine
+
     _MATH_MODELING_AVAILABLE = True
 except ImportError:
     _MATH_MODELING_AVAILABLE = False
@@ -58,6 +63,7 @@ except ImportError:
 
 try:
     from .statistical.advanced_transforms import AdvancedStatisticalTransforms
+
     _STAT_TRANSFORMS_AVAILABLE = True
 except ImportError:
     _STAT_TRANSFORMS_AVAILABLE = False
@@ -65,6 +71,7 @@ except ImportError:
 
 try:
     from .pandas_advanced.operations import AdvancedPandasOperations
+
     _PANDAS_ADVANCED_AVAILABLE = True
 except ImportError:
     _PANDAS_ADVANCED_AVAILABLE = False
@@ -72,6 +79,7 @@ except ImportError:
 
 try:
     from .numpy_advanced.operations import AdvancedNumpyOperations
+
     _NUMPY_ADVANCED_AVAILABLE = True
 except ImportError:
     _NUMPY_ADVANCED_AVAILABLE = False
@@ -79,6 +87,7 @@ except ImportError:
 
 try:
     from .scipy_advanced.operations import AdvancedScipyOperations
+
     _SCIPY_ADVANCED_AVAILABLE = True
 except ImportError:
     _SCIPY_ADVANCED_AVAILABLE = False
@@ -88,6 +97,7 @@ try:
     from .intelligence.orchestrator import IntelligentOrchestrator
     from .intelligence.quality_scorer import FeatureQualityScorer
     from .intelligence.recommender import FeatureEngineeringRecommender
+
     _INTELLIGENCE_AVAILABLE = True
 except ImportError:
     _INTELLIGENCE_AVAILABLE = False
@@ -106,12 +116,14 @@ __all__ = [
 ]
 
 if _NEXTGEN_AVAILABLE:
-    __all__.extend([
-        "AdvancedFeatureEngineer",
-        "AdvancedFeatureSelector",
-        "FeatureVisualizer",
-        "AdvancedStatisticalAnalyzer",
-    ])
+    __all__.extend(
+        [
+            "AdvancedFeatureEngineer",
+            "AdvancedFeatureSelector",
+            "FeatureVisualizer",
+            "AdvancedStatisticalAnalyzer",
+        ]
+    )
 
 if _DASHBOARD_AVAILABLE:
     __all__.append("InteractiveDashboard")
@@ -138,8 +150,10 @@ if _SCIPY_ADVANCED_AVAILABLE:
     __all__.append("AdvancedScipyOperations")
 
 if _INTELLIGENCE_AVAILABLE:
-    __all__.extend([
-        "IntelligentOrchestrator",
-        "FeatureQualityScorer",
-        "FeatureEngineeringRecommender",
-    ])
+    __all__.extend(
+        [
+            "IntelligentOrchestrator",
+            "FeatureQualityScorer",
+            "FeatureEngineeringRecommender",
+        ]
+    )

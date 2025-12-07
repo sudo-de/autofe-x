@@ -110,7 +110,7 @@ class MathematicalModelingEngine:
 
         return pd.DataFrame(
             spline_features,
-            columns=feature_names[:spline_features.shape[1]],
+            columns=feature_names[: spline_features.shape[1]],
             index=X.index,
         )
 
@@ -354,15 +354,23 @@ class MathematicalModelingEngine:
 
             try:
                 if method == "linear":
-                    interp_func = interp1d(x_old, y_old, kind="linear", fill_value="extrapolate")
+                    interp_func = interp1d(
+                        x_old, y_old, kind="linear", fill_value="extrapolate"
+                    )
                 elif method == "cubic":
-                    interp_func = interp1d(x_old, y_old, kind="cubic", fill_value="extrapolate")
+                    interp_func = interp1d(
+                        x_old, y_old, kind="cubic", fill_value="extrapolate"
+                    )
                 elif method == "spline":
                     tck = splrep(x_old, y_old, s=0)
                     y_new = splev(x_new, tck)
                     features.append(
                         pd.DataFrame(
-                            {f"{col}_spline_interp": np.interp(np.arange(len(X)), x_new, y_new)},
+                            {
+                                f"{col}_spline_interp": np.interp(
+                                    np.arange(len(X)), x_new, y_new
+                                )
+                            },
                             index=X.index,
                         )
                     )
@@ -389,9 +397,7 @@ class MathematicalModelingEngine:
             return pd.concat(features, axis=1)
         return pd.DataFrame(index=X.index)
 
-    def create_signal_processing_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_signal_processing_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create signal processing features using scipy.signal.
 
@@ -437,11 +443,24 @@ class MathematicalModelingEngine:
                 features.append(
                     pd.DataFrame(
                         {
-                            f"{col}_spectral_centroid": [np.sum(freqs * psd) / np.sum(psd)],
+                            f"{col}_spectral_centroid": [
+                                np.sum(freqs * psd) / np.sum(psd)
+                            ],
                             f"{col}_spectral_rolloff": [
-                                freqs[np.where(np.cumsum(psd) >= 0.85 * np.sum(psd))[0][0]]
-                                if len(np.where(np.cumsum(psd) >= 0.85 * np.sum(psd))[0]) > 0
-                                else 0
+                                (
+                                    freqs[
+                                        np.where(np.cumsum(psd) >= 0.85 * np.sum(psd))[
+                                            0
+                                        ][0]
+                                    ]
+                                    if len(
+                                        np.where(np.cumsum(psd) >= 0.85 * np.sum(psd))[
+                                            0
+                                        ]
+                                    )
+                                    > 0
+                                    else 0
+                                )
                             ],
                         },
                         index=[X.index[0]],
@@ -459,8 +478,12 @@ class MathematicalModelingEngine:
                 features.append(
                     pd.DataFrame(
                         {
-                            f"{col}_autocorr_lag1": [autocorr[1] if len(autocorr) > 1 else 0],
-                            f"{col}_autocorr_lag5": [autocorr[5] if len(autocorr) > 5 else 0],
+                            f"{col}_autocorr_lag1": [
+                                autocorr[1] if len(autocorr) > 1 else 0
+                            ],
+                            f"{col}_autocorr_lag5": [
+                                autocorr[5] if len(autocorr) > 5 else 0
+                            ],
                         },
                         index=[X.index[0]],
                     )
@@ -476,9 +499,7 @@ class MathematicalModelingEngine:
             return result
         return pd.DataFrame(index=X.index)
 
-    def create_distribution_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_distribution_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create distribution-based features using scipy.stats.
 
@@ -539,9 +560,7 @@ class MathematicalModelingEngine:
                 pass
 
             if dist_features:
-                features.append(
-                    pd.DataFrame(dist_features, index=[X.index[0]])
-                )
+                features.append(pd.DataFrame(dist_features, index=[X.index[0]]))
 
         if features:
             result = pd.concat(features, axis=1)
@@ -582,14 +601,19 @@ class MathematicalModelingEngine:
             try:
                 x = np.arange(len(series))
                 coeffs = np.polyfit(x, series, deg=min(3, len(series) - 1))
-                opt_features[f"{col}_polyfit_coeff0"] = coeffs[0] if len(coeffs) > 0 else 0
-                opt_features[f"{col}_polyfit_coeff1"] = coeffs[1] if len(coeffs) > 1 else 0
+                opt_features[f"{col}_polyfit_coeff0"] = (
+                    coeffs[0] if len(coeffs) > 0 else 0
+                )
+                opt_features[f"{col}_polyfit_coeff1"] = (
+                    coeffs[1] if len(coeffs) > 1 else 0
+                )
             except Exception:
                 pass
 
             # Curve fitting (exponential)
             if y is not None and len(series) == len(y):
                 try:
+
                     def exp_func(x, a, b, c):
                         return a * np.exp(b * x) + c
 
@@ -605,9 +629,7 @@ class MathematicalModelingEngine:
                     pass
 
             if opt_features:
-                features.append(
-                    pd.DataFrame(opt_features, index=[X.index[0]])
-                )
+                features.append(pd.DataFrame(opt_features, index=[X.index[0]]))
 
         if features:
             result = pd.concat(features, axis=1)

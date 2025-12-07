@@ -17,6 +17,7 @@ try:
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d import Axes3D
     from matplotlib.colors import LinearSegmentedColormap
+
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
@@ -26,18 +27,29 @@ try:
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
     import plotly.express as px
+
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
     warnings.warn("Plotly not available. Some visualizations will be limited.")
+    # Create a dummy type for type checking when plotly is not available
+    from typing import TYPE_CHECKING
+
+    if TYPE_CHECKING:
+        from typing import Any as go  # type: ignore
+    else:
+        go = None  # type: ignore
 
 try:
     from sklearn.decomposition import PCA
     from sklearn.manifold import TSNE
+
     SKLEARN_AVAILABLE = True
 except ImportError:
     SKLEARN_AVAILABLE = False
-    warnings.warn("Scikit-learn not available. Dimensionality reduction will be limited.")
+    warnings.warn(
+        "Scikit-learn not available. Dimensionality reduction will be limited."
+    )
 
 
 class MultiDimensionalVisualizer:
@@ -91,22 +103,36 @@ class MultiDimensionalVisualizer:
         size: Optional[Union[pd.Series, np.ndarray]],
         title: str,
         save_path: Optional[str],
-    ) -> go.Figure:
+    ) -> Any:  # type: ignore
         """Create advanced 2D plot with Plotly."""
         fig = make_subplots(
             rows=2,
             cols=2,
-            subplot_titles=("Scatter Plot", "Density Contour", "Hexbin", "Marginal Distributions"),
-            specs=[[{"secondary_y": False}, {"secondary_y": False}], [{"secondary_y": False}, {"secondary_y": False}]],
+            subplot_titles=(
+                "Scatter Plot",
+                "Density Contour",
+                "Hexbin",
+                "Marginal Distributions",
+            ),
+            specs=[
+                [{"secondary_y": False}, {"secondary_y": False}],
+                [{"secondary_y": False}, {"secondary_y": False}],
+            ],
         )
 
         # Scatter plot
         scatter_kwargs = {"x": x, "y": y, "mode": "markers", "name": "Data"}
         if color is not None:
-            scatter_kwargs["marker"] = {"color": color, "colorscale": "Viridis", "showscale": True}
+            scatter_kwargs["marker"] = {
+                "color": color,
+                "colorscale": "Viridis",
+                "showscale": True,
+            }
         if size is not None:
             scatter_kwargs["marker"] = scatter_kwargs.get("marker", {})
-            scatter_kwargs["marker"]["size"] = (size - size.min()) / (size.max() - size.min()) * 20 + 5
+            scatter_kwargs["marker"]["size"] = (size - size.min()) / (
+                size.max() - size.min()
+            ) * 20 + 5
 
         fig.add_trace(go.Scatter(**scatter_kwargs), row=1, col=1)
 
@@ -126,7 +152,9 @@ class MultiDimensionalVisualizer:
 
         # Marginal distributions
         fig.add_trace(go.Histogram(x=x, name="X distribution"), row=2, col=2)
-        fig.add_trace(go.Histogram(y=y, name="Y distribution", orientation="h"), row=2, col=2)
+        fig.add_trace(
+            go.Histogram(y=y, name="Y distribution", orientation="h"), row=2, col=2
+        )
 
         fig.update_layout(height=800, title_text=title, showlegend=False)
 
@@ -153,7 +181,9 @@ class MultiDimensionalVisualizer:
         fig, axes = plt.subplots(2, 2, figsize=(14, 12))
 
         # Scatter plot
-        scatter = axes[0, 0].scatter(x, y, c=color, s=size if size is not None else 50, cmap="viridis", alpha=0.6)
+        scatter = axes[0, 0].scatter(
+            x, y, c=color, s=size if size is not None else 50, cmap="viridis", alpha=0.6
+        )
         axes[0, 0].set_xlabel("X")
         axes[0, 0].set_ylabel("Y")
         axes[0, 0].set_title("Scatter Plot")
@@ -226,7 +256,7 @@ class MultiDimensionalVisualizer:
         size: Optional[Union[pd.Series, np.ndarray]],
         title: str,
         save_path: Optional[str],
-    ) -> go.Figure:
+    ) -> Any:  # type: ignore
         """Create advanced 3D plot with Plotly."""
         fig = go.Figure()
 
@@ -246,7 +276,9 @@ class MultiDimensionalVisualizer:
             scatter_kwargs["marker"]["showscale"] = True
 
         if size is not None:
-            scatter_kwargs["marker"]["size"] = (size - size.min()) / (size.max() - size.min()) * 20 + 5
+            scatter_kwargs["marker"]["size"] = (size - size.min()) / (
+                size.max() - size.min()
+            ) * 20 + 5
         else:
             scatter_kwargs["marker"]["size"] = 5
 
@@ -310,7 +342,15 @@ class MultiDimensionalVisualizer:
         fig = plt.figure(figsize=(12, 10))
         ax = fig.add_subplot(111, projection="3d")
 
-        scatter = ax.scatter(x, y, z, c=color, s=size if size is not None else 50, cmap="viridis", alpha=0.6)
+        scatter = ax.scatter(
+            x,
+            y,
+            z,
+            c=color,
+            s=size if size is not None else 50,
+            cmap="viridis",
+            alpha=0.6,
+        )
         ax.set_xlabel("X")
         ax.set_ylabel("Y")
         ax.set_zlabel("Z")
@@ -365,7 +405,7 @@ class MultiDimensionalVisualizer:
         size: Optional[Union[pd.Series, np.ndarray]],
         title: str,
         save_path: Optional[str],
-    ) -> go.Figure:
+    ) -> Any:  # type: ignore
         """Create advanced 4D plot with Plotly."""
         fig = go.Figure()
 
@@ -383,7 +423,9 @@ class MultiDimensionalVisualizer:
         }
 
         if size is not None:
-            scatter_kwargs["marker"]["size"] = (size - size.min()) / (size.max() - size.min()) * 20 + 5
+            scatter_kwargs["marker"]["size"] = (size - size.min()) / (
+                size.max() - size.min()
+            ) * 20 + 5
         else:
             scatter_kwargs["marker"]["size"] = 8
 
@@ -426,7 +468,13 @@ class MultiDimensionalVisualizer:
         # 3D scatter with color
         ax1 = fig.add_subplot(121, projection="3d")
         scatter1 = ax1.scatter(
-            x, y, z, c=color, s=size if size is not None else 50, cmap="viridis", alpha=0.6
+            x,
+            y,
+            z,
+            c=color,
+            s=size if size is not None else 50,
+            cmap="viridis",
+            alpha=0.6,
         )
         ax1.set_xlabel("X")
         ax1.set_ylabel("Y")
@@ -436,7 +484,9 @@ class MultiDimensionalVisualizer:
 
         # 2D projection with color
         ax2 = fig.add_subplot(122)
-        scatter2 = ax2.scatter(x, y, c=color, s=size if size is not None else 50, cmap="viridis", alpha=0.6)
+        scatter2 = ax2.scatter(
+            x, y, c=color, s=size if size is not None else 50, cmap="viridis", alpha=0.6
+        )
         ax2.set_xlabel("X")
         ax2.set_ylabel("Y")
         ax2.set_title("2D Projection with Color")
@@ -478,9 +528,13 @@ class MultiDimensionalVisualizer:
             raise ValueError("Need at least 5 dimensions for 5D plot")
 
         if self.backend == "plotly" and PLOTLY_AVAILABLE:
-            return self._plot_5d_plotly(data, dims, color_col, size_col, title, save_path)
+            return self._plot_5d_plotly(
+                data, dims, color_col, size_col, title, save_path
+            )
         else:
-            return self._plot_5d_matplotlib(data, dims, color_col, size_col, title, save_path)
+            return self._plot_5d_matplotlib(
+                data, dims, color_col, size_col, title, save_path
+            )
 
     def _plot_5d_plotly(
         self,
@@ -490,12 +544,17 @@ class MultiDimensionalVisualizer:
         size_col: Optional[str],
         title: str,
         save_path: Optional[str],
-    ) -> go.Figure:
+    ) -> Any:  # type: ignore
         """Create advanced 5D plot with Plotly."""
         fig = make_subplots(
             rows=2,
             cols=2,
-            subplot_titles=("3D Scatter (XYZ)", "Parallel Coordinates", "PCA 2D", "t-SNE 2D"),
+            subplot_titles=(
+                "3D Scatter (XYZ)",
+                "Parallel Coordinates",
+                "PCA 2D",
+                "t-SNE 2D",
+            ),
             specs=[
                 [{"type": "scatter3d"}, {"type": "parcoords"}],
                 [{"type": "scatter"}, {"type": "scatter"}],
@@ -519,7 +578,9 @@ class MultiDimensionalVisualizer:
             scatter_kwargs["marker"]["showscale"] = True
 
         if size_col:
-            size_norm = (data[size_col] - data[size_col].min()) / (data[size_col].max() - data[size_col].min())
+            size_norm = (data[size_col] - data[size_col].min()) / (
+                data[size_col].max() - data[size_col].min()
+            )
             scatter_kwargs["marker"]["size"] = size_norm * 20 + 5
 
         fig.add_trace(go.Scatter3d(**scatter_kwargs), row=1, col=1)
@@ -528,10 +589,11 @@ class MultiDimensionalVisualizer:
         if SKLEARN_AVAILABLE and len(dims) >= 5:
             fig.add_trace(
                 go.Parcoords(
-                    line=dict(color=data[color_col] if color_col else "blue", colorscale="Viridis"),
-                    dimensions=[
-                        dict(label=dim, values=data[dim]) for dim in dims[:5]
-                    ],
+                    line=dict(
+                        color=data[color_col] if color_col else "blue",
+                        colorscale="Viridis",
+                    ),
+                    dimensions=[dict(label=dim, values=data[dim]) for dim in dims[:5]],
                 ),
                 row=1,
                 col=2,
@@ -550,7 +612,11 @@ class MultiDimensionalVisualizer:
                         y=pca_result[:, 1],
                         mode="markers",
                         marker=dict(
-                            color=data.loc[pca_data.index, color_col] if color_col else "blue",
+                            color=(
+                                data.loc[pca_data.index, color_col]
+                                if color_col
+                                else "blue"
+                            ),
                             colorscale="Viridis",
                             showscale=bool(color_col),
                         ),
@@ -575,7 +641,11 @@ class MultiDimensionalVisualizer:
                         y=tsne_result[:, 1],
                         mode="markers",
                         marker=dict(
-                            color=data.loc[tsne_data.index, color_col] if color_col else "blue",
+                            color=(
+                                data.loc[tsne_data.index, color_col]
+                                if color_col
+                                else "blue"
+                            ),
                             colorscale="Viridis",
                             showscale=bool(color_col),
                         ),

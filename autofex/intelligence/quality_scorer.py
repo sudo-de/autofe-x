@@ -18,6 +18,7 @@ try:
         f_regression,
     )
     from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+
     SKLEARN_AVAILABLE = True
 except ImportError:
     SKLEARN_AVAILABLE = False
@@ -37,7 +38,9 @@ class FeatureQualityScorer:
             config: Configuration dictionary
         """
         self.config = config or {}
-        self.importance_methods = self.config.get("importance_methods", ["mutual_info", "f_test", "rf"])
+        self.importance_methods = self.config.get(
+            "importance_methods", ["mutual_info", "f_test", "rf"]
+        )
 
     def score_feature_quality(
         self,
@@ -119,8 +122,14 @@ class FeatureQualityScorer:
             numeric_cols = X.select_dtypes(include=[np.number]).columns
             if len(numeric_cols) > 1:
                 correlations = X[numeric_cols].corrwith(feature).abs()
-                max_corr = correlations.drop(feature_name).max() if len(correlations) > 1 else 0
-                scores["uniqueness"] = 1.0 - max_corr  # Lower correlation = higher uniqueness
+                max_corr = (
+                    correlations.drop(feature_name).max()
+                    if len(correlations) > 1
+                    else 0
+                )
+                scores["uniqueness"] = (
+                    1.0 - max_corr
+                )  # Lower correlation = higher uniqueness
         except Exception:
             pass
 
@@ -130,7 +139,9 @@ class FeatureQualityScorer:
             # Outlier detection (IQR)
             q1, q3 = feature.quantile(0.25), feature.quantile(0.75)
             iqr = q3 - q1
-            outliers = ((feature < (q1 - 1.5 * iqr)) | (feature > (q3 + 1.5 * iqr))).sum()
+            outliers = (
+                (feature < (q1 - 1.5 * iqr)) | (feature > (q3 + 1.5 * iqr))
+            ).sum()
             outlier_pct = outliers / len(feature)
             scores["efficiency"] = 1.0 - (missing_pct + outlier_pct) / 2
         except Exception:
@@ -215,9 +226,11 @@ class FeatureQualityScorer:
             return []
 
         # Filter by minimum score
-        top_features = scores_df[
-            scores_df["overall_score"] >= min_score
-        ]["feature"].head(n_features).tolist()
+        top_features = (
+            scores_df[scores_df["overall_score"] >= min_score]["feature"]
+            .head(n_features)
+            .tolist()
+        )
 
         return top_features
 
@@ -242,7 +255,9 @@ class FeatureQualityScorer:
             return {}
 
         return {
-            "top_predictive": scores_df.nlargest(10, "predictive_power")["feature"].tolist(),
+            "top_predictive": scores_df.nlargest(10, "predictive_power")[
+                "feature"
+            ].tolist(),
             "top_stable": scores_df.nlargest(10, "stability")["feature"].tolist(),
             "top_unique": scores_df.nlargest(10, "uniqueness")["feature"].tolist(),
             "top_efficient": scores_df.nlargest(10, "efficiency")["feature"].tolist(),

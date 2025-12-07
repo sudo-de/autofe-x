@@ -41,7 +41,9 @@ class AdvancedFeatureSelector:
             config: Configuration dictionary
         """
         self.config = config or {}
-        self.strategies = self.config.get("strategies", ["l1", "rfe", "variance", "correlation"])
+        self.strategies = self.config.get(
+            "strategies", ["l1", "rfe", "variance", "correlation"]
+        )
         self.n_features = self.config.get("n_features", "auto")
         self.cv_folds = self.config.get("cv_folds", 5)
         self.random_state = self.config.get("random_state", 42)
@@ -122,7 +124,10 @@ class AdvancedFeatureSelector:
         if n_features is None:
             # Use RFECV for automatic selection
             selector = RFECV(
-                estimator, step=1, cv=self.cv_folds, scoring="accuracy" if is_classification else "r2"
+                estimator,
+                step=1,
+                cv=self.cv_folds,
+                scoring="accuracy" if is_classification else "r2",
             )
         else:
             selector = RFE(estimator, n_features_to_select=n_features, step=1)
@@ -241,7 +246,13 @@ class AdvancedFeatureSelector:
                 warnings.warn(f"Correlation selection failed: {e}")
 
         # Select features that meet voting threshold
-        n_strategies = len([s for s in self.strategies if s in ["l1", "rfe", "variance", "correlation"]])
+        n_strategies = len(
+            [
+                s
+                for s in self.strategies
+                if s in ["l1", "rfe", "variance", "correlation"]
+            ]
+        )
         min_votes = max(1, int(n_strategies * voting_threshold))
 
         selected_features = [
