@@ -53,7 +53,8 @@ class OperationCache:
         if self.metadata_file.exists():
             try:
                 with open(self.metadata_file, "r") as f:
-                    return json.load(f)
+                    metadata: Any = json.load(f)
+                    return dict(metadata) if isinstance(metadata, dict) else {}
             except Exception:
                 return {}
         return {}
@@ -109,7 +110,7 @@ class OperationCache:
 
         entry_time = self.metadata[cache_key].get("timestamp", 0)
         elapsed = time.time() - entry_time
-        return elapsed > self.ttl_seconds
+        return bool(elapsed > self.ttl_seconds)
 
     def _clean_expired(self):
         """Remove expired cache entries."""

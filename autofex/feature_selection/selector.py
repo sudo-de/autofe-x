@@ -137,7 +137,7 @@ class AdvancedFeatureSelector:
 
         selected_features = X.columns[selector.get_support()].tolist()
 
-        return selected_features
+        return list(selected_features)  # type: ignore[no-any-return]
 
     def select_features_variance(
         self, X: pd.DataFrame, threshold: float = 0.01
@@ -158,7 +158,7 @@ class AdvancedFeatureSelector:
 
         selected_features = X.columns[selector.get_support()].tolist()
 
-        return selected_features
+        return list(selected_features)  # type: ignore[no-any-return]
 
     def select_features_correlation(
         self, X: pd.DataFrame, y: pd.Series, threshold: float = 0.95
@@ -176,7 +176,7 @@ class AdvancedFeatureSelector:
         """
         numeric_cols = X.select_dtypes(include=[np.number]).columns
         if len(numeric_cols) < 2:
-            return X.columns.tolist()
+            return list(X.columns.tolist())  # type: ignore[no-any-return]
 
         corr_matrix = X[numeric_cols].corr().abs()
 
@@ -194,7 +194,7 @@ class AdvancedFeatureSelector:
 
         selected_features = [col for col in X.columns if col not in to_remove]
 
-        return selected_features
+        return list(selected_features)  # type: ignore[no-any-return]
 
     def select_features_ensemble(
         self, X: pd.DataFrame, y: pd.Series, voting_threshold: float = 0.5
@@ -263,7 +263,7 @@ class AdvancedFeatureSelector:
         if not selected_features:
             selected_features = X.columns.tolist()
 
-        return selected_features
+        return list(selected_features)  # type: ignore[no-any-return]
 
     def _is_classification_target(self, y: pd.Series) -> bool:
         """Determine if target is classification."""

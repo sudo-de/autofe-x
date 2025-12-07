@@ -235,7 +235,7 @@ class FeatureQualityScorer:
             .tolist()
         )
 
-        return top_features
+        return list(top_features)  # type: ignore[no-any-return]
 
     def get_feature_rankings(
         self,

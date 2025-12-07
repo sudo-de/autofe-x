@@ -89,7 +89,7 @@ def parallel_apply(
     if progress_callback:
         progress_callback(len(items), len(items))
 
-    return results
+    return list(results)  # type: ignore[no-any-return]
 
 
 def parallel_transform_columns(
@@ -121,7 +121,8 @@ def parallel_transform_columns(
 
     def _transform_column(col_name: str) -> List[pd.DataFrame]:
         """Transform a single column."""
-        return transform_func(X[col_name], col_name)
+        result: Any = transform_func(X[col_name], col_name)
+        return list(result) if isinstance(result, list) else [result]  # type: ignore[no-any-return]
 
     # Process columns in parallel
     if n_jobs is None or n_jobs == 1 or not JOBLIB_AVAILABLE:
@@ -198,4 +199,4 @@ def parallel_feature_creation(
     if progress_callback:
         progress_callback(len(feature_funcs), len(feature_funcs))
 
-    return results
+    return list(results)  # type: ignore[no-any-return]

@@ -577,7 +577,7 @@ class FeatureBenchmarker:
             scoring=self._get_sklearn_scorer(is_classification),
         )
 
-        return scores.mean()
+        return float(scores.mean())  # type: ignore[no-any-return]
 
     def _get_sklearn_scorer(self, is_classification: bool) -> str:
         """Get appropriate sklearn scorer."""
