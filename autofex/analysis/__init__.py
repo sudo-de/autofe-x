@@ -1,20 +1,20 @@
 """
-Advanced Statistical Analysis Module
+Statistical Analysis Module
 
 Goes beyond basic scipy to provide integrated statistical insights.
 """
 
-from .statistical import AdvancedStatisticalAnalyzer
+from .statistical import StatisticalAnalyzer
 
 try:
-    from .advanced_stats import UltraAdvancedStatisticalAnalyzer
+    from .ultra_stats import UltraStatisticalAnalyzer
 
-    _ULTRA_ADVANCED_AVAILABLE = True
+    _ULTRA_AVAILABLE = True
 except ImportError:
-    _ULTRA_ADVANCED_AVAILABLE = False
-    UltraAdvancedStatisticalAnalyzer = None  # type: ignore
+    _ULTRA_AVAILABLE = False
+    UltraStatisticalAnalyzer = None  # type: ignore
 
-__all__ = ["AdvancedStatisticalAnalyzer"]
+__all__ = ["StatisticalAnalyzer"]
 
-if _ULTRA_ADVANCED_AVAILABLE:
-    __all__.append("UltraAdvancedStatisticalAnalyzer")
+if _ULTRA_AVAILABLE:
+    __all__.append("UltraStatisticalAnalyzer")

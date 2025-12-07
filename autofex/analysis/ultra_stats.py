@@ -1,11 +1,11 @@
 """
-Ultra-Advanced Statistical Analysis
+Ultra Statistical Analysis
 
 Goes far beyond basic scipy with:
-- Advanced ANOVA/MANOVA
+- ANOVA/MANOVA
 - Time-series statistical tests
 - Bayesian statistics
-- Non-parametric advanced tests
+- Non-parametric tests
 - Multivariate analysis
 - Power analysis
 - Bootstrap methods
@@ -40,28 +40,28 @@ except ImportError:
     warnings.warn("MANOVA not available. Some multivariate tests will be limited.")
 
 
-class UltraAdvancedStatisticalAnalyzer:
+class UltraStatisticalAnalyzer:
     """
-    Ultra-advanced statistical analysis that goes far beyond basic scipy.
+    Ultra statistical analysis that goes far beyond basic scipy.
     Includes ANOVA, MANOVA, time-series tests, Bayesian methods, and more.
     """
 
     def __init__(self, alpha: float = 0.05):
         """
-        Initialize ultra-advanced statistical analyzer.
+        Initialize ultra statistical analyzer.
 
         Args:
             alpha: Significance level for hypothesis tests
         """
         self.alpha = alpha
 
-    def advanced_anova_analysis(
+    def anova_analysis(
         self,
         groups: List[pd.Series],
         post_hoc: bool = True,
     ) -> Dict[str, Any]:
         """
-        Advanced ANOVA analysis with post-hoc tests and effect sizes.
+        ANOVA analysis with post-hoc tests and effect sizes.
 
         Args:
             groups: List of groups (Series) to compare
@@ -249,7 +249,7 @@ class UltraAdvancedStatisticalAnalyzer:
         test_trend: bool = True,
     ) -> Dict[str, Any]:
         """
-        Advanced time-series statistical tests.
+        Time-series statistical tests.
 
         Args:
             series: Time series data

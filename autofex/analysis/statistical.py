@@ -1,5 +1,5 @@
 """
-Advanced Statistical Analysis
+Statistical Analysis
 
 Goes beyond basic scipy to provide integrated statistical insights
 with automated hypothesis testing and effect size calculations.
@@ -24,9 +24,9 @@ from scipy.stats import (
 import warnings
 
 
-class AdvancedStatisticalAnalyzer:
+class StatisticalAnalyzer:
     """
-    Advanced statistical analysis that goes beyond basic scipy functions.
+    Statistical analysis that goes beyond basic scipy functions.
     Provides integrated insights, effect sizes, and automated interpretations.
     """
 
@@ -308,11 +308,11 @@ class AdvancedStatisticalAnalyzer:
 
         return results
 
-    def correlation_analysis_advanced(
+    def correlation_analysis(
         self, X: pd.DataFrame, y: Optional[pd.Series] = None
     ) -> Dict[str, Any]:
         """
-        Advanced correlation analysis with multiple methods and interpretations.
+        Correlation analysis with multiple methods and interpretations.
 
         Args:
             X: Feature DataFrame
@@ -471,7 +471,7 @@ class AdvancedStatisticalAnalyzer:
 
         # Correlation analysis
         if len(numeric_cols) >= 2:
-            corr_analysis = self.correlation_analysis_advanced(X, y)
+            corr_analysis = self.correlation_analysis(X, y)
             insights["correlation_analysis"] = corr_analysis
             insights_recommendations.extend(corr_analysis.get("recommendations", []))
 
