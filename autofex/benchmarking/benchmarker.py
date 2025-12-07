@@ -98,7 +98,7 @@ class FeatureBenchmarker:
         if feature_sets is None:
             feature_sets = self._get_default_feature_sets(X, y, is_classification)
 
-        results = {
+        results: Dict[str, Any] = {
             "feature_sets": [],
             "model_comparison": {},
             "feature_importance": {},
@@ -479,7 +479,7 @@ class FeatureBenchmarker:
         return feature_sets
 
     def _compare_models_across_sets(
-        self, feature_sets: List[Dict[str, Any]], is_classification: bool
+        self, feature_sets: Any, is_classification: bool
     ) -> Dict[str, Any]:
         """
         Compare model performance across different feature sets.

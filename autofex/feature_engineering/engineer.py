@@ -40,9 +40,9 @@ class FeatureEngineer:
         self.max_features = self.config.get("max_features", 1000)
         self.supervised = self.config.get("supervised", True)
 
-        self.fitted_encoders = {}
-        self.feature_names = []
-        self.column_scalers = {}
+        self.fitted_encoders: Dict[str, pd.Series] = {}
+        self.feature_names: List[str] = []
+        self.column_scalers: Dict[str, StandardScaler] = {}
 
     def fit(self, X: pd.DataFrame, y: Optional[Union[pd.Series, np.ndarray]] = None):
         """
@@ -277,7 +277,7 @@ class FeatureEngineer:
         )
 
     def _select_top_features(
-        self, X: pd.DataFrame, y: Optional[pd.Series] = None, k: int = None
+        self, X: pd.DataFrame, y: Optional[pd.Series] = None, k: Optional[int] = None
     ) -> pd.DataFrame:
         """
         Select top k features based on importance.

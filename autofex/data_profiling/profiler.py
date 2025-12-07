@@ -202,7 +202,7 @@ class DataProfiler:
 
     def _detect_outliers(self, X: pd.DataFrame) -> Dict[str, Any]:
         """Detect outliers in numeric columns."""
-        outlier_report = {}
+        outlier_report: Dict[str, Any] = {}
 
         numeric_cols = X.select_dtypes(include=[np.number]).columns
 

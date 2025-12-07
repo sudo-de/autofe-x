@@ -34,9 +34,9 @@ class FeatureLineageTracker:
         """
         self.config = config or {}
         self.graph = nx.DiGraph()
-        self.feature_versions = {}
-        self.transformation_history = []
-        self.current_session = None
+        self.feature_versions: Dict[str, Any] = {}
+        self.transformation_history: List[Dict[str, Any]] = []
+        self.current_session: Optional[str] = None
 
     def start_session(self, initial_features: List[str]):
         """
@@ -136,7 +136,7 @@ class FeatureLineageTracker:
             Dictionary representation of the lineage graph
         """
         # Convert NetworkX graph to dictionary
-        graph_data = {
+        graph_data: Dict[str, Any] = {
             "nodes": [],
             "edges": [],
             "metadata": {
@@ -346,7 +346,7 @@ class FeatureLineageTracker:
 
         # Use BFS to trace back dependencies
         visited = set()
-        queue = deque([(feature, [])])
+        queue: deque[Tuple[str, List[str]]] = deque([(feature, [])])
 
         while queue:
             current, current_path = queue.popleft()
@@ -411,8 +411,8 @@ class FeatureLineageTracker:
         """
         Get a summary of all transformations performed.
         """
-        transformation_counts = defaultdict(int)
-        feature_counts = defaultdict(int)
+        transformation_counts: defaultdict[str, int] = defaultdict(int)
+        feature_counts: defaultdict[str, int] = defaultdict(int)
 
         for history_entry in self.transformation_history:
             if history_entry["action"] == "transformation":
@@ -425,7 +425,7 @@ class FeatureLineageTracker:
             "total_transformations": sum(transformation_counts.values()),
             "feature_counts": dict(feature_counts),
             "most_common_transformation": (
-                max(transformation_counts, key=transformation_counts.get)
+                max(transformation_counts, key=lambda k: transformation_counts[k])
                 if transformation_counts
                 else None
             ),
