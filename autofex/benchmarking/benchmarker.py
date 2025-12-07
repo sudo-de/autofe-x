@@ -649,8 +649,7 @@ class FeatureBenchmarker:
 
                 # Check if we can use stratify (need at least 2 samples per class)
                 can_stratify = (
-                    is_classification
-                    and y.value_counts().min() >= 2
+                    is_classification and y.value_counts().min() >= 2
                     if len(y.value_counts()) > 0
                     else False
                 )
