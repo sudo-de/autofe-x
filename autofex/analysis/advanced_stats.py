@@ -264,13 +264,17 @@ class UltraAdvancedStatisticalAnalyzer:
         if len(series_clean) < 10:
             return {"error": "Insufficient data for time-series tests"}
 
-        results = {
+        results: Dict[str, Any] = {
             "stationarity": {},
             "trend": {},
             "autocorrelation": {},
             "interpretation": "",
             "recommendations": [],
         }
+        # Type annotations for nested dicts
+        stationarity_dict: Dict[str, Any] = results["stationarity"]  # type: ignore
+        trend_dict: Dict[str, Any] = results["trend"]  # type: ignore
+        autocorrelation_dict: Dict[str, Any] = results["autocorrelation"]  # type: ignore
 
         # Augmented Dickey-Fuller test (stationarity)
         if test_stationarity:
@@ -460,7 +464,7 @@ class UltraAdvancedStatisticalAnalyzer:
         alpha = alpha or self.alpha
         power = power or 0.8
 
-        results = {
+        results: Dict[str, Any] = {
             "parameters": {
                 "effect_size": effect_size,
                 "alpha": alpha,
@@ -469,6 +473,9 @@ class UltraAdvancedStatisticalAnalyzer:
             "sample_size": {},
             "interpretation": "",
         }
+        # Type annotation for nested dicts
+        sample_size_dict: Dict[str, Any] = results["sample_size"]  # type: ignore
+        power_dict: Dict[str, Any] = results.get("power", {})  # type: ignore
 
         # Calculate required sample size if not provided
         if n is None:
