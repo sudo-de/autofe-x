@@ -126,7 +126,7 @@ class FeatureBenchmarker:
                         else "Unknown"
                     )
                     X_subset.loc[:, col] = X_subset[col].fillna(mode_val)
-            
+
             # Encode categorical columns before passing to sklearn
             X_subset = self._encode_categorical(X_subset)
 
@@ -206,7 +206,7 @@ class FeatureBenchmarker:
 
                 # Encode categorical columns before cross-validation
                 X_encoded = self._encode_categorical(X)
-                
+
                 # Perform cross-validation
                 start_time = time.time()
                 cv_scores = cross_val_score(
@@ -311,15 +311,22 @@ class FeatureBenchmarker:
         """
         # Fill NaN values, handling mixed data types
         X_filled = X.copy()
-        for col in X_filled.columns:
-            if X_filled[col].dtype in ["int64", "float64"]:
-                X_filled[col] = X_filled[col].fillna(X_filled[col].mean())
-            else:
-                X_filled[col] = X_filled[col].fillna(
-                    X_filled[col].mode().iloc[0]
-                    if not X_filled[col].mode().empty
-                    else "Unknown"
-                )
+        numeric_cols = X_filled.select_dtypes(include=[np.number]).columns
+        for col in numeric_cols:
+            X_filled.loc[:, col] = X_filled[col].fillna(X_filled[col].mean())
+
+        # Fill categorical columns with mode
+        categorical_cols = X_filled.select_dtypes(exclude=[np.number]).columns
+        for col in categorical_cols:
+            mode_val = (
+                X_filled[col].mode().iloc[0]
+                if not X_filled[col].mode().empty
+                else "Unknown"
+            )
+            X_filled.loc[:, col] = X_filled[col].fillna(mode_val)
+
+        # Encode categorical columns before importance calculation
+        X_filled = self._encode_categorical(X_filled)
 
         if method == "mutual_info":
             # Mutual info works on numeric features only
@@ -398,7 +405,24 @@ class FeatureBenchmarker:
             if len(remaining_features) == 0:
                 break
 
-            X_ablated = X[remaining_features].fillna(X[remaining_features].mean())
+            # Handle mixed data types in ablation study
+            X_ablated = X[remaining_features].copy()
+            numeric_cols = X_ablated.select_dtypes(include=[np.number]).columns
+            for col in numeric_cols:
+                X_ablated.loc[:, col] = X_ablated[col].fillna(X_ablated[col].mean())
+            
+            # Fill categorical columns with mode
+            categorical_cols = X_ablated.select_dtypes(exclude=[np.number]).columns
+            for col in categorical_cols:
+                mode_val = (
+                    X_ablated[col].mode().iloc[0]
+                    if not X_ablated[col].mode().empty
+                    else "Unknown"
+                )
+                X_ablated.loc[:, col] = X_ablated[col].fillna(mode_val)
+            
+            # Encode categorical columns
+            X_ablated = self._encode_categorical(X_ablated)
 
             try:
                 score = self._evaluate_model(X_ablated, y, is_classification)
@@ -574,7 +598,7 @@ class FeatureBenchmarker:
         numeric_cols = X_filled.select_dtypes(include=[np.number]).columns
         for col in numeric_cols:
             X_filled.loc[:, col] = X_filled[col].fillna(X_filled[col].mean())
-        
+
         # Fill categorical columns with mode
         categorical_cols = X_filled.select_dtypes(exclude=[np.number]).columns
         for col in categorical_cols:
@@ -584,7 +608,7 @@ class FeatureBenchmarker:
                 else "Unknown"
             )
             X_filled.loc[:, col] = X_filled[col].fillna(mode_val)
-        
+
         # Encode categorical columns
         X_filled = self._encode_categorical(X_filled)
 
@@ -606,30 +630,37 @@ class FeatureBenchmarker:
     def _encode_categorical(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Encode categorical columns to numeric for sklearn compatibility.
-        
+
         Args:
             X: DataFrame with potentially categorical columns
-            
+
         Returns:
             DataFrame with categorical columns encoded
         """
         X_encoded = X.copy()
-        
+
         # Get categorical columns
         categorical_cols = X_encoded.select_dtypes(
             include=["object", "category", "string"]
         ).columns
-        
+
         # Use label encoding for categorical columns
         for col in categorical_cols:
-            if X_encoded[col].dtype == "object" or X_encoded[col].dtype.name == "category":
+            if (
+                X_encoded[col].dtype == "object"
+                or X_encoded[col].dtype.name == "category"
+            ):
                 # Convert to category and use codes
                 X_encoded[col] = pd.Categorical(X_encoded[col]).codes
                 # Handle -1 (NaN) codes by replacing with most frequent
                 if (X_encoded[col] == -1).any():
-                    most_frequent = X_encoded[col].mode()[0] if len(X_encoded[col].mode()) > 0 else 0
+                    most_frequent = (
+                        X_encoded[col].mode()[0]
+                        if len(X_encoded[col].mode()) > 0
+                        else 0
+                    )
                     X_encoded.loc[X_encoded[col] == -1, col] = most_frequent
-        
+
         return X_encoded
 
     def _get_sklearn_scorer(self, is_classification: bool) -> str:
