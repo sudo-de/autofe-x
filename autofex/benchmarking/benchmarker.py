@@ -188,14 +188,29 @@ class FeatureBenchmarker:
             "cross_validation": {},
         }
 
-        # Cross-validation setup
+        # Cross-validation setup - adjust based on sample size
+        n_samples = len(X)
         if is_classification:
+            # For stratified CV, need at least n_splits samples per class
+            min_class_size = y.value_counts().min() if len(y.value_counts()) > 0 else n_samples
+            n_splits = min(self.cv_folds, min_class_size, n_samples // 2) if n_samples >= 2 else 1
+            if n_splits < 2:
+                # Skip CV if not enough samples
+                warnings.warn(f"Insufficient samples ({n_samples}) for cross-validation. Skipping {set_name}.")
+                results["models"] = {"error": "Insufficient samples for CV"}
+                return results
             cv = StratifiedKFold(
-                n_splits=self.cv_folds, shuffle=True, random_state=self.random_state
+                n_splits=n_splits, shuffle=True, random_state=self.random_state
             )
         else:
+            n_splits = min(self.cv_folds, n_samples // 2) if n_samples >= 2 else 1
+            if n_splits < 2:
+                # Skip CV if not enough samples
+                warnings.warn(f"Insufficient samples ({n_samples}) for cross-validation. Skipping {set_name}.")
+                results["models"] = {"error": "Insufficient samples for CV"}
+                return results
             cv = KFold(
-                n_splits=self.cv_folds, shuffle=True, random_state=self.random_state
+                n_splits=n_splits, shuffle=True, random_state=self.random_state
             )
 
         for model_name in self.models:
@@ -612,11 +627,41 @@ class FeatureBenchmarker:
         # Encode categorical columns
         X_filled = self._encode_categorical(X_filled)
 
-        cv = (
-            StratifiedKFold(n_splits=3, shuffle=True, random_state=self.random_state)
-            if is_classification
-            else KFold(n_splits=3, shuffle=True, random_state=self.random_state)
-        )
+        # Adjust CV splits based on sample size
+        n_samples = len(X_filled)
+        if is_classification:
+            # For stratified CV, need at least n_splits samples per class
+            min_class_size = y.value_counts().min() if len(y.value_counts()) > 0 else n_samples
+            n_splits = min(3, min_class_size, n_samples // 2) if n_samples >= 2 else 1
+            if n_splits < 2:
+                # Fallback to simple train/test split if not enough samples
+                from sklearn.model_selection import train_test_split
+                X_train, X_test, y_train, y_test = train_test_split(
+                    X_filled, y, test_size=0.3, random_state=self.random_state, stratify=y
+                )
+                model.fit(X_train, y_train)
+                if is_classification:
+                    from sklearn.metrics import accuracy_score
+                    score = accuracy_score(y_test, model.predict(X_test))
+                else:
+                    from sklearn.metrics import r2_score
+                    score = r2_score(y_test, model.predict(X_test))
+                return float(score)
+            cv = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=self.random_state)
+        else:
+            n_splits = min(3, n_samples // 2) if n_samples >= 2 else 1
+            if n_splits < 2:
+                # Fallback to simple train/test split if not enough samples
+                from sklearn.model_selection import train_test_split
+                X_train, X_test, y_train, y_test = train_test_split(
+                    X_filled, y, test_size=0.3, random_state=self.random_state
+                )
+                model.fit(X_train, y_train)
+                from sklearn.metrics import r2_score
+                score = r2_score(y_test, model.predict(X_test))
+                return float(score)
+            cv = KFold(n_splits=n_splits, shuffle=True, random_state=self.random_state)
+        
         scores = cross_val_score(
             model,
             X_filled,
