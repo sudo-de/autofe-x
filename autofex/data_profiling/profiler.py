@@ -178,7 +178,9 @@ class DataProfiler:
                         col_dist["normality_p_value"] = p_value
                         col_dist["is_normal"] = p_value > 0.05
                     else:
-                        col_dist["normality_test_skipped"] = "Insufficient samples (< 8)"
+                        col_dist["normality_test_skipped"] = (
+                            "Insufficient samples (< 8)"
+                        )
                 except Exception:
                     col_dist["normality_test_failed"] = True
 
