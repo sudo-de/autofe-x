@@ -118,18 +118,22 @@ class MultiDimensionalVisualizer:
         )
 
         # Scatter plot
-        scatter_kwargs = {"x": x, "y": y, "mode": "markers", "name": "Data"}
+        scatter_kwargs: Dict[str, Any] = {"x": x, "y": y, "mode": "markers", "name": "Data"}
+        marker_dict: Dict[str, Any] = {}  # type: ignore
         if color is not None:
-            scatter_kwargs["marker"] = {
+            marker_dict = {
                 "color": color,
                 "colorscale": "Viridis",
                 "showscale": True,
             }
         if size is not None:
-            scatter_kwargs["marker"] = scatter_kwargs.get("marker", {})
-            scatter_kwargs["marker"]["size"] = (size - size.min()) / (
+            if not marker_dict:
+                marker_dict = {}
+            marker_dict["size"] = (size - size.min()) / (
                 size.max() - size.min()
             ) * 20 + 5
+        if marker_dict:
+            scatter_kwargs["marker"] = marker_dict
 
         fig.add_trace(go.Scatter(**scatter_kwargs), row=1, col=1)
 
@@ -258,7 +262,7 @@ class MultiDimensionalVisualizer:
         fig = go.Figure()
 
         # 3D scatter
-        scatter_kwargs = {
+        scatter_kwargs: Dict[str, Any] = {
             "x": x,
             "y": y,
             "z": z,
@@ -266,18 +270,19 @@ class MultiDimensionalVisualizer:
             "name": "3D Data",
             "marker": {},
         }
+        marker_dict: Dict[str, Any] = scatter_kwargs["marker"]  # type: ignore
 
         if color is not None:
-            scatter_kwargs["marker"]["color"] = color
-            scatter_kwargs["marker"]["colorscale"] = "Viridis"
-            scatter_kwargs["marker"]["showscale"] = True
+            marker_dict["color"] = color
+            marker_dict["colorscale"] = "Viridis"
+            marker_dict["showscale"] = True
 
         if size is not None:
-            scatter_kwargs["marker"]["size"] = (size - size.min()) / (
+            marker_dict["size"] = (size - size.min()) / (
                 size.max() - size.min()
             ) * 20 + 5
         else:
-            scatter_kwargs["marker"]["size"] = 5
+            marker_dict["size"] = 5
 
         fig.add_trace(go.Scatter3d(**scatter_kwargs))
 
@@ -406,7 +411,7 @@ class MultiDimensionalVisualizer:
         """Create advanced 4D plot with Plotly."""
         fig = go.Figure()
 
-        scatter_kwargs = {
+        scatter_kwargs: Dict[str, Any] = {
             "x": x,
             "y": y,
             "z": z,
@@ -418,13 +423,14 @@ class MultiDimensionalVisualizer:
                 "colorbar": dict(title="4th Dimension"),
             },
         }
+        marker_dict: Dict[str, Any] = scatter_kwargs["marker"]  # type: ignore
 
         if size is not None:
-            scatter_kwargs["marker"]["size"] = (size - size.min()) / (
+            marker_dict["size"] = (size - size.min()) / (
                 size.max() - size.min()
             ) * 20 + 5
         else:
-            scatter_kwargs["marker"]["size"] = 8
+            marker_dict["size"] = 8
 
         fig.add_trace(go.Scatter3d(**scatter_kwargs))
 
@@ -561,24 +567,25 @@ class MultiDimensionalVisualizer:
         x, y, z = data[dims[0]], data[dims[1]], data[dims[2]]
 
         # 3D scatter
-        scatter_kwargs = {
+        scatter_kwargs: Dict[str, Any] = {
             "x": x,
             "y": y,
             "z": z,
             "mode": "markers",
             "marker": {},
         }
+        marker_dict: Dict[str, Any] = scatter_kwargs["marker"]  # type: ignore
 
         if color_col:
-            scatter_kwargs["marker"]["color"] = data[color_col]
-            scatter_kwargs["marker"]["colorscale"] = "Viridis"
-            scatter_kwargs["marker"]["showscale"] = True
+            marker_dict["color"] = data[color_col]
+            marker_dict["colorscale"] = "Viridis"
+            marker_dict["showscale"] = True
 
         if size_col:
             size_norm = (data[size_col] - data[size_col].min()) / (
                 data[size_col].max() - data[size_col].min()
             )
-            scatter_kwargs["marker"]["size"] = size_norm * 20 + 5
+            marker_dict["size"] = size_norm * 20 + 5
 
         fig.add_trace(go.Scatter3d(**scatter_kwargs), row=1, col=1)
 

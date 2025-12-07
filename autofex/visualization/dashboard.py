@@ -350,12 +350,17 @@ class InteractiveDashboard:
         Returns:
             Dictionary with insights and recommendations
         """
-        insights = {
+        insights: Dict[str, Any] = {
             "summary": {},
             "recommendations": [],
             "warnings": [],
             "opportunities": [],
         }
+        # Type annotations for nested structures
+        insights_summary: Dict[str, Any] = insights["summary"]  # type: ignore
+        insights_recommendations: List[str] = insights["recommendations"]  # type: ignore
+        insights_warnings: List[str] = insights["warnings"]  # type: ignore
+        insights_opportunities: List[str] = insights["opportunities"]  # type: ignore
 
         # Data quality insights
         quality = result.data_quality_report
@@ -373,10 +378,10 @@ class InteractiveDashboard:
         )
 
         if missing_pct > 10:
-            insights["warnings"].append(
+            insights_warnings.append(
                 f"High missing data: {missing_pct:.1f}%. Consider imputation strategies."
             )
-            insights["recommendations"].append(
+            insights_recommendations.append(
                 "Use advanced imputation (KNN, iterative) for missing values"
             )
 
@@ -385,13 +390,13 @@ class InteractiveDashboard:
         engineered_count = result.engineered_features.shape[1]
         expansion_ratio = engineered_count / original_count if original_count > 0 else 0
 
-        insights["summary"]["feature_expansion"] = expansion_ratio
+        insights_summary["feature_expansion"] = expansion_ratio
         if expansion_ratio > 10:
-            insights["opportunities"].append(
+            insights_opportunities.append(
                 f"Large feature expansion ({expansion_ratio:.1f}x). Consider feature selection."
             )
         elif expansion_ratio < 2:
-            insights["opportunities"].append(
+            insights_opportunities.append(
                 "Low feature expansion. Consider advanced transformations."
             )
 
@@ -399,10 +404,10 @@ class InteractiveDashboard:
         leakage = result.leakage_report.get("overall_assessment", {})
         risk_level = leakage.get("risk_level", "unknown")
         if risk_level == "high":
-            insights["warnings"].append(
+            insights_warnings.append(
                 "HIGH LEAKAGE RISK detected. Review features before model training."
             )
-            insights["recommendations"].append(
+            insights_recommendations.append(
                 "Remove or investigate features flagged in leakage report"
             )
 
@@ -411,9 +416,9 @@ class InteractiveDashboard:
         if benchmark.get("best_configurations"):
             best = benchmark["best_configurations"].get("best_overall")
             if best:
-                insights["summary"]["best_model"] = best.get("model")
-                insights["summary"]["best_performance"] = best.get("performance")
-                insights["opportunities"].append(
+                insights_summary["best_model"] = best.get("model")
+                insights_summary["best_performance"] = best.get("performance")
+                insights_opportunities.append(
                     f"Best model: {best.get('model')} with {best.get('performance', 0):.3f} performance"
                 )
 

@@ -26,7 +26,7 @@ class ProgressTracker:
         self.total_steps = total_steps
         self.current_step = 0
         self.show_progress = show_progress
-        self.start_time = None
+        self.start_time: Optional[float] = None
         self.step_times: List[float] = []
         self.step_names: List[str] = []
         self.messages: List[str] = []
@@ -38,7 +38,7 @@ class ProgressTracker:
         Args:
             message: Initial message
         """
-        self.start_time = time.time()
+        self.start_time = time.time()  # type: ignore
         self.current_step = 0
         self.step_times = []
         self.step_names = []

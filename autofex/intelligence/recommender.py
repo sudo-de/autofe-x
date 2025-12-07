@@ -120,12 +120,15 @@ class FeatureEngineeringRecommender:
         Returns:
             Dictionary with feature engineering recommendations
         """
-        recommendations = {
+        recommendations: Dict[str, Any] = {
             "transformations": self.recommend_transformations(X, y),
             "strategies": [],
             "warnings": [],
             "opportunities": [],
         }
+        # Type annotations for nested lists
+        recommendations_warnings: List[str] = recommendations["warnings"]  # type: ignore
+        recommendations_opportunities: List[str] = recommendations["opportunities"]  # type: ignore
 
         numeric_count = len(X.select_dtypes(include=[np.number]).columns)
         categorical_count = len(X.select_dtypes(include=["object", "category"]).columns)
@@ -200,13 +203,13 @@ class FeatureEngineeringRecommender:
         # Warnings
         missing_pct = (X.isnull().sum().sum() / (X.shape[0] * X.shape[1])) * 100
         if missing_pct > 10:
-            recommendations["warnings"].append(
+            recommendations_warnings.append(
                 f"High missing data: {missing_pct:.1f}%. Consider imputation."
             )
 
         # Opportunities
         if numeric_count < 5:
-            recommendations["opportunities"].append(
+            recommendations_opportunities.append(
                 "Low feature count. Consider feature engineering to expand features."
             )
 
@@ -238,7 +241,7 @@ class FeatureEngineeringRecommender:
         """
         recommendations = self.recommend_feature_engineering(X, y)
 
-        config = {
+        config: Dict[str, Any] = {
             "feature_engineering": {},
             "mathematical_modeling": {},
             "statistical_transforms": {},

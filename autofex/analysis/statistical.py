@@ -321,12 +321,15 @@ class AdvancedStatisticalAnalyzer:
         Returns:
             Dictionary with correlation analysis results
         """
-        results = {
+        results: Dict[str, Any] = {
             "feature_correlations": {},
             "target_correlations": {},
             "multicollinearity": {},
             "recommendations": [],
         }
+        # Type annotations for nested dicts
+        multicollinearity_dict: Dict[str, Any] = results["multicollinearity"]  # type: ignore
+        recommendations_list: List[str] = results["recommendations"]  # type: ignore
 
         numeric_cols = X.select_dtypes(include=[np.number]).columns
 
@@ -350,11 +353,11 @@ class AdvancedStatisticalAnalyzer:
                         }
                     )
 
-        results["multicollinearity"]["high_correlation_pairs"] = high_corr_pairs
-        results["multicollinearity"]["count"] = len(high_corr_pairs)
+        multicollinearity_dict["high_correlation_pairs"] = high_corr_pairs
+        multicollinearity_dict["count"] = len(high_corr_pairs)
 
         if len(high_corr_pairs) > 0:
-            results["recommendations"].append(
+            recommendations_list.append(
                 f"Found {len(high_corr_pairs)} highly correlated pairs (>0.9). Consider removing redundant features."
             )
 
@@ -427,12 +430,16 @@ class AdvancedStatisticalAnalyzer:
         Returns:
             Dictionary with automated insights
         """
-        insights = {
+        insights: Dict[str, Any] = {
             "data_characteristics": {},
             "statistical_tests": {},
             "recommendations": [],
             "warnings": [],
         }
+        # Type annotations for nested structures
+        insights_statistical_tests: Dict[str, Any] = insights["statistical_tests"]  # type: ignore
+        insights_recommendations: List[str] = insights["recommendations"]  # type: ignore
+        insights_warnings: List[str] = insights["warnings"]  # type: ignore
 
         numeric_cols = X.select_dtypes(include=[np.number]).columns
 
@@ -445,7 +452,7 @@ class AdvancedStatisticalAnalyzer:
 
             # Normality test
             norm_result = self.comprehensive_normality_test(series)
-            insights["statistical_tests"][col] = {
+            insights_statistical_tests[col] = {
                 "normality": norm_result,
                 "skewness": series.skew(),
                 "kurtosis": series.kurtosis(),
@@ -453,12 +460,12 @@ class AdvancedStatisticalAnalyzer:
 
             # Recommendations based on distribution
             if abs(series.skew()) > 2:
-                insights["recommendations"].append(
+                insights_recommendations.append(
                     f"Feature '{col}' is highly skewed (skew={series.skew():.2f}). Consider log/sqrt transformation."
                 )
 
             if abs(series.kurtosis()) > 3:
-                insights["warnings"].append(
+                insights_warnings.append(
                     f"Feature '{col}' has high kurtosis (kurt={series.kurtosis():.2f}). May have outliers."
                 )
 
@@ -466,6 +473,6 @@ class AdvancedStatisticalAnalyzer:
         if len(numeric_cols) >= 2:
             corr_analysis = self.correlation_analysis_advanced(X, y)
             insights["correlation_analysis"] = corr_analysis
-            insights["recommendations"].extend(corr_analysis.get("recommendations", []))
+            insights_recommendations.extend(corr_analysis.get("recommendations", []))
 
         return insights
