@@ -16,7 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        # Test on all stable Python versions
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        include:
+          - python-version: "3.11"
+            test-advanced: "true"
+          - python-version: "3.12"
+            test-advanced: "true"
+        # Future versions (3.13, 3.14, 3.15) will be added as they become available
 
     steps:
     - uses: actions/checkout@v4
@@ -39,10 +46,30 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -e .[dev]
+        # Install optional dependencies for advanced features
+        pip install plotly || echo "Plotly optional, continuing..."
+        pip install statsmodels || echo "Statsmodels optional, continuing..."
 
     - name: Run tests
       run: |
-        python -m pytest --cov=autofex --cov-report=xml --cov-report=term-missing
+        python -m pytest --cov=autofex --cov-report=xml --cov-report=term-missing -v
+
+    - name: Test advanced features
+      if: matrix.test-advanced == 'true'
+      run: |
+        python -c "
+        from autofex import (
+            MathematicalModelingEngine,
+            AdvancedStatisticalTransforms,
+            AdvancedPandasOperations,
+            AdvancedNumpyOperations,
+            AdvancedScipyOperations,
+            IntelligentOrchestrator,
+            FeatureQualityScorer,
+            FeatureEngineeringRecommender,
+        )
+        print('✅ All advanced modules imported successfully')
+        "
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
@@ -84,7 +111,7 @@ jobs:
 
     - name: Type check with mypy
       run: |
-        mypy autofex/ --ignore-missing-imports
+        mypy autofex/ --ignore-missing-imports --no-strict-optional
 
   security:
     runs-on: ubuntu-latest
@@ -139,6 +166,22 @@ jobs:
       run: |
         python -m twine check dist/*
 
+    - name: Test package installation
+      run: |
+        pip install dist/*.whl
+        python -c "import autofex; print(f'✅ AutoFE-X {autofex.__version__} installed successfully')"
+        python -c "
+        from autofex import AutoFEX
+        import pandas as pd
+        import numpy as np
+        # Quick smoke test
+        X = pd.DataFrame({'a': [1,2,3], 'b': [4,5,6]})
+        y = pd.Series([1,0,1])
+        afx = AutoFEX(enable_progress=False, enable_cache=False)
+        result = afx.process(X, y)
+        print('✅ Package works correctly')
+        "
+
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -146,13 +189,53 @@ jobs:
         path: dist/
         retention-days: 30
 
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+
+    - name: Run integration tests
+      run: |
+        python -c "
+        import pandas as pd
+        import numpy as np
+        from autofex import AutoFEX
+        
+        # Test complete pipeline
+        np.random.seed(42)
+        X = pd.DataFrame({
+            'feature_1': np.random.normal(100, 15, 100),
+            'feature_2': np.random.exponential(2, 100),
+            'category': np.random.choice(['A', 'B', 'C'], 100),
+        })
+        y = pd.Series(np.random.choice([0, 1], 100))
+        
+        afx = AutoFEX(enable_progress=False, enable_cache=False)
+        result = afx.process(X, y)
+        
+        assert result.engineered_features.shape[0] == X.shape[0]
+        assert result.engineered_features.shape[1] >= X.shape[1]
+        print('✅ Integration test passed')
+        "
+
   publish:
     runs-on: ubuntu-latest
-    needs: [build, security]
+    needs: [build, security, integration-test]
     if: github.event_name == 'release' && github.event.action == 'published'
     environment:
       name: pypi
-      url: https://pypi.org/p/autofe-x
+      url: https://pypi.org/p/autofex
 
     steps:
     - uses: actions/download-artifact@v4

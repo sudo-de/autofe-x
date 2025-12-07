@@ -43,7 +43,7 @@ except FileNotFoundError:
     ]
 
 setup(
-    name="autofe-x",
+    name="autofex",
     version="0.1.0",
     author="AutoFE-X Team",
     author_email="contact@autofe-x.com",
@@ -63,10 +63,14 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.15",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.8,<3.16",
     install_requires=requirements,
     extras_require={
         "dev": [

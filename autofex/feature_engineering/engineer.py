@@ -11,6 +11,14 @@ from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.feature_selection import mutual_info_regression, mutual_info_classif
 import warnings
 
+try:
+    from ..utils.parallel import parallel_transform_columns, get_n_jobs
+    PARALLEL_AVAILABLE = True
+except ImportError:
+    PARALLEL_AVAILABLE = False
+    parallel_transform_columns = None
+    get_n_jobs = None
+
 
 class FeatureEngineer:
     """
@@ -39,10 +47,15 @@ class FeatureEngineer:
         self.interaction_degree = self.config.get("interaction_degree", 2)
         self.max_features = self.config.get("max_features", 1000)
         self.supervised = self.config.get("supervised", True)
+        
+        # Parallel processing configuration
+        self.n_jobs = self.config.get("n_jobs", None)  # None = sequential, -1 = all CPUs
+        self.parallel_backend = self.config.get("parallel_backend", "threading")
 
         self.fitted_encoders: Dict[str, pd.Series] = {}
         self.feature_names: List[str] = []
         self.column_scalers: Dict[str, StandardScaler] = {}
+        self.progress_callback: Optional[Callable] = None
 
     def fit(self, X: pd.DataFrame, y: Optional[Union[pd.Series, np.ndarray]] = None):
         """
@@ -66,7 +79,8 @@ class FeatureEngineer:
         self.column_scalers = {}
         for col in numeric_cols:
             scaler = StandardScaler()
-            scaler.fit(X[[col]])  # Fit on single column
+            # Use numpy array to avoid feature name warnings
+            scaler.fit(X[col].values.reshape(-1, 1))
             self.column_scalers[col] = scaler
 
         return self
@@ -87,19 +101,51 @@ class FeatureEngineer:
         X_transformed = X.copy()
         new_features = []
 
-        # Numeric transformations
-        numeric_cols = X.select_dtypes(include=[np.number]).columns
-        for col in numeric_cols:
-            numeric_features = self._create_numeric_features(X[col], col)
-            new_features.extend(numeric_features)
+        # Numeric transformations (parallel if enabled)
+        numeric_cols = list(X.select_dtypes(include=[np.number]).columns)
+        if numeric_cols:
+            if PARALLEL_AVAILABLE and self.n_jobs and self.n_jobs != 1:
+                # Parallel processing for numeric columns
+                numeric_features = parallel_transform_columns(
+                    X,
+                    self._create_numeric_features,
+                    numeric_cols,
+                    n_jobs=self.n_jobs,
+                    backend=self.parallel_backend,
+                    progress_callback=self.progress_callback,
+                )
+                new_features.extend(numeric_features)
+            else:
+                # Sequential processing
+                for col in numeric_cols:
+                    numeric_features = self._create_numeric_features(X[col], col)
+                    new_features.extend(numeric_features)
+                    if self.progress_callback:
+                        self.progress_callback(len(new_features), len(numeric_cols))
 
-        # Categorical transformations
-        categorical_cols = X.select_dtypes(include=["object", "category"]).columns
-        for col in categorical_cols:
-            cat_features = self._create_categorical_features(X[col], col)
-            new_features.extend(cat_features)
+        # Categorical transformations (parallel if enabled)
+        categorical_cols = list(X.select_dtypes(include=["object", "category"]).columns)
+        if categorical_cols:
+            if PARALLEL_AVAILABLE and self.n_jobs and self.n_jobs != 1:
+                # Parallel processing for categorical columns
+                cat_features = parallel_transform_columns(
+                    X,
+                    self._create_categorical_features,
+                    categorical_cols,
+                    n_jobs=self.n_jobs,
+                    backend=self.parallel_backend,
+                    progress_callback=self.progress_callback,
+                )
+                new_features.extend(cat_features)
+            else:
+                # Sequential processing
+                for col in categorical_cols:
+                    cat_features = self._create_categorical_features(X[col], col)
+                    new_features.extend(cat_features)
+                    if self.progress_callback:
+                        self.progress_callback(len(new_features), len(categorical_cols))
 
-        # Interaction features
+        # Interaction features (usually not parallelized due to dependencies)
         if self.interaction_degree > 1:
             interaction_features = self._create_interaction_features(X_transformed)
             new_features.extend(interaction_features)
@@ -115,6 +161,15 @@ class FeatureEngineer:
             feature_df = self._select_top_features(feature_df, y=None)
 
         return feature_df
+    
+    def set_progress_callback(self, callback: Optional[Callable]):
+        """
+        Set progress callback for parallel processing.
+
+        Args:
+            callback: Callback function(completed, total)
+        """
+        self.progress_callback = callback
 
     def fit_transform(
         self, X: pd.DataFrame, y: Optional[Union[pd.Series, np.ndarray]] = None
