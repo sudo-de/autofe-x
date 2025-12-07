@@ -410,7 +410,7 @@ class FeatureBenchmarker:
             numeric_cols = X_ablated.select_dtypes(include=[np.number]).columns
             for col in numeric_cols:
                 X_ablated.loc[:, col] = X_ablated[col].fillna(X_ablated[col].mean())
-            
+
             # Fill categorical columns with mode
             categorical_cols = X_ablated.select_dtypes(exclude=[np.number]).columns
             for col in categorical_cols:
@@ -420,7 +420,7 @@ class FeatureBenchmarker:
                     else "Unknown"
                 )
                 X_ablated.loc[:, col] = X_ablated[col].fillna(mode_val)
-            
+
             # Encode categorical columns
             X_ablated = self._encode_categorical(X_ablated)
 
