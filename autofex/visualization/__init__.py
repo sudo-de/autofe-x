@@ -18,7 +18,7 @@ try:
     _DASHBOARD_AVAILABLE = True
 except ImportError:
     _DASHBOARD_AVAILABLE = False
-    InteractiveDashboard = None
+    InteractiveDashboard = None  # type: ignore
 
 try:
     from .multidimensional import MultiDimensionalVisualizer
@@ -26,7 +26,7 @@ try:
     _MULTIDIM_AVAILABLE = True
 except ImportError:
     _MULTIDIM_AVAILABLE = False
-    MultiDimensionalVisualizer = None
+    MultiDimensionalVisualizer = None  # type: ignore
 
 __all__ = ["FeatureVisualizer"]
 

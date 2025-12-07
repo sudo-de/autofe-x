@@ -35,7 +35,7 @@ try:
     _DASHBOARD_AVAILABLE = True
 except ImportError:
     _DASHBOARD_AVAILABLE = False
-    InteractiveDashboard = None
+    InteractiveDashboard = None  # type: ignore
 
 try:
     from .visualization.multidimensional import MultiDimensionalVisualizer
@@ -43,7 +43,7 @@ try:
     _MULTIDIM_AVAILABLE = True
 except ImportError:
     _MULTIDIM_AVAILABLE = False
-    MultiDimensionalVisualizer = None
+    MultiDimensionalVisualizer = None  # type: ignore
 
 try:
     from .analysis.advanced_stats import UltraAdvancedStatisticalAnalyzer
@@ -51,7 +51,7 @@ try:
     _ULTRA_STATS_AVAILABLE = True
 except ImportError:
     _ULTRA_STATS_AVAILABLE = False
-    UltraAdvancedStatisticalAnalyzer = None
+    UltraAdvancedStatisticalAnalyzer = None  # type: ignore
 
 try:
     from .mathematical.modeling import MathematicalModelingEngine
@@ -59,7 +59,7 @@ try:
     _MATH_MODELING_AVAILABLE = True
 except ImportError:
     _MATH_MODELING_AVAILABLE = False
-    MathematicalModelingEngine = None
+    MathematicalModelingEngine = None  # type: ignore
 
 try:
     from .statistical.advanced_transforms import AdvancedStatisticalTransforms
@@ -67,7 +67,7 @@ try:
     _STAT_TRANSFORMS_AVAILABLE = True
 except ImportError:
     _STAT_TRANSFORMS_AVAILABLE = False
-    AdvancedStatisticalTransforms = None
+    AdvancedStatisticalTransforms = None  # type: ignore
 
 try:
     from .pandas_advanced.operations import AdvancedPandasOperations
@@ -75,7 +75,7 @@ try:
     _PANDAS_ADVANCED_AVAILABLE = True
 except ImportError:
     _PANDAS_ADVANCED_AVAILABLE = False
-    AdvancedPandasOperations = None
+    AdvancedPandasOperations = None  # type: ignore
 
 try:
     from .numpy_advanced.operations import AdvancedNumpyOperations
@@ -83,7 +83,7 @@ try:
     _NUMPY_ADVANCED_AVAILABLE = True
 except ImportError:
     _NUMPY_ADVANCED_AVAILABLE = False
-    AdvancedNumpyOperations = None
+    AdvancedNumpyOperations = None  # type: ignore
 
 try:
     from .scipy_advanced.operations import AdvancedScipyOperations
@@ -91,7 +91,7 @@ try:
     _SCIPY_ADVANCED_AVAILABLE = True
 except ImportError:
     _SCIPY_ADVANCED_AVAILABLE = False
-    AdvancedScipyOperations = None
+    AdvancedScipyOperations = None  # type: ignore
 
 try:
     from .intelligence.orchestrator import IntelligentOrchestrator
@@ -101,9 +101,9 @@ try:
     _INTELLIGENCE_AVAILABLE = True
 except ImportError:
     _INTELLIGENCE_AVAILABLE = False
-    IntelligentOrchestrator = None
-    FeatureQualityScorer = None
-    FeatureEngineeringRecommender = None
+    IntelligentOrchestrator = None  # type: ignore
+    FeatureQualityScorer = None  # type: ignore
+    FeatureEngineeringRecommender = None  # type: ignore
 
 __version__ = "0.1.0"
 __all__ = [

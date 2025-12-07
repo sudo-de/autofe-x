@@ -76,13 +76,16 @@ class UltraAdvancedStatisticalAnalyzer:
         if len(groups_clean) < 2:
             return {"error": "Need at least 2 groups for ANOVA"}
 
-        results = {
+        results: Dict[str, Any] = {
             "anova": {},
             "post_hoc": {},
             "effect_sizes": {},
             "interpretation": "",
             "recommendations": [],
         }
+        # Type annotations for nested dicts
+        anova_dict: Dict[str, Any] = results["anova"]  # type: ignore
+        effect_sizes_dict: Dict[str, Any] = results["effect_sizes"]  # type: ignore
 
         # One-way ANOVA
         try:
@@ -104,7 +107,7 @@ class UltraAdvancedStatisticalAnalyzer:
             ss_total = sum((x - grand_mean) ** 2 for x in all_data)
             eta_squared = ss_between / ss_total if ss_total > 0 else 0
 
-            results["effect_sizes"]["eta_squared"] = eta_squared
+            effect_sizes_dict["eta_squared"] = eta_squared
 
             # Interpret eta-squared
             if eta_squared < 0.01:
@@ -116,12 +119,10 @@ class UltraAdvancedStatisticalAnalyzer:
             else:
                 effect_interpretation = "large"
 
-            results["effect_sizes"][
-                "eta_squared_interpretation"
-            ] = effect_interpretation
+            effect_sizes_dict["eta_squared_interpretation"] = effect_interpretation
 
         except Exception as e:
-            results["anova"]["one_way"] = {"error": str(e)}
+            anova_dict["one_way"] = {"error": str(e)}
 
         # Kruskal-Wallis (non-parametric alternative)
         try:
@@ -132,7 +133,7 @@ class UltraAdvancedStatisticalAnalyzer:
                 "significant": p_value < self.alpha,
             }
         except Exception as e:
-            results["anova"]["kruskal_wallis"] = {"error": str(e)}
+            anova_dict["kruskal_wallis"] = {"error": str(e)}
 
         # Post-hoc tests
         if post_hoc and len(groups_clean) > 2:
@@ -161,7 +162,7 @@ class UltraAdvancedStatisticalAnalyzer:
             results["post_hoc"] = post_hoc_results
 
         # Interpretation
-        anova_sig = results["anova"].get("one_way", {}).get("significant", False)
+        anova_sig = anova_dict.get("one_way", {}).get("significant", False)
         if anova_sig:
             results["interpretation"] = "Groups are significantly different"
             results["recommendations"].append(
@@ -193,11 +194,13 @@ class UltraAdvancedStatisticalAnalyzer:
         if not MANOVA_AVAILABLE:
             return {"error": "MANOVA not available. Install required dependencies."}
 
-        results = {
+        results: Dict[str, Any] = {
             "manova": {},
             "interpretation": "",
             "recommendations": [],
         }
+        # Type annotation for manova dict
+        manova_dict: Dict[str, Any] = results["manova"]  # type: ignore
 
         # Prepare data
         all_data = []
@@ -218,13 +221,11 @@ class UltraAdvancedStatisticalAnalyzer:
         try:
             # Perform MANOVA
             manova_result = manova(X, y)
-            results["manova"] = {
-                "statistic": manova_result.statistic,
-                "p_value": manova_result.pvalue,
-                "significant": manova_result.pvalue < self.alpha,
-            }
+            manova_dict["statistic"] = manova_result.statistic
+            manova_dict["p_value"] = manova_result.pvalue
+            manova_dict["significant"] = manova_result.pvalue < self.alpha
 
-            if results["manova"]["significant"]:
+            if manova_dict["significant"]:
                 results["interpretation"] = (
                     "Groups differ significantly on multivariate measures"
                 )
@@ -237,7 +238,7 @@ class UltraAdvancedStatisticalAnalyzer:
                 )
 
         except Exception as e:
-            results["manova"] = {"error": str(e)}
+            manova_dict["error"] = str(e)
 
         return results
 
@@ -277,14 +278,14 @@ class UltraAdvancedStatisticalAnalyzer:
                 from statsmodels.tsa.stattools import adfuller
 
                 adf_stat, adf_p, _, _, adf_critical, _ = adfuller(series_clean)
-                results["stationarity"]["adf"] = {
+                stationarity_dict["adf"] = {
                     "statistic": adf_stat,
                     "p_value": adf_p,
                     "critical_values": adf_critical,
                     "stationary": adf_p < self.alpha,
                 }
 
-                if results["stationarity"]["adf"]["stationary"]:
+                if stationarity_dict["adf"]["stationary"]:
                     results["interpretation"] += "Series is stationary. "
                 else:
                     results["interpretation"] += "Series is non-stationary. "
@@ -293,11 +294,11 @@ class UltraAdvancedStatisticalAnalyzer:
                     )
 
             except ImportError:
-                results["stationarity"]["adf"] = {
+                stationarity_dict["adf"] = {
                     "error": "statsmodels not available. Install: pip install statsmodels"
                 }
             except Exception as e:
-                results["stationarity"]["adf"] = {"error": str(e)}
+                stationarity_dict["adf"] = {"error": str(e)}
 
         # Trend test (Mann-Kendall)
         if test_trend:
@@ -308,20 +309,20 @@ class UltraAdvancedStatisticalAnalyzer:
                     x, series_clean
                 )
 
-                results["trend"]["linear"] = {
+                trend_dict["linear"] = {
                     "slope": slope,
                     "p_value": p_value,
                     "r_squared": r_value**2,
                     "has_trend": p_value < self.alpha,
                 }
 
-                if results["trend"]["linear"]["has_trend"]:
+                if trend_dict["linear"]["has_trend"]:
                     trend_direction = "increasing" if slope > 0 else "decreasing"
                     results["interpretation"] += f"Series has {trend_direction} trend. "
                     results["recommendations"].append("Consider detrending if needed")
 
             except Exception as e:
-                results["trend"]["linear"] = {"error": str(e)}
+                trend_dict["linear"] = {"error": str(e)}
 
         # Autocorrelation
         try:
@@ -338,7 +339,7 @@ class UltraAdvancedStatisticalAnalyzer:
                 ),
             }
 
-            if results["autocorrelation"]["has_autocorrelation"]:
+            if autocorrelation_dict["has_autocorrelation"]:
                 results["recommendations"].append(
                     "Series shows autocorrelation - consider ARIMA models"
                 )
@@ -477,9 +478,9 @@ class UltraAdvancedStatisticalAnalyzer:
             z_power = norm.ppf(power)
 
             n_required = 2 * ((z_alpha + z_power) / effect_size) ** 2
-            results["sample_size"]["required"] = int(np.ceil(n_required))
+            sample_size_dict["required"] = int(np.ceil(n_required))
             results["interpretation"] = (
-                f"Required sample size: {results['sample_size']['required']} per group"
+                f"Required sample size: {sample_size_dict['required']} per group"
             )
 
         # Calculate achieved power if sample size provided
@@ -492,7 +493,7 @@ class UltraAdvancedStatisticalAnalyzer:
                 -z_effect - z_alpha
             )
 
-            results["sample_size"]["provided"] = n
+            sample_size_dict["provided"] = n
             results["power"] = {
                 "achieved": achieved_power,
                 "adequate": achieved_power >= power,
@@ -525,11 +526,13 @@ class UltraAdvancedStatisticalAnalyzer:
         if len(data_clean) < 10:
             return {"error": "Insufficient data for bootstrap analysis"}
 
-        results = {
+        results: Dict[str, Any] = {
             "bootstrap": {},
             "confidence_interval": {},
             "interpretation": "",
         }
+        # Type annotation for bootstrap dict to help mypy
+        bootstrap_dict: Dict[str, Any] = results["bootstrap"]  # type: ignore
 
         # Bootstrap samples
         bootstrap_stats = []
@@ -547,12 +550,11 @@ class UltraAdvancedStatisticalAnalyzer:
         bootstrap_stats = np.array(bootstrap_stats)
 
         # Calculate statistics
-        results["bootstrap"] = {
-            "mean": np.mean(bootstrap_stats),
-            "std": np.std(bootstrap_stats),
-            "bias": np.mean(bootstrap_stats)
-            - (np.mean(data_clean) if statistic == "mean" else np.median(data_clean)),
-        }
+        bootstrap_dict["mean"] = np.mean(bootstrap_stats)
+        bootstrap_dict["std"] = np.std(bootstrap_stats)
+        bootstrap_dict["bias"] = np.mean(bootstrap_stats) - (
+            np.mean(data_clean) if statistic == "mean" else np.median(data_clean)
+        )
 
         # Confidence interval
         alpha_ci = 1 - confidence_level
@@ -566,7 +568,7 @@ class UltraAdvancedStatisticalAnalyzer:
         }
 
         results["interpretation"] = (
-            f"Bootstrap {statistic}: {results['bootstrap']['mean']:.3f} [{lower:.3f}, {upper:.3f}]"
+            f"Bootstrap {statistic}: {bootstrap_dict['mean']:.3f} [{lower:.3f}, {upper:.3f}]"
         )
 
         return results

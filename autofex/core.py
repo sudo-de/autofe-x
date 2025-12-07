@@ -23,9 +23,9 @@ try:
     _NEXTGEN_AVAILABLE = True
 except ImportError:
     _NEXTGEN_AVAILABLE = False
-    AdvancedFeatureEngineer = None
-    AdvancedFeatureSelector = None
-    FeatureVisualizer = None
+    AdvancedFeatureEngineer = None  # type: ignore
+    AdvancedFeatureSelector = None  # type: ignore
+    FeatureVisualizer = None  # type: ignore
 
 
 @dataclass
