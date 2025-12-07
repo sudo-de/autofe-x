@@ -77,10 +77,15 @@ setup(
             "mypy>=0.800",
             "sphinx>=4.0.0",
             "jupyter>=1.0.0",
+            "codecov>=2.1.0",
         ],
         "viz": [
             "plotly>=5.0.0",
             "graphviz>=0.17.0",
+        ],
+        "test": [
+            "pytest>=6.0.0",
+            "pytest-cov>=2.0.0",
         ],
     },
     entry_points={

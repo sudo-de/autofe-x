@@ -2,6 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/autofe-x.svg)](https://pypi.org/project/autofe-x/)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/autofe-x/autofe-x/actions/workflows/ci.yml/badge.svg)](https://github.com/autofe-x/autofe-x/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/autofe-x/autofe-x/branch/main/graph/badge.svg)](https://codecov.io/gh/autofe-x/autofe-x)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **A next-gen toolkit that becomes the brain of any ML pipeline** by combining automated feature engineering, data quality analysis, leakage detection, auto-benchmarking of feature sets, and graph-based feature lineage.
@@ -29,6 +31,20 @@ AutoFE-X
 
 ## 🚀 Quick Start
 
+### Installation
+
+```bash
+# Install from PyPI
+pip install autofe-x
+
+# Or install from source for development
+git clone https://github.com/autofe-x/autofe-x.git
+cd autofe-x
+pip install -e .
+```
+
+### Basic Usage
+
 ```python
 import pandas as pd
 from autofex import AutoFEX
@@ -48,6 +64,24 @@ print("Data Quality Issues:", result.data_quality_report)
 print("Leakage Warnings:", result.leakage_report)
 print("Engineered Features Shape:", result.engineered_features.shape)
 print("Top Feature Sets:", result.benchmark_results['best_configurations'])
+```
+
+### Individual Components
+
+```python
+from autofex import FeatureEngineer, DataProfiler, LeakageDetector
+
+# Feature engineering only
+fe = FeatureEngineer()
+X_engineered = fe.fit_transform(X, y)
+
+# Data profiling only
+profiler = DataProfiler()
+report = profiler.analyze(X, y)
+
+# Leakage detection only
+detector = LeakageDetector()
+leakage_report = detector.detect(X, y)
 ```
 
 ## 📖 Detailed Usage
@@ -138,6 +172,44 @@ pip install -e .
 
 ```bash
 pip install -e ".[dev]"
+```
+
+## 🤖 CI/CD Pipeline
+
+AutoFE-X uses GitHub Actions for comprehensive continuous integration and deployment:
+
+### Pipeline Features
+- **Multi-Python Testing**: Compatible with Python 3.8-3.12
+- **Code Quality**: Automated Black formatting, flake8 linting, mypy type checking
+- **Security Scanning**: Bandit security analysis and Safety vulnerability checks
+- **Test Coverage**: Comprehensive test suite with coverage reporting
+- **Package Building**: Automated build and PyPI validation
+- **Release Publishing**: Automatic PyPI publishing on GitHub releases
+
+### Pipeline Flow
+```
+Push/PR → Test → Lint → Security → Build → Publish (releases only)
+```
+
+### Setting up PyPI Publishing
+1. Create a PyPI account and generate an API token
+2. Add repository secrets:
+   - `PYPI_USERNAME`: Your PyPI username
+   - `PYPI_PASSWORD`: Your PyPI API token
+3. Create a release on GitHub to trigger PyPI publishing
+
+### Local Development
+```bash
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=autofex
+
+# Code quality checks
+black autofex/
+flake8 autofex/
+mypy autofex/
 ```
 
 ## 📊 Example Output
