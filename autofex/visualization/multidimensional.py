@@ -118,7 +118,12 @@ class MultiDimensionalVisualizer:
         )
 
         # Scatter plot
-        scatter_kwargs: Dict[str, Any] = {"x": x, "y": y, "mode": "markers", "name": "Data"}
+        scatter_kwargs: Dict[str, Any] = {
+            "x": x,
+            "y": y,
+            "mode": "markers",
+            "name": "Data",
+        }
         marker_dict: Dict[str, Any] = {}  # type: ignore
         if color is not None:
             marker_dict = {
