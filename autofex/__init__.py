@@ -23,7 +23,7 @@ try:
     from .feature_engineering.advanced import AdvancedFeatureEngineer
     from .feature_selection.selector import AdvancedFeatureSelector
     from .visualization import FeatureVisualizer
-    from .analysis.statistical import AdvancedStatisticalAnalyzer
+    from .analysis.statistical import StatisticalAnalyzer
 
     _NEXTGEN_AVAILABLE = True
 except ImportError:
@@ -46,12 +46,12 @@ except ImportError:
     MultiDimensionalVisualizer = None  # type: ignore
 
 try:
-    from .analysis.advanced_stats import UltraAdvancedStatisticalAnalyzer
+    from .analysis.ultra_stats import UltraStatisticalAnalyzer
 
     _ULTRA_STATS_AVAILABLE = True
 except ImportError:
     _ULTRA_STATS_AVAILABLE = False
-    UltraAdvancedStatisticalAnalyzer = None  # type: ignore
+    UltraStatisticalAnalyzer = None  # type: ignore
 
 try:
     from .mathematical.modeling import MathematicalModelingEngine
