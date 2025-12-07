@@ -175,7 +175,12 @@ def validate_dataframe(
     if checks is None:
         checks = ["basic", "missing", "duplicates", "types"]
 
-    results: Dict[str, Any] = {"valid": True, "issues": [], "warnings": [], "summary": {}}
+    results: Dict[str, Any] = {
+        "valid": True,
+        "issues": [],
+        "warnings": [],
+        "summary": {},
+    }
 
     # Basic checks
     if "basic" in checks:
