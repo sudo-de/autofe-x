@@ -21,7 +21,8 @@ try:
     _ALL_MODULES_AVAILABLE = True
 except ImportError:
     _ALL_MODULES_AVAILABLE = False
-    warnings.warn("Some advanced modules not available")
+    # Suppress warning during import - it's expected for optional modules
+    # Warning will be shown when actually using the orchestrator if needed
 
 
 class IntelligentOrchestrator:
