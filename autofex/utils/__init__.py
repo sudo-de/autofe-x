@@ -9,7 +9,7 @@ from .helpers import (
     detect_outliers_iqr,
     calculate_correlation_matrix,
     get_feature_stats,
-    validate_dataframe
+    validate_dataframe,
 )
 
 __all__ = [
@@ -17,5 +17,5 @@ __all__ = [
     "detect_outliers_iqr",
     "calculate_correlation_matrix",
     "get_feature_stats",
-    "validate_dataframe"
+    "validate_dataframe",
 ]

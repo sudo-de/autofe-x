@@ -28,15 +28,17 @@ class FeatureEngineer:
             config: Configuration dictionary with feature engineering options
         """
         self.config = config or {}
-        self.numeric_transforms = self.config.get('numeric_transforms', [
-            'log', 'sqrt', 'square', 'cube', 'reciprocal', 'standardize'
-        ])
-        self.categorical_transforms = self.config.get('categorical_transforms', [
-            'one_hot', 'label_encode', 'frequency_encode', 'target_encode'
-        ])
-        self.interaction_degree = self.config.get('interaction_degree', 2)
-        self.max_features = self.config.get('max_features', 1000)
-        self.supervised = self.config.get('supervised', True)
+        self.numeric_transforms = self.config.get(
+            "numeric_transforms",
+            ["log", "sqrt", "square", "cube", "reciprocal", "standardize"],
+        )
+        self.categorical_transforms = self.config.get(
+            "categorical_transforms",
+            ["one_hot", "label_encode", "frequency_encode", "target_encode"],
+        )
+        self.interaction_degree = self.config.get("interaction_degree", 2)
+        self.max_features = self.config.get("max_features", 1000)
+        self.supervised = self.config.get("supervised", True)
 
         self.fitted_encoders = {}
         self.feature_names = []
@@ -53,10 +55,10 @@ class FeatureEngineer:
         self.feature_names = list(X.columns)
 
         # Fit encoders for categorical features
-        categorical_cols = X.select_dtypes(include=['object', 'category']).columns
+        categorical_cols = X.select_dtypes(include=["object", "category"]).columns
 
         for col in categorical_cols:
-            if 'target_encode' in self.categorical_transforms and y is not None:
+            if "target_encode" in self.categorical_transforms and y is not None:
                 self._fit_target_encoder(X[col], y, col)
 
         # Fit scalers for numeric features (per column)
@@ -92,7 +94,7 @@ class FeatureEngineer:
             new_features.extend(numeric_features)
 
         # Categorical transformations
-        categorical_cols = X.select_dtypes(include=['object', 'category']).columns
+        categorical_cols = X.select_dtypes(include=["object", "category"]).columns
         for col in categorical_cols:
             cat_features = self._create_categorical_features(X[col], col)
             new_features.extend(cat_features)
@@ -114,7 +116,9 @@ class FeatureEngineer:
 
         return feature_df
 
-    def fit_transform(self, X: pd.DataFrame, y: Optional[Union[pd.Series, np.ndarray]] = None) -> pd.DataFrame:
+    def fit_transform(
+        self, X: pd.DataFrame, y: Optional[Union[pd.Series, np.ndarray]] = None
+    ) -> pd.DataFrame:
         """
         Fit and transform features in one step.
 
@@ -127,7 +131,9 @@ class FeatureEngineer:
         """
         return self.fit(X, y).transform(X)
 
-    def _create_numeric_features(self, series: pd.Series, col_name: str) -> List[pd.DataFrame]:
+    def _create_numeric_features(
+        self, series: pd.Series, col_name: str
+    ) -> List[pd.DataFrame]:
         """
         Create numeric transformations for a single column.
 
@@ -141,34 +147,40 @@ class FeatureEngineer:
         features = []
 
         # Handle zeros and negatives for log transform
-        if 'log' in self.numeric_transforms:
+        if "log" in self.numeric_transforms:
             log_vals = np.log1p(series.clip(lower=0))
-            features.append(pd.DataFrame({f'{col_name}_log': log_vals}))
+            features.append(pd.DataFrame({f"{col_name}_log": log_vals}))
 
-        if 'sqrt' in self.numeric_transforms:
+        if "sqrt" in self.numeric_transforms:
             sqrt_vals = np.sqrt(series.clip(lower=0))
-            features.append(pd.DataFrame({f'{col_name}_sqrt': sqrt_vals}))
+            features.append(pd.DataFrame({f"{col_name}_sqrt": sqrt_vals}))
 
-        if 'square' in self.numeric_transforms:
-            square_vals = series ** 2
-            features.append(pd.DataFrame({f'{col_name}_square': square_vals}))
+        if "square" in self.numeric_transforms:
+            square_vals = series**2
+            features.append(pd.DataFrame({f"{col_name}_square": square_vals}))
 
-        if 'cube' in self.numeric_transforms:
-            cube_vals = series ** 3
-            features.append(pd.DataFrame({f'{col_name}_cube': cube_vals}))
+        if "cube" in self.numeric_transforms:
+            cube_vals = series**3
+            features.append(pd.DataFrame({f"{col_name}_cube": cube_vals}))
 
-        if 'reciprocal' in self.numeric_transforms:
+        if "reciprocal" in self.numeric_transforms:
             # Avoid division by zero
             reciprocal_vals = 1 / (series + 1e-8)
-            features.append(pd.DataFrame({f'{col_name}_reciprocal': reciprocal_vals}))
+            features.append(pd.DataFrame({f"{col_name}_reciprocal": reciprocal_vals}))
 
-        if 'standardize' in self.numeric_transforms and col_name in self.column_scalers:
-            standardized = self.column_scalers[col_name].transform(series.values.reshape(-1, 1)).flatten()
-            features.append(pd.DataFrame({f'{col_name}_standardized': standardized}))
+        if "standardize" in self.numeric_transforms and col_name in self.column_scalers:
+            standardized = (
+                self.column_scalers[col_name]
+                .transform(series.values.reshape(-1, 1))
+                .flatten()
+            )
+            features.append(pd.DataFrame({f"{col_name}_standardized": standardized}))
 
         return features
 
-    def _create_categorical_features(self, series: pd.Series, col_name: str) -> List[pd.DataFrame]:
+    def _create_categorical_features(
+        self, series: pd.Series, col_name: str
+    ) -> List[pd.DataFrame]:
         """
         Create categorical transformations for a single column.
 
@@ -181,20 +193,23 @@ class FeatureEngineer:
         """
         features = []
 
-        if 'frequency_encode' in self.categorical_transforms:
+        if "frequency_encode" in self.categorical_transforms:
             freq_map = series.value_counts(normalize=True)
             freq_encoded = series.map(freq_map)
-            features.append(pd.DataFrame({f'{col_name}_freq': freq_encoded}))
+            features.append(pd.DataFrame({f"{col_name}_freq": freq_encoded}))
 
-        if 'label_encode' in self.categorical_transforms:
+        if "label_encode" in self.categorical_transforms:
             label_map = {val: i for i, val in enumerate(series.unique())}
             label_encoded = series.map(label_map)
-            features.append(pd.DataFrame({f'{col_name}_label': label_encoded}))
+            features.append(pd.DataFrame({f"{col_name}_label": label_encoded}))
 
-        if 'target_encode' in self.categorical_transforms and col_name in self.fitted_encoders:
+        if (
+            "target_encode" in self.categorical_transforms
+            and col_name in self.fitted_encoders
+        ):
             target_encoded = series.map(self.fitted_encoders[col_name])
             target_encoded = target_encoded.fillna(target_encoded.mean())
-            features.append(pd.DataFrame({f'{col_name}_target': target_encoded}))
+            features.append(pd.DataFrame({f"{col_name}_target": target_encoded}))
 
         return features
 
@@ -220,7 +235,7 @@ class FeatureEngineer:
             poly = PolynomialFeatures(
                 degree=self.interaction_degree,
                 interaction_only=True,
-                include_bias=False
+                include_bias=False,
             )
 
             poly_features = poly.fit_transform(X_numeric)
@@ -228,9 +243,9 @@ class FeatureEngineer:
 
             # Create DataFrame with interaction features only (exclude originals)
             interaction_df = pd.DataFrame(
-                poly_features[:, len(numeric_cols):],
-                columns=feature_names[len(numeric_cols):],
-                index=X.index
+                poly_features[:, len(numeric_cols) :],
+                columns=feature_names[len(numeric_cols) :],
+                index=X.index,
             )
 
             if not interaction_df.empty:
@@ -238,7 +253,9 @@ class FeatureEngineer:
 
         return features
 
-    def _fit_target_encoder(self, series: pd.Series, y: Union[pd.Series, np.ndarray], col_name: str):
+    def _fit_target_encoder(
+        self, series: pd.Series, y: Union[pd.Series, np.ndarray], col_name: str
+    ):
         """
         Fit target encoder for categorical column.
 
@@ -255,11 +272,13 @@ class FeatureEngineer:
         global_mean = y.mean()
 
         # Store encoder (with smoothing)
-        self.fitted_encoders[col_name] = target_means.reindex(
-            series.unique()
-        ).fillna(global_mean)
+        self.fitted_encoders[col_name] = target_means.reindex(series.unique()).fillna(
+            global_mean
+        )
 
-    def _select_top_features(self, X: pd.DataFrame, y: Optional[pd.Series] = None, k: int = None) -> pd.DataFrame:
+    def _select_top_features(
+        self, X: pd.DataFrame, y: Optional[pd.Series] = None, k: int = None
+    ) -> pd.DataFrame:
         """
         Select top k features based on importance.
 
@@ -281,7 +300,7 @@ class FeatureEngineer:
         else:
             # Supervised selection: use mutual information
             try:
-                if y.dtype in ['object', 'category'] or len(y.unique()) < 20:
+                if y.dtype in ["object", "category"] or len(y.unique()) < 20:
                     # Classification
                     mi_scores = mutual_info_classif(X.fillna(X.mean()), y)
                 else:

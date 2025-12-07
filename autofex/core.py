@@ -16,6 +16,7 @@ from .lineage import FeatureLineageTracker
 @dataclass
 class AutoFEXResult:
     """Container for AutoFEX pipeline results."""
+
     original_data: pd.DataFrame
     engineered_features: pd.DataFrame
     data_quality_report: Dict[str, Any]
@@ -44,7 +45,7 @@ class AutoFEX:
         leakage_config: Optional[Dict[str, Any]] = None,
         benchmarking_config: Optional[Dict[str, Any]] = None,
         lineage_config: Optional[Dict[str, Any]] = None,
-        random_state: int = 42
+        random_state: int = 42,
     ):
         """
         Initialize AutoFEX pipeline.
@@ -61,28 +62,18 @@ class AutoFEX:
         np.random.seed(random_state)
 
         # Initialize components
-        self.feature_engineer = FeatureEngineer(
-            config=feature_engineering_config or {}
-        )
-        self.data_profiler = DataProfiler(
-            config=profiling_config or {}
-        )
-        self.leakage_detector = LeakageDetector(
-            config=leakage_config or {}
-        )
-        self.benchmarker = FeatureBenchmarker(
-            config=benchmarking_config or {}
-        )
-        self.lineage_tracker = FeatureLineageTracker(
-            config=lineage_config or {}
-        )
+        self.feature_engineer = FeatureEngineer(config=feature_engineering_config or {})
+        self.data_profiler = DataProfiler(config=profiling_config or {})
+        self.leakage_detector = LeakageDetector(config=leakage_config or {})
+        self.benchmarker = FeatureBenchmarker(config=benchmarking_config or {})
+        self.lineage_tracker = FeatureLineageTracker(config=lineage_config or {})
 
     def process(
         self,
         X: pd.DataFrame,
         y: Optional[Union[pd.Series, np.ndarray]] = None,
         X_test: Optional[pd.DataFrame] = None,
-        target_name: str = "target"
+        target_name: str = "target",
     ) -> AutoFEXResult:
         """
         Run the complete AutoFEX pipeline.
@@ -97,6 +88,7 @@ class AutoFEX:
             AutoFEXResult containing all pipeline outputs
         """
         import time
+
         start_time = time.time()
 
         # Initialize lineage tracking
@@ -117,16 +109,14 @@ class AutoFEX:
         self.lineage_tracker.add_transformation(
             "feature_engineering",
             X.columns.tolist(),
-            engineered_features.columns.tolist()
+            engineered_features.columns.tolist(),
         )
 
         # Step 5: Benchmarking (if target available)
         benchmark_results = {}
         if y is not None:
             # Use original features for benchmarking (engineered features would be inconsistent with X_test)
-            benchmark_results = self.benchmarker.benchmark_features(
-                X, y, X_test
-            )
+            benchmark_results = self.benchmarker.benchmark_features(X, y, X_test)
 
         processing_time = time.time() - start_time
 
@@ -137,14 +127,11 @@ class AutoFEX:
             leakage_report=leakage_report,
             benchmark_results=benchmark_results,
             feature_lineage=self.lineage_tracker.get_lineage_graph(),
-            processing_time=processing_time
+            processing_time=processing_time,
         )
 
     def get_feature_importance(
-        self,
-        X: pd.DataFrame,
-        y: pd.Series,
-        method: str = "mutual_info"
+        self, X: pd.DataFrame, y: pd.Series, method: str = "mutual_info"
     ) -> pd.Series:
         """
         Get feature importance scores.
@@ -160,9 +147,7 @@ class AutoFEX:
         return self.benchmarker.get_feature_importance(X, y, method)
 
     def suggest_feature_transformations(
-        self,
-        X: pd.DataFrame,
-        y: Optional[pd.Series] = None
+        self, X: pd.DataFrame, y: Optional[pd.Series] = None
     ) -> List[Dict[str, Any]]:
         """
         Suggest feature transformations based on data analysis.
@@ -178,26 +163,30 @@ class AutoFEX:
 
         # Analyze data types and suggest transformations
         numeric_cols = X.select_dtypes(include=[np.number]).columns
-        categorical_cols = X.select_dtypes(include=['object', 'category']).columns
+        categorical_cols = X.select_dtypes(include=["object", "category"]).columns
 
         # Numeric feature suggestions
         for col in numeric_cols:
             if X[col].skew() > 1:
-                suggestions.append({
-                    "column": col,
-                    "transformation": "log_transform",
-                    "reason": f"High skewness ({X[col].skew():.2f})",
-                    "expected_impact": "Normalize distribution"
-                })
+                suggestions.append(
+                    {
+                        "column": col,
+                        "transformation": "log_transform",
+                        "reason": f"High skewness ({X[col].skew():.2f})",
+                        "expected_impact": "Normalize distribution",
+                    }
+                )
 
         # Categorical feature suggestions
         for col in categorical_cols:
             if X[col].nunique() > 10:
-                suggestions.append({
-                    "column": col,
-                    "transformation": "target_encoding",
-                    "reason": f"High cardinality ({X[col].nunique()} unique values)",
-                    "expected_impact": "Reduce dimensionality"
-                })
+                suggestions.append(
+                    {
+                        "column": col,
+                        "transformation": "target_encoding",
+                        "reason": f"High cardinality ({X[col].nunique()} unique values)",
+                        "expected_impact": "Reduce dimensionality",
+                    }
+                )
 
         return suggestions
