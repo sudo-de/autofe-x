@@ -1,7 +1,7 @@
 """
 Data Profiling Engine
 
-Analyzes data quality, distributions, outliers, and statistical properties.
+Analyzes data quality, distributions, outliers, and statistical properties..
 """
 
 import pandas as pd
