@@ -10,7 +10,7 @@ Goes beyond basic Matplotlib and Plotly with:
 
 import pandas as pd
 import numpy as np
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union, Any, Dict
 import warnings
 
 try:
