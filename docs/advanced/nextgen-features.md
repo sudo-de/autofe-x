@@ -8,7 +8,7 @@ NextGen improvements that elevate AutoFE-X to enterprise-grade feature engineeri
 
 ## ✨ New Capabilities
 
-### 1. Advanced Feature Engineering (`AdvancedFeatureEngineer`)
+### 1. Advanced Feature Engineering (`FeatureEngineer`)
 
 **Statistical Aggregations:**
 - Group-based aggregations (mean, std, min, max, median per group)
@@ -43,7 +43,7 @@ NextGen improvements that elevate AutoFE-X to enterprise-grade feature engineeri
 - Spatial: Distance calculations
 - Temporal: Cyclical encoding (sin/cos)
 
-### 2. Advanced Feature Selection (`AdvancedFeatureSelector`)
+### 2. Advanced Feature Selection (`FeatureSelector`)
 
 **Multiple Selection Strategies:**
 - **L1 Regularization (Lasso)**: Sparse feature selection
@@ -75,7 +75,7 @@ NextGen improvements that elevate AutoFE-X to enterprise-grade feature engineeri
 ### Example 1: Advanced Feature Engineering
 
 ```python
-from autofex import AdvancedFeatureEngineer
+from autofex import FeatureEngineer
 import pandas as pd
 
 # Load data
@@ -84,7 +84,7 @@ y = df['target']
 X = df.drop('target', axis=1)
 
 # Use advanced feature engineering
-advanced_fe = AdvancedFeatureEngineer({
+advanced_fe = FeatureEngineer({
     'statistical_aggregations': True,
     'time_series_features': True,
     'advanced_binning': True,
@@ -102,7 +102,7 @@ print(f"Advanced: {X_advanced.shape[1]} features")
 ### Example 2: Advanced Feature Selection
 
 ```python
-from autofex import AdvancedFeatureSelector
+from autofex import FeatureSelector
 import pandas as pd
 
 # Load data
@@ -111,7 +111,7 @@ y = df['target']
 X = df.drop('target', axis=1)
 
 # Use advanced feature selection
-selector = AdvancedFeatureSelector({
+selector = FeatureSelector({
     'strategies': ['l1', 'rfe', 'variance', 'correlation'],
     'n_features': 50,
     'cv_folds': 5
@@ -161,8 +161,8 @@ viz.plot_feature_lineage_graph(result.feature_lineage, save_path='lineage.png')
 ```python
 from autofex import (
     AutoFEX, 
-    AdvancedFeatureEngineer, 
-    AdvancedFeatureSelector,
+    FeatureEngineer, 
+    FeatureSelector,
     FeatureVisualizer
 )
 import pandas as pd
@@ -173,7 +173,7 @@ y = df['target']
 X = df.drop('target', axis=1)
 
 # Step 1: Advanced feature engineering
-advanced_fe = AdvancedFeatureEngineer({
+advanced_fe = FeatureEngineer({
     'statistical_aggregations': True,
     'time_series_features': True,
     'cross_features': True
@@ -181,7 +181,7 @@ advanced_fe = AdvancedFeatureEngineer({
 X_advanced = advanced_fe.fit_transform(X, y)
 
 # Step 2: Advanced feature selection
-selector = AdvancedFeatureSelector({
+selector = FeatureSelector({
     'strategies': ['l1', 'rfe'],
     'n_features': 100
 })
@@ -273,14 +273,14 @@ pip install autofex[viz]
 
 # Import NextGen features
 from autofex import (
-    AdvancedFeatureEngineer,
-    AdvancedFeatureSelector,
+    FeatureEngineer,
+    FeatureSelector,
     FeatureVisualizer
 )
 
 # Use in your pipeline
-advanced_fe = AdvancedFeatureEngineer()
-selector = AdvancedFeatureSelector()
+advanced_fe = FeatureEngineer()
+selector = FeatureSelector()
 viz = FeatureVisualizer()
 ```
 

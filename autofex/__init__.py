@@ -20,7 +20,7 @@ from .lineage import FeatureLineageTracker
 
 # NextGen improvements
 try:
-    from .feature_engineering.advanced import FeatureEngineer
+    from .feature_engineering.advanced import FeatureEngineer  # type: ignore[assignment]
     from .feature_selection.selector import FeatureSelector
     from .visualization import FeatureVisualizer
     from .analysis.statistical import StatisticalAnalyzer as StatisticalAnalyzer

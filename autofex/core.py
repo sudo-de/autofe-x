@@ -15,14 +15,14 @@ from .utils.cache import OperationCache
 
 # Import FeatureEngineer - try advanced first, fallback to base
 try:
-    from .feature_engineering.advanced import FeatureEngineer
+    from .feature_engineering.advanced import FeatureEngineer  # type: ignore[assignment]
     from .feature_selection.selector import FeatureSelector
     from .visualization import FeatureVisualizer
 
     _NEXTGEN_AVAILABLE = True
 except ImportError:
     _NEXTGEN_AVAILABLE = False
-    from .feature_engineering import FeatureEngineer
+    from .feature_engineering import FeatureEngineer  # type: ignore[assignment]
 
     FeatureSelector = None  # type: ignore
     FeatureVisualizer = None  # type: ignore

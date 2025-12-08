@@ -112,8 +112,8 @@ leakage_report = detector.detect(X, y)
 
 ```python
 from autofex import (
-    AdvancedFeatureEngineer,
-    AdvancedFeatureSelector,
+    FeatureEngineer,
+    FeatureSelector,
     FeatureVisualizer,
     InteractiveDashboard,
     AdvancedStatisticalAnalyzer,
@@ -130,7 +130,7 @@ from autofex import (
 ) -->
 
 <!-- # feature engineering
-advanced_fe = AdvancedFeatureEngineer({
+advanced_fe = FeatureEngineer({
     'statistical_aggregations': True,
     'time_series_features': True,
     'cross_features': True
@@ -138,7 +138,7 @@ advanced_fe = AdvancedFeatureEngineer({
 X_advanced = advanced_fe.fit_transform(X, y)
 
 # Intelligent feature selection
-selector = AdvancedFeatureSelector({
+selector = FeatureSelector({
     'strategies': ['l1', 'rfe', 'variance'],
     'n_features': 50
 })

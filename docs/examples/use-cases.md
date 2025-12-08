@@ -59,14 +59,14 @@ result = afx.process(X, y)
 ## Time-Series Forecasting
 
 ```python
-from autofex import AdvancedFeatureEngineer
+from autofex import FeatureEngineer
 
 # Load time-series data
 X = load_time_series_features()
 y = load_target_series()
 
 # Engineer time-series features
-engineer = AdvancedFeatureEngineer(
+engineer = FeatureEngineer(
     include_time_series=True
 )
 engineered_X = engineer.fit_transform(X, y)

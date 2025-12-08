@@ -5,10 +5,10 @@ Complex examples demonstrating advanced AutoFE-X features.
 ## Advanced Feature Engineering
 
 ```python
-from autofex import AdvancedFeatureEngineer
+from autofex import FeatureEngineer
 
 # Initialize with advanced options
-engineer = AdvancedFeatureEngineer(
+engineer = FeatureEngineer(
     include_statistical=True,
     include_time_series=True,
     include_domain_specific=True
@@ -21,10 +21,10 @@ engineered_X = engineer.fit_transform(X, y)
 ## Intelligent Feature Selection
 
 ```python
-from autofex import AdvancedFeatureSelector
+from autofex import FeatureSelector
 
 # Initialize selector
-selector = AdvancedFeatureSelector(
+selector = FeatureSelector(
     method='l1',
     n_features=50
 )

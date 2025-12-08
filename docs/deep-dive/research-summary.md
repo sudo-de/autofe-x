@@ -2,7 +2,7 @@
 
 ## 🎯 What's New
 
-### 1. Sophisticated Feature Engineering (`AdvancedFeatureEngineer`)
+### 1. Sophisticated Feature Engineering (`FeatureEngineer`)
 
 **Statistical Aggregations:**
 - Group-based aggregations (mean, std, min, max, median)
@@ -36,7 +36,7 @@
 - Spatial: Distance calculations
 - Temporal: Cyclical encoding (sin/cos)
 
-### 2. Sophisticated Feature Selection (`AdvancedFeatureSelector`)
+### 2. Sophisticated Feature Selection (`FeatureSelector`)
 
 **Selection Strategies:**
 - **L1 Regularization (Lasso)**: Sparse feature selection with automatic alpha tuning
@@ -80,13 +80,13 @@
 
 ```python
 from autofex import (
-    AdvancedFeatureEngineer,
-    AdvancedFeatureSelector,
+    FeatureEngineer,
+    FeatureSelector,
     FeatureVisualizer
 )
 
 # 1. Sophisticated feature engineering
-advanced_fe = AdvancedFeatureEngineer({
+advanced_fe = FeatureEngineer({
     'statistical_aggregations': True,
     'time_series_features': True,
     'cross_features': True
@@ -94,7 +94,7 @@ advanced_fe = AdvancedFeatureEngineer({
 X_advanced = advanced_fe.fit_transform(X, y)
 
 # 2. Intelligent feature selection
-selector = AdvancedFeatureSelector({
+selector = FeatureSelector({
     'strategies': ['l1', 'rfe', 'variance'],
     'n_features': 50
 })

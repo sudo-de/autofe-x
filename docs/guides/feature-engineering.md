@@ -86,12 +86,12 @@ engineer = FeatureEngineer(
 
 ## Advanced Feature Engineering
 
-For more advanced features, use `AdvancedFeatureEngineer`:
+For more advanced features, use `FeatureEngineer`:
 
 ```python
-from autofex import AdvancedFeatureEngineer
+from autofex import FeatureEngineer
 
-advanced_engineer = AdvancedFeatureEngineer(
+advanced_engineer = FeatureEngineer(
     include_statistical=True,      # Statistical aggregations
     include_time_series=True,      # Time-series features
     include_domain_specific=True   # Domain-specific features
@@ -121,9 +121,9 @@ advanced_engineer = AdvancedFeatureEngineer(
 After engineering features, select the best ones:
 
 ```python
-from autofex import AdvancedFeatureSelector
+from autofex import FeatureSelector
 
-selector = AdvancedFeatureSelector(
+selector = FeatureSelector(
     method='l1',           # L1 regularization
     n_features=50          # Select top 50 features
 )

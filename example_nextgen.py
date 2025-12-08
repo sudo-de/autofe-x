@@ -9,8 +9,8 @@ import numpy as np
 from sklearn.datasets import make_classification
 from autofex import (
     AutoFEX,
-    AdvancedFeatureEngineer,
-    AdvancedFeatureSelector,
+    FeatureEngineer,
+    FeatureSelector,
     FeatureVisualizer,
 )
 
@@ -49,7 +49,7 @@ def main():
     print("🔧 Advanced Feature Engineering")
     print("=" * 50)
 
-    advanced_fe = AdvancedFeatureEngineer(
+    advanced_fe = FeatureEngineer(
         {
             "statistical_aggregations": True,
             "time_series_features": True,
@@ -72,7 +72,7 @@ def main():
     print("🎯 Advanced Feature Selection")
     print("=" * 50)
 
-    selector = AdvancedFeatureSelector(
+    selector = FeatureSelector(
         {
             "strategies": ["l1", "rfe", "variance", "correlation"],
             "n_features": 50,
