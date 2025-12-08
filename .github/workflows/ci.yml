@@ -282,7 +282,8 @@ jobs:
         python -m twine check dist/*
         # Install the built package to verify it works
         pip install dist/*.whl
-        python -c "import autofex; print(f'✅ Building version {autofex.__version__}')"
+        # Check version using pkg_resources (avoids importing source directory)
+        python -c "import pkg_resources; pkg = pkg_resources.get_distribution('autofex'); print(f'✅ Building version {pkg.version}')"
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
