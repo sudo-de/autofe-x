@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/autofex.svg)](https://pypi.org/project/autofex/)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![codecov](https://codecov.io/gh/autofe-x/autofe-x/branch/main/graph/badge.svg)](https://codecov.io/gh/autofe-x/autofe-x)
+[![codecov](https://codecov.io/gh/autofe-x/autofe-x/branch/main/graph/badge.svg)](https://app.codecov.io/github/sudo-de/autofe-x)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **AutoFE-X brings automated feature engineering, data diagnostics, leakage detection, benchmarking, and feature lineage into a unified toolkit designed for modern ML workflows.** It acts as a structured feature ``intelligence layer`` that can be inserted into any pipeline—lightweight, interpretable, and fully transparent.
