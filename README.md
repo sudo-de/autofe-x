@@ -585,14 +585,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Documentation**: See the [`docs/`](docs/) directory for comprehensive guides
-- **Issues**: [GitHub Issues](https://github.com/autofex/autofex/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/autofe-x/autofe-x/discussions)
+- **Issues**: [GitHub Issues](https://github.com/sudo-de/autofex/issues)
+<!-- - **Discussions**: [GitHub Discussions](https://github.com/sudo-de-x/autofe-x/discussions) -->
 
 
-**Ready to supercharge your ML pipelines?** 🚀
+<!-- **Ready to supercharge your ML pipelines?** 🚀
 
 ```bash
 pip install autofex
-```
+``` -->
 
 <!-- *AutoFE-X: Because feature engineering shouldn't be the bottleneck in your ML workflow.* -->
+# autofe-x
