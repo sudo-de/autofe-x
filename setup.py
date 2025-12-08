@@ -17,7 +17,7 @@ except FileNotFoundError:
         AutoFE-X provides a unified framework for building feature-centric ML pipelines. 
         It combines automated feature creation, dataset diagnostics, leakage risk assessment,
         benchmarking utilities, and graph-based feature lineage into a single, 
-        lightweight and interpretable toolkit.
+        lightweight and interpretable toolkit...
 
         Core capabilities include:
             - Automated generation of numerical, categorical, and interaction features
