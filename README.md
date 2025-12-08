@@ -116,8 +116,8 @@ from autofex import (
     FeatureSelector,
     FeatureVisualizer,
     InteractiveDashboard,
-    AdvancedStatisticalAnalyzer,
-    UltraAdvancedStatisticalAnalyzer,
+    StatisticalAnalyzer,
+    UltraStatisticalAnalyzer,
     MultiDimensionalVisualizer,
     MathematicalModelingEngine,
     StatisticalTransforms,
@@ -155,7 +155,7 @@ dashboard.create_comprehensive_dashboard(result, save_path="dashboard.html")
 insights = dashboard.create_insights_report(result, save_path="insights.html")
 
 # Advanced Statistical Analysis (beyond basic Scipy)
-analyzer = AdvancedStatisticalAnalyzer()
+analyzer = StatisticalAnalyzer()
 norm_result = analyzer.comprehensive_normality_test(X['feature'])
 comp_result = analyzer.comprehensive_comparison_test(group1, group2)
 corr_analysis = analyzer.correlation_analysis_advanced(X, y)
@@ -325,9 +325,9 @@ insights = dashboard.create_insights_report(result, save_path="insights.html")
 - **Automated insights** and recommendations
 
 ```python
-from autofex import AdvancedStatisticalAnalyzer
+from autofex import StatisticalAnalyzer
 
-analyzer = AdvancedStatisticalAnalyzer(alpha=0.05)
+analyzer = StatisticalAnalyzer(alpha=0.05)
 
 # Comprehensive normality testing
 norm_result = analyzer.comprehensive_normality_test(X['feature'])
@@ -397,9 +397,9 @@ auto_config = recommender.get_auto_config(X, y)
 #### 🚀 Ultra-Advanced Statistical Analysis (Beyond Scipy)
 
 ```python
-from autofex import UltraAdvancedStatisticalAnalyzer
+from autofex import UltraStatisticalAnalyzer
 
-analyzer = UltraAdvancedStatisticalAnalyzer()
+analyzer = UltraStatisticalAnalyzer()
 
 # Advanced ANOVA with post-hoc tests and effect sizes
 groups = [group1, group2, group3]
@@ -488,23 +488,49 @@ viz.plot_5d(
 ### Custom Transformations
 
 ```python
+from sklearn.preprocessing import FunctionTransformer
+from autofex import FeatureEngineer
+
+# Option 1: Using FunctionTransformer
+def your_custom_function(X):
+    # Your custom transformation logic
+    # Example: square all numeric columns
+    X_transformed = X.copy()
+    numeric_cols = X.select_dtypes(include=['number']).columns
+    for col in numeric_cols:
+        X_transformed[col + '_squared'] = X[col] ** 2
+    return X_transformed
+
+custom_transformer = FunctionTransformer(func=your_custom_function)
+X_custom = custom_transformer.fit_transform(X)
+
+# Option 2: Custom transformer class
 class CustomTransformer:
     def fit(self, X, y=None):
         return self
 
     def transform(self, X):
         # Your custom logic
+        X_transformed = X.copy()
+        numeric_cols = X.select_dtypes(include=['number']).columns
+        for col in numeric_cols:
+            X_transformed[col + '_custom'] = X[col] * 2
         return X_transformed
 
-# Use in pipeline
-afx = AutoFEX()
-afx.feature_engineer.add_transformer('custom', CustomTransformer())
+custom_trans = CustomTransformer()
+custom_trans.fit(X, y)
+X_custom = custom_trans.transform(X)
+
+# Use FeatureEngineer for standard transformations
+fe = FeatureEngineer()
+X_engineered = fe.fit_transform(X, y)
 ```
 
-### Integration with Existing Pipelines
+<!-- ### Integration with Existing Pipelines
 
 ```python
 from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
 from autofex import FeatureEngineer
 
 pipeline = Pipeline([
@@ -513,7 +539,7 @@ pipeline = Pipeline([
 ])
 
 pipeline.fit(X_train, y_train)
-```
+``` -->
 
 ## 📈 Performance
 
