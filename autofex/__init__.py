@@ -47,11 +47,11 @@ def __getattr__(name: str):
 
     if name == "FeatureEngineer":
         try:
-            from .feature_engineering.advanced import FeatureEngineer
+            from .feature_engineering.advanced import FeatureEngineer  # type: ignore[assignment]
 
             return FeatureEngineer
         except ImportError:
-            from .feature_engineering import FeatureEngineer
+            from .feature_engineering import FeatureEngineer  # type: ignore[assignment]
 
             return FeatureEngineer
 
