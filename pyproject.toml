@@ -77,6 +77,9 @@ Issues = "https://github.com/autofe-x/autofe-x/issues"
 [tool.setuptools.packages.find]
 exclude = ["tests*"]
 
+[project.scripts]
+autofex = "autofex.cli:main"
+
 [tool.black]
 line-length = 88
 target-version = ['py38', 'py39', 'py310', 'py311', 'py312', 'py313', 'py314']
