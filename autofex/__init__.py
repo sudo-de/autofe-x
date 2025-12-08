@@ -11,103 +11,9 @@ A next-gen toolkit that becomes the brain of any ML pipeline by combining:
 Lightweight, fast, and interpretable. No LLMs.
 """
 
-from .core import AutoFEX
-from .feature_engineering import FeatureEngineer
-from .data_profiling import DataProfiler
-from .leakage_detection import LeakageDetector
-from .benchmarking import FeatureBenchmarker
-from .lineage import FeatureLineageTracker
-
-# NextGen improvements
-try:
-    from .feature_engineering.advanced import FeatureEngineer  # type: ignore[assignment]
-    from .feature_selection.selector import FeatureSelector
-    from .visualization import FeatureVisualizer
-    from .analysis.statistical import StatisticalAnalyzer as StatisticalAnalyzer
-
-    _NEXTGEN_AVAILABLE = True
-except ImportError:
-    _NEXTGEN_AVAILABLE = False
-
-try:
-    from .visualization.dashboard import InteractiveDashboard
-
-    _DASHBOARD_AVAILABLE = True
-except ImportError:
-    _DASHBOARD_AVAILABLE = False
-    InteractiveDashboard = None  # type: ignore
-
-try:
-    from .visualization.multidimensional import MultiDimensionalVisualizer
-
-    _MULTIDIM_AVAILABLE = True
-except ImportError:
-    _MULTIDIM_AVAILABLE = False
-    MultiDimensionalVisualizer = None  # type: ignore
-
-try:
-    from .analysis.ultra_stats import (
-        UltraStatisticalAnalyzer as UltraStatisticalAnalyzer,
-    )
-
-    _ULTRA_STATS_AVAILABLE = True
-except ImportError:
-    _ULTRA_STATS_AVAILABLE = False
-    UltraStatisticalAnalyzer = None  # type: ignore
-
-try:
-    from .mathematical.modeling import MathematicalModelingEngine
-
-    _MATH_MODELING_AVAILABLE = True
-except ImportError:
-    _MATH_MODELING_AVAILABLE = False
-    MathematicalModelingEngine = None  # type: ignore
-
-try:
-    from .statistical.stat_transforms import StatisticalTransforms
-
-    _STAT_TRANSFORMS_AVAILABLE = True
-except ImportError:
-    _STAT_TRANSFORMS_AVAILABLE = False
-    StatisticalTransforms = None  # type: ignore
-
-try:
-    from .pandas.operations import PandasOperations
-
-    _PANDAS_AVAILABLE = True
-except ImportError:
-    _PANDAS_AVAILABLE = False
-    PandasOperations = None  # type: ignore
-
-try:
-    from .numpy.operations import NumpyOperations
-
-    _NUMPY_AVAILABLE = True
-except ImportError:
-    _NUMPY_AVAILABLE = False
-    NumpyOperations = None  # type: ignore
-
-try:
-    from .scipy.operations import ScipyOperations
-
-    _SCIPY_AVAILABLE = True
-except ImportError:
-    _SCIPY_AVAILABLE = False
-    ScipyOperations = None  # type: ignore
-
-try:
-    from .intelligence.orchestrator import IntelligentOrchestrator
-    from .intelligence.quality_scorer import FeatureQualityScorer
-    from .intelligence.recommender import FeatureEngineeringRecommender
-
-    _INTELLIGENCE_AVAILABLE = True
-except ImportError:
-    _INTELLIGENCE_AVAILABLE = False
-    IntelligentOrchestrator = None  # type: ignore
-    FeatureQualityScorer = None  # type: ignore
-    FeatureEngineeringRecommender = None  # type: ignore
-
 __version__ = "0.1.1"
+
+# Lazy loading to avoid import errors when dependencies aren't available
 __all__ = [
     "AutoFEX",
     "FeatureEngineer",
@@ -115,47 +21,149 @@ __all__ = [
     "LeakageDetector",
     "FeatureBenchmarker",
     "FeatureLineageTracker",
+    "FeatureSelector",
+    "FeatureVisualizer",
+    "StatisticalAnalyzer",
+    "InteractiveDashboard",
+    "MultiDimensionalVisualizer",
+    "UltraStatisticalAnalyzer",
+    "MathematicalModelingEngine",
+    "StatisticalTransforms",
+    "PandasOperations",
+    "NumpyOperations",
+    "ScipyOperations",
+    "IntelligentOrchestrator",
+    "FeatureQualityScorer",
+    "FeatureEngineeringRecommender",
 ]
 
-if _NEXTGEN_AVAILABLE:
-    __all__.extend(
-        [
-            "FeatureEngineer",
-            "FeatureSelector",
-            "FeatureVisualizer",
-            "StatisticalAnalyzer",
-        ]
-    )
 
-if _DASHBOARD_AVAILABLE:
-    __all__.append("InteractiveDashboard")
-
-if _MULTIDIM_AVAILABLE:
-    __all__.append("MultiDimensionalVisualizer")
-
-if _ULTRA_STATS_AVAILABLE:
-    __all__.append("UltraStatisticalAnalyzer")
-
-if _MATH_MODELING_AVAILABLE:
-    __all__.append("MathematicalModelingEngine")
-
-if _STAT_TRANSFORMS_AVAILABLE:
-    __all__.append("StatisticalTransforms")
-
-if _PANDAS_AVAILABLE:
-    __all__.append("PandasOperations")
-
-if _NUMPY_AVAILABLE:
-    __all__.append("NumpyOperations")
-
-if _SCIPY_AVAILABLE:
-    __all__.append("ScipyOperations")
-
-if _INTELLIGENCE_AVAILABLE:
-    __all__.extend(
-        [
-            "IntelligentOrchestrator",
-            "FeatureQualityScorer",
-            "FeatureEngineeringRecommender",
-        ]
-    )
+def __getattr__(name: str):
+    """Lazy loading of modules to avoid import errors."""
+    if name == "AutoFEX":
+        from . import core
+        return core.AutoFEX
+    
+    if name == "FeatureEngineer":
+        try:
+            from .feature_engineering.advanced import FeatureEngineer
+            return FeatureEngineer
+        except ImportError:
+            from .feature_engineering import FeatureEngineer
+            return FeatureEngineer
+    
+    if name == "DataProfiler":
+        from .data_profiling import DataProfiler
+        return DataProfiler
+    
+    if name == "LeakageDetector":
+        from .leakage_detection import LeakageDetector
+        return LeakageDetector
+    
+    if name == "FeatureBenchmarker":
+        from .benchmarking import FeatureBenchmarker
+        return FeatureBenchmarker
+    
+    if name == "FeatureLineageTracker":
+        from .lineage import FeatureLineageTracker
+        return FeatureLineageTracker
+    
+    if name == "FeatureSelector":
+        try:
+            from .feature_selection.selector import FeatureSelector
+            return FeatureSelector
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "FeatureVisualizer":
+        try:
+            from .visualization import FeatureVisualizer
+            return FeatureVisualizer
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "StatisticalAnalyzer":
+        try:
+            from .analysis.statistical import StatisticalAnalyzer
+            return StatisticalAnalyzer
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "InteractiveDashboard":
+        try:
+            from .visualization.dashboard import InteractiveDashboard
+            return InteractiveDashboard
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "MultiDimensionalVisualizer":
+        try:
+            from .visualization.multidimensional import MultiDimensionalVisualizer
+            return MultiDimensionalVisualizer
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "UltraStatisticalAnalyzer":
+        try:
+            from .analysis.ultra_stats import UltraStatisticalAnalyzer
+            return UltraStatisticalAnalyzer
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "MathematicalModelingEngine":
+        try:
+            from .mathematical.modeling import MathematicalModelingEngine
+            return MathematicalModelingEngine
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "StatisticalTransforms":
+        try:
+            from .statistical.stat_transforms import StatisticalTransforms
+            return StatisticalTransforms
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "PandasOperations":
+        try:
+            from .pandas.operations import PandasOperations
+            return PandasOperations
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "NumpyOperations":
+        try:
+            from .numpy.operations import NumpyOperations
+            return NumpyOperations
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "ScipyOperations":
+        try:
+            from .scipy.operations import ScipyOperations
+            return ScipyOperations
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "IntelligentOrchestrator":
+        try:
+            from .intelligence.orchestrator import IntelligentOrchestrator
+            return IntelligentOrchestrator
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "FeatureQualityScorer":
+        try:
+            from .intelligence.quality_scorer import FeatureQualityScorer
+            return FeatureQualityScorer
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    if name == "FeatureEngineeringRecommender":
+        try:
+            from .intelligence.recommender import FeatureEngineeringRecommender
+            return FeatureEngineeringRecommender
+        except ImportError:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
