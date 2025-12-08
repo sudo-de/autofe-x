@@ -41,8 +41,8 @@ __all__ = [
 def __getattr__(name: str):
     """Lazy loading of modules to avoid import errors."""
     if name == "AutoFEX":
-        from . import core
-        return core.AutoFEX
+        from importlib import import_module
+        return import_module(".core", __package__).AutoFEX
     
     if name == "FeatureEngineer":
         try:
