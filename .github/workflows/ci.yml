@@ -37,7 +37,7 @@ jobs:
         # Future versions (3.14, 3.15) will be added as they become available in GitHub Actions
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -103,7 +103,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -137,7 +137,7 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -168,7 +168,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, lint, security]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -214,7 +214,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -259,7 +259,7 @@ jobs:
       url: https://pypi.org/p/autofex
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       # Checkout the release commit to ensure we build the correct version
       with:
         ref: ${{ github.event.release.tag_name }}
