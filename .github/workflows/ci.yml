@@ -156,7 +156,7 @@ jobs:
       run: safety check --json > safety-report.json || true
 
     - name: Upload security reports
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: security-reports
         path: |
@@ -204,7 +204,7 @@ jobs:
         "
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: dist
         path: dist/
