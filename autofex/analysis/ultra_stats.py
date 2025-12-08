@@ -542,7 +542,7 @@ class UltraStatisticalAnalyzer:
         bootstrap_dict: Dict[str, Any] = results["bootstrap"]  # type: ignore
 
         # Bootstrap samples
-        bootstrap_stats = []
+        bootstrap_stats: List[float] = []
         for _ in range(n_bootstrap):
             sample = np.random.choice(data_clean, size=len(data_clean), replace=True)
             if statistic == "mean":
@@ -554,19 +554,19 @@ class UltraStatisticalAnalyzer:
             else:
                 bootstrap_stats.append(np.mean(sample))
 
-        bootstrap_stats = np.array(bootstrap_stats)
+        bootstrap_stats_array: np.ndarray = np.array(bootstrap_stats)
 
         # Calculate statistics
-        bootstrap_dict["mean"] = np.mean(bootstrap_stats)
-        bootstrap_dict["std"] = np.std(bootstrap_stats)
-        bootstrap_dict["bias"] = np.mean(bootstrap_stats) - (
+        bootstrap_dict["mean"] = np.mean(bootstrap_stats_array)
+        bootstrap_dict["std"] = np.std(bootstrap_stats_array)
+        bootstrap_dict["bias"] = np.mean(bootstrap_stats_array) - (
             np.mean(data_clean) if statistic == "mean" else np.median(data_clean)
         )
 
         # Confidence interval
         alpha_ci = 1 - confidence_level
-        lower = np.percentile(bootstrap_stats, 100 * alpha_ci / 2)
-        upper = np.percentile(bootstrap_stats, 100 * (1 - alpha_ci / 2))
+        lower = np.percentile(bootstrap_stats_array, 100 * alpha_ci / 2)
+        upper = np.percentile(bootstrap_stats_array, 100 * (1 - alpha_ci / 2))
 
         results["confidence_interval"] = {
             "lower": lower,
