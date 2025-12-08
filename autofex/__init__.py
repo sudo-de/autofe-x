@@ -46,7 +46,9 @@ except ImportError:
     MultiDimensionalVisualizer = None  # type: ignore
 
 try:
-    from .analysis.ultra_stats import UltraStatisticalAnalyzer as UltraStatisticalAnalyzer
+    from .analysis.ultra_stats import (
+        UltraStatisticalAnalyzer as UltraStatisticalAnalyzer,
+    )
 
     _ULTRA_STATS_AVAILABLE = True
 except ImportError:

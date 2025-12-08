@@ -240,7 +240,9 @@ class AutoFEX:
             )
 
         # Set up progress callback for feature engineering
-        if self.progress_tracker and hasattr(self.feature_engineer, 'set_progress_callback'):
+        if self.progress_tracker and hasattr(
+            self.feature_engineer, "set_progress_callback"
+        ):
 
             def _progress_callback(completed: int, total: int):
                 if self.progress_tracker:

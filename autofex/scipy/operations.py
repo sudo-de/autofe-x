@@ -170,9 +170,7 @@ class ScipyOperations:
 
         return features
 
-    def create_signal_processing_features(
-        self, X: pd.DataFrame
-    ) -> pd.DataFrame:
+    def create_signal_processing_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Create signal processing features.
 
