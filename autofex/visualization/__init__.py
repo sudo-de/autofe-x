@@ -1,7 +1,7 @@
 """
 Visualization Module
 
-NextGen visualization capabilities for:
+Visualization capabilities for:
 - Feature importance plots
 - Data quality dashboards
 - Leakage detection visualizations

@@ -12,11 +12,11 @@ import warnings
 
 try:
     from ..mathematical.modeling import MathematicalModelingEngine
-    from ..statistical.advanced_transforms import AdvancedStatisticalTransforms
-    from ..pandas_advanced.operations import AdvancedPandasOperations
-    from ..numpy_advanced.operations import AdvancedNumpyOperations
-    from ..scipy_advanced.operations import AdvancedScipyOperations
-    from ..feature_engineering.advanced import AdvancedFeatureEngineer
+    from ..statistical.advanced_transforms import StatisticalTransforms
+    from ..pandas_advanced.operations import PandasOperations
+    from ..numpy_advanced.operations import NumpyOperations
+    from ..scipy_advanced.operations import ScipyOperations
+    from ..feature_engineering import FeatureEngineer
 
     _ALL_MODULES_AVAILABLE = True
 except ImportError:
@@ -137,7 +137,7 @@ class IntelligentOrchestrator:
         # 1. Statistical transforms for skewed data
         if len(characteristics["skewed_features"]) > 0:
             try:
-                stat_transforms = AdvancedStatisticalTransforms()
+                stat_transforms = StatisticalTransforms()
                 transformed = stat_transforms.apply_all_transforms(X)
                 if not transformed.empty:
                     all_features.append(transformed)
@@ -147,7 +147,7 @@ class IntelligentOrchestrator:
         # 2. Pandas operations for datetime and strings
         if characteristics["datetime_count"] > 0 or characteristics["string_count"] > 0:
             try:
-                pandas_ops = AdvancedPandasOperations(
+                pandas_ops = PandasOperations(
                     {
                         "datetime_features": characteristics["datetime_count"] > 0,
                         "string_features": characteristics["string_count"] > 0,
@@ -181,7 +181,7 @@ class IntelligentOrchestrator:
         # 4. Numpy operations for array-wide features
         if characteristics["numeric_count"] >= 3:
             try:
-                numpy_ops = AdvancedNumpyOperations(
+                numpy_ops = NumpyOperations(
                     {
                         "array_features": True,
                         "aggregation_features": True,
@@ -195,7 +195,7 @@ class IntelligentOrchestrator:
 
         # 5. Advanced feature engineering
         try:
-            advanced_fe = AdvancedFeatureEngineer(
+            advanced_fe = FeatureEngineer(
                 {
                     "statistical_aggregations": True,
                     "cross_features": True,

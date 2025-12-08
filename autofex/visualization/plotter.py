@@ -10,13 +10,16 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
 
+# Suppress Plotly import warnings - it's an optional dependency
+warnings.filterwarnings("ignore", message=".*Plotly.*", category=UserWarning)
+
 try:
     import plotly.graph_objects as go
 
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
-    warnings.warn("Plotly not available. Some visualizations will be limited.")
+    # Plotly is optional - no warning needed
 
 
 class FeatureVisualizer:

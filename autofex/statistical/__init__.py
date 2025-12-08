@@ -1,9 +1,9 @@
 """
-Advanced Statistical Transformations Module
+Statistical Transformations Module
 
 Statistical feature engineering using scipy.stats and numpy.
 """
 
-from .advanced_transforms import AdvancedStatisticalTransforms
+from .stat_transforms import StatisticalTransforms
 
-__all__ = ["AdvancedStatisticalTransforms"]
+__all__ = ["StatisticalTransforms"]

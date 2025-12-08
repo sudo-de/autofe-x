@@ -1,7 +1,7 @@
 """
 Mathematical Modeling Module
 
-Advanced mathematical modeling features using numpy, pandas, scipy, and scikit-learn.
+Mathematical modeling features using numpy, pandas, scipy, and scikit-learn.
 """
 
 from .modeling import MathematicalModelingEngine

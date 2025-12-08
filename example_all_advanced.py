@@ -9,10 +9,10 @@ import numpy as np
 from autofex import (
     AutoFEX,
     MathematicalModelingEngine,
-    AdvancedStatisticalTransforms,
-    AdvancedPandasOperations,
-    AdvancedNumpyOperations,
-    AdvancedScipyOperations,
+    StatisticalTransforms,
+    PandasOperations,
+    NumpyOperations,
+    ScipyOperations,
 )
 
 # Generate comprehensive sample data
@@ -87,7 +87,7 @@ print(f"   • Polynomial, Spline, PCA, ICA, Clustering, Manifold")
 print("\n3️⃣ Advanced Statistical Transforms")
 print("-" * 70)
 
-stat_transforms = AdvancedStatisticalTransforms()
+stat_transforms = StatisticalTransforms()
 stat_features = stat_transforms.apply_all_transforms(result.engineered_features)
 stat_summary = stat_transforms.create_statistical_features(result.engineered_features)
 
@@ -101,7 +101,7 @@ print(f"   • Box-Cox, Yeo-Johnson, Quantile, Power, Rank, Z-score")
 print("\n4️⃣ Advanced Pandas Operations")
 print("-" * 70)
 
-pandas_ops = AdvancedPandasOperations({
+pandas_ops = PandasOperations({
     "window_features": True,
     "datetime_features": True,
     "string_features": True,
@@ -119,7 +119,7 @@ print(f"   • Rolling windows, Datetime, String, Cumulative, Differences")
 print("\n5️⃣ Advanced Numpy Operations")
 print("-" * 70)
 
-numpy_ops = AdvancedNumpyOperations({
+numpy_ops = NumpyOperations({
     "array_features": True,
     "broadcasting_features": True,
     "matrix_features": True,
@@ -137,7 +137,7 @@ print(f"   • Array ops, Broadcasting, Matrix ops, Math functions, Aggregations
 print("\n6️⃣ Advanced Scipy Operations")
 print("-" * 70)
 
-scipy_ops = AdvancedScipyOperations({
+scipy_ops = ScipyOperations({
     "distance_features": True,
     "optimization_features": True,
     "signal_features": True,

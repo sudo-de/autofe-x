@@ -1,13 +1,17 @@
 """
-Advanced Feature Engineering Techniques
+Feature Engineering Techniques
 
-NextGen improvements including:
-- Statistical aggregations
-- Time-series features
-- Advanced binning strategies
-- Cross-feature interactions
-- Domain-specific transformations
+This module introduces a collection of higher-level feature engineering methods, including:
+
+- Statistical aggregations and summary metrics
+- Time-series–oriented feature generation
+- Binning and discretization strategies
+- Cross-feature interaction construction
+- Domain-specific transformation routines
+
+These tools expand the core feature engineering pipeline with richer and more adaptable transformations.
 """
+
 
 import pandas as pd
 import numpy as np
@@ -17,15 +21,15 @@ from sklearn.preprocessing import KBinsDiscretizer
 import warnings
 
 
-class AdvancedFeatureEngineer:
+class FeatureEngineer:
     """
-    Advanced feature engineering with statistical aggregations,
+    Feature engineering with statistical aggregations,
     time-series features, and domain-specific transformations.
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """
-        Initialize advanced feature engineer.
+        Initialize feature engineer.
 
         Args:
             config: Configuration dictionary
@@ -187,9 +191,15 @@ class AdvancedFeatureEngineer:
 
         for col in numeric_cols:
             try:
-                discretizer = KBinsDiscretizer(
-                    n_bins=self.n_bins, encode="ordinal", strategy=strategy
-                )
+                discretizer_params = {
+                    "n_bins": self.n_bins,
+                    "encode": "ordinal",
+                    "strategy": strategy,
+                }
+                # Suppress FutureWarning for quantile_method in sklearn >= 1.3
+                if strategy == "quantile":
+                    discretizer_params["quantile_method"] = "averaged_inverted_cdf"
+                discretizer = KBinsDiscretizer(**discretizer_params)
                 binned = discretizer.fit_transform(X[[col]])
                 features.append(
                     pd.DataFrame(
@@ -413,14 +423,14 @@ class AdvancedFeatureEngineer:
         self, X: pd.DataFrame, y: Optional[pd.Series] = None
     ) -> pd.DataFrame:
         """
-        Apply all advanced feature engineering techniques.
+        Apply all feature engineering techniques.
 
         Args:
             X: Input features
             y: Target variable (optional)
 
         Returns:
-            DataFrame with all advanced features
+            DataFrame with all features
         """
         all_features = [X.copy()]
 

@@ -58,7 +58,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -e .[dev]
-        # Install optional dependencies for advanced features
+        # Install optional dependencies for features
         pip install plotly || echo "Plotly optional, continuing..."
         pip install statsmodels || echo "Statsmodels optional, continuing..."
       continue-on-error: ${{ matrix.allow-failure == 'true' }}
@@ -68,30 +68,37 @@ jobs:
         python -m pytest --cov=autofex --cov-report=xml --cov-report=term-missing -v
       continue-on-error: ${{ matrix.allow-failure == 'true' }}
 
-    - name: Test advanced features
+    - name: Test features
       if: matrix.test-advanced == 'true'
       run: |
         python -c "
         from autofex import (
             MathematicalModelingEngine,
-            AdvancedStatisticalTransforms,
-            AdvancedPandasOperations,
-            AdvancedNumpyOperations,
-            AdvancedScipyOperations,
+            StatisticalTransforms,
+            PandasOperations,
+            NumpyOperations,
+            ScipyOperations,
             IntelligentOrchestrator,
             FeatureQualityScorer,
             FeatureEngineeringRecommender,
         )
-        print('✅ All advanced modules imported successfully')
+        print('✅ All modules imported successfully')
         "
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
+
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     runs-on: ubuntu-latest

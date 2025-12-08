@@ -20,10 +20,10 @@ from .lineage import FeatureLineageTracker
 
 # NextGen improvements
 try:
-    from .feature_engineering.advanced import AdvancedFeatureEngineer
-    from .feature_selection.selector import AdvancedFeatureSelector
+    from .feature_engineering.advanced import FeatureEngineer
+    from .feature_selection.selector import FeatureSelector
     from .visualization import FeatureVisualizer
-    from .analysis.statistical import StatisticalAnalyzer as AdvancedStatisticalAnalyzer
+    from .analysis.statistical import StatisticalAnalyzer as StatisticalAnalyzer
 
     _NEXTGEN_AVAILABLE = True
 except ImportError:
@@ -46,12 +46,12 @@ except ImportError:
     MultiDimensionalVisualizer = None  # type: ignore
 
 try:
-    from .analysis.ultra_stats import UltraStatisticalAnalyzer as UltraAdvancedStatisticalAnalyzer
+    from .analysis.ultra_stats import UltraStatisticalAnalyzer as UltraStatisticalAnalyzer
 
     _ULTRA_STATS_AVAILABLE = True
 except ImportError:
     _ULTRA_STATS_AVAILABLE = False
-    UltraAdvancedStatisticalAnalyzer = None  # type: ignore
+    UltraStatisticalAnalyzer = None  # type: ignore
 
 try:
     from .mathematical.modeling import MathematicalModelingEngine
@@ -62,36 +62,36 @@ except ImportError:
     MathematicalModelingEngine = None  # type: ignore
 
 try:
-    from .statistical.advanced_transforms import AdvancedStatisticalTransforms
+    from .statistical.stat_transforms import StatisticalTransforms
 
     _STAT_TRANSFORMS_AVAILABLE = True
 except ImportError:
     _STAT_TRANSFORMS_AVAILABLE = False
-    AdvancedStatisticalTransforms = None  # type: ignore
+    StatisticalTransforms = None  # type: ignore
 
 try:
-    from .pandas_advanced.operations import AdvancedPandasOperations
+    from .pandas.operations import PandasOperations
 
-    _PANDAS_ADVANCED_AVAILABLE = True
+    _PANDAS_AVAILABLE = True
 except ImportError:
-    _PANDAS_ADVANCED_AVAILABLE = False
-    AdvancedPandasOperations = None  # type: ignore
+    _PANDAS_AVAILABLE = False
+    PandasOperations = None  # type: ignore
 
 try:
-    from .numpy_advanced.operations import AdvancedNumpyOperations
+    from .numpy.operations import NumpyOperations
 
-    _NUMPY_ADVANCED_AVAILABLE = True
+    _NUMPY_AVAILABLE = True
 except ImportError:
-    _NUMPY_ADVANCED_AVAILABLE = False
-    AdvancedNumpyOperations = None  # type: ignore
+    _NUMPY_AVAILABLE = False
+    NumpyOperations = None  # type: ignore
 
 try:
-    from .scipy_advanced.operations import AdvancedScipyOperations
+    from .scipy.operations import ScipyOperations
 
-    _SCIPY_ADVANCED_AVAILABLE = True
+    _SCIPY_AVAILABLE = True
 except ImportError:
-    _SCIPY_ADVANCED_AVAILABLE = False
-    AdvancedScipyOperations = None  # type: ignore
+    _SCIPY_AVAILABLE = False
+    ScipyOperations = None  # type: ignore
 
 try:
     from .intelligence.orchestrator import IntelligentOrchestrator
@@ -118,10 +118,10 @@ __all__ = [
 if _NEXTGEN_AVAILABLE:
     __all__.extend(
         [
-            "AdvancedFeatureEngineer",
-            "AdvancedFeatureSelector",
+            "FeatureEngineer",
+            "FeatureSelector",
             "FeatureVisualizer",
-            "AdvancedStatisticalAnalyzer",
+            "StatisticalAnalyzer",
         ]
     )
 
@@ -132,22 +132,22 @@ if _MULTIDIM_AVAILABLE:
     __all__.append("MultiDimensionalVisualizer")
 
 if _ULTRA_STATS_AVAILABLE:
-    __all__.append("UltraAdvancedStatisticalAnalyzer")
+    __all__.append("UltraStatisticalAnalyzer")
 
 if _MATH_MODELING_AVAILABLE:
     __all__.append("MathematicalModelingEngine")
 
 if _STAT_TRANSFORMS_AVAILABLE:
-    __all__.append("AdvancedStatisticalTransforms")
+    __all__.append("StatisticalTransforms")
 
-if _PANDAS_ADVANCED_AVAILABLE:
-    __all__.append("AdvancedPandasOperations")
+if _PANDAS_AVAILABLE:
+    __all__.append("PandasOperations")
 
-if _NUMPY_ADVANCED_AVAILABLE:
-    __all__.append("AdvancedNumpyOperations")
+if _NUMPY_AVAILABLE:
+    __all__.append("NumpyOperations")
 
-if _SCIPY_ADVANCED_AVAILABLE:
-    __all__.append("AdvancedScipyOperations")
+if _SCIPY_AVAILABLE:
+    __all__.append("ScipyOperations")
 
 if _INTELLIGENCE_AVAILABLE:
     __all__.extend(

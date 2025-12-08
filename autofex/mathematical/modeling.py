@@ -1,7 +1,7 @@
 """
-Advanced Mathematical Modeling Features
+Mathematical Modeling Features
 
-Leverages numpy, pandas, scipy, and scikit-learn for advanced mathematical
+Leverages numpy, pandas, scipy, and scikit-learn for mathematical
 transformations and modeling-based feature engineering.
 """
 
@@ -19,7 +19,7 @@ import warnings
 
 class MathematicalModelingEngine:
     """
-    Advanced mathematical modeling for feature engineering using
+    Mathematical modeling for feature engineering using
     numpy, pandas, scipy, and scikit-learn.
     """
 

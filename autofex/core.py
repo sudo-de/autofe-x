@@ -16,15 +16,15 @@ from .utils.cache import OperationCache
 
 # NextGen improvements (optional imports)
 try:
-    from .feature_engineering.advanced import AdvancedFeatureEngineer
-    from .feature_selection.selector import AdvancedFeatureSelector
+    from .feature_engineering.advanced import FeatureEngineer
+    from .feature_selection.selector import FeatureSelector
     from .visualization import FeatureVisualizer
 
     _NEXTGEN_AVAILABLE = True
 except ImportError:
     _NEXTGEN_AVAILABLE = False
-    AdvancedFeatureEngineer = None  # type: ignore
-    AdvancedFeatureSelector = None  # type: ignore
+    FeatureEngineer = None  # type: ignore
+    FeatureSelector = None  # type: ignore
     FeatureVisualizer = None  # type: ignore
 
 
@@ -118,17 +118,17 @@ class AutoFEX:
         )
         self.lineage_tracker = FeatureLineageTracker(config=lineage_config or {})
 
-        # NextGen components (if available)
-        self.use_advanced_features = (
-            feature_engineering_config.get("use_advanced", False)
+        # Components (if available)
+        self.use_features = (
+            feature_engineering_config.get("use_adv", False)
             if feature_engineering_config
             else False
         )
-        if _NEXTGEN_AVAILABLE and self.use_advanced_features:
-            self.advanced_feature_engineer = AdvancedFeatureEngineer(
+        if _NEXTGEN_AVAILABLE and self.use_features:
+            self.feature_engineer = FeatureEngineer(
                 config=feature_engineering_config or {}
             )
-            self.feature_selector = AdvancedFeatureSelector(
+            self.feature_selector = FeatureSelector(
                 config=feature_engineering_config.get("selection_config", {}) or {}
             )
             self.visualizer = FeatureVisualizer()
@@ -240,7 +240,7 @@ class AutoFEX:
             )
 
         # Set up progress callback for feature engineering
-        if self.progress_tracker:
+        if self.progress_tracker and hasattr(self.feature_engineer, 'set_progress_callback'):
 
             def _progress_callback(completed: int, total: int):
                 if self.progress_tracker:

@@ -12,16 +12,21 @@ try:
         long_description = f.read()
 except FileNotFoundError:
     long_description = """
-    AutoFE-X: Automated Feature Engineering + Data Profiling + Leakage Detection
+        AutoFE-X: Automated Feature Engineering, Data Profiling, and Leakage Detection
 
-    A next-gen toolkit that becomes the brain of any ML pipeline by combining:
-    - Automatic feature engineering (classic + deep)
-    - Data quality analysis
-    - Leakage detection
-    - Auto-benchmarking of feature sets
-    - Graph-based feature lineage
+        AutoFE-X provides a unified framework for building feature-centric ML pipelines. 
+        It combines automated feature creation, dataset diagnostics, leakage risk assessment,
+        benchmarking utilities, and graph-based feature lineage into a single, 
+        lightweight and interpretable toolkit.
 
-    Lightweight, fast, and interpretable.
+        Core capabilities include:
+            - Automated generation of numerical, categorical, and interaction features
+            - Comprehensive data quality and statistical profiling
+            - Detection of target leakage and train–test inconsistencies
+            - Comparative evaluation of feature sets across models
+            - Traceable feature provenance using graph-based lineage tracking
+
+    Designed to be efficient, transparent, and easy to integrate into both research workflows and production pipelines.
     """
 
 # Read requirements
@@ -45,16 +50,18 @@ except FileNotFoundError:
 setup(
     name="autofex",
     version="0.1.0",
-    author="AutoFE-X Team",
-    author_email="contact@autofe-x.com",
+    author="AutoFE-X",
+    author_email="sudo.dev26@gmail.com",
     description="Automated Feature Engineering + Data Profiling + Leakage Detection",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/autofe-x/autofe-x",
+    url="https://github.com/sudo-de/autofex",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
+        "Intended Audience :: Data Science",
+        "Intended Audience :: Machine Learning",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
@@ -65,12 +72,10 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
-        "Programming Language :: Python :: 3.14",
-        "Programming Language :: Python :: 3.15",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    python_requires=">=3.8,<3.16",
+    python_requires=">=3.8,<3.14",
     install_requires=requirements,
     extras_require={
         "dev": [

@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 from autofex import (
     MathematicalModelingEngine,
-    AdvancedStatisticalTransforms,
+    StatisticalTransforms,
     AutoFEX,
 )
 
@@ -82,7 +82,7 @@ for feat_type, count in feature_types.items():
 print("\n2️⃣ Advanced Statistical Transforms")
 print("-" * 60)
 
-stat_transforms = AdvancedStatisticalTransforms()
+stat_transforms = StatisticalTransforms()
 
 print("📊 Creating statistical transformation features...")
 stat_features = stat_transforms.apply_all_transforms(df.drop("target", axis=1))

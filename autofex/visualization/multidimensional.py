@@ -1,5 +1,5 @@
 """
-Advanced Multi-Dimensional Visualization
+Multi-Dimensional Visualization
 
 Goes beyond basic Matplotlib and Plotly with:
 - 2D: Enhanced scatter, density, contour plots
@@ -13,13 +13,17 @@ import numpy as np
 from typing import List, Optional, Union, Any, Dict
 import warnings
 
+# Suppress optional dependency warnings
+warnings.filterwarnings("ignore", message=".*Plotly.*", category=UserWarning)
+warnings.filterwarnings("ignore", message=".*Matplotlib.*", category=UserWarning)
+
 try:
     import matplotlib.pyplot as plt
 
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
-    warnings.warn("Matplotlib not available. Some visualizations will be limited.")
+    # Matplotlib is optional - no warning needed
 
 try:
     import plotly.graph_objects as go
@@ -28,7 +32,7 @@ try:
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
-    warnings.warn("Plotly not available. Some visualizations will be limited.")
+    # Plotly is optional - no warning needed
     # Create a dummy type for type checking when plotly is not available
     from typing import TYPE_CHECKING
 
@@ -51,7 +55,7 @@ except ImportError:
 
 class MultiDimensionalVisualizer:
     """
-    Advanced multi-dimensional visualization (2D, 3D, 4D, 5D)
+    Multi-dimensional visualization (2D, 3D, 4D, 5D)
     that goes beyond basic Matplotlib and Plotly.
     """
 
@@ -64,17 +68,17 @@ class MultiDimensionalVisualizer:
         """
         self.backend = backend if PLOTLY_AVAILABLE else "matplotlib"
 
-    def plot_2d_advanced(
+    def plot_2d(
         self,
         x: Union[pd.Series, np.ndarray],
         y: Union[pd.Series, np.ndarray],
         color: Optional[Union[pd.Series, np.ndarray]] = None,
         size: Optional[Union[pd.Series, np.ndarray]] = None,
-        title: str = "2D Advanced Plot",
+        title: str = "2D Plot",
         save_path: Optional[str] = None,
     ) -> Any:
         """
-        Advanced 2D visualization with density, contours, and encoding.
+        2D visualization with density, contours, and encoding.
 
         Args:
             x: X-axis data
@@ -101,7 +105,7 @@ class MultiDimensionalVisualizer:
         title: str,
         save_path: Optional[str],
     ) -> Any:  # type: ignore
-        """Create advanced 2D plot with Plotly."""
+        """Create 2D plot with Plotly."""
         fig = make_subplots(
             rows=2,
             cols=2,
@@ -180,7 +184,7 @@ class MultiDimensionalVisualizer:
         title: str,
         save_path: Optional[str],
     ):
-        """Create advanced 2D plot with Matplotlib."""
+        """Create 2D plot with Matplotlib."""
         if not MATPLOTLIB_AVAILABLE:
             return None
 
@@ -223,18 +227,18 @@ class MultiDimensionalVisualizer:
 
         return fig
 
-    def plot_3d_advanced(
+    def plot_3d(
         self,
         x: Union[pd.Series, np.ndarray],
         y: Union[pd.Series, np.ndarray],
         z: Union[pd.Series, np.ndarray],
         color: Optional[Union[pd.Series, np.ndarray]] = None,
         size: Optional[Union[pd.Series, np.ndarray]] = None,
-        title: str = "3D Advanced Plot",
+        title: str = "3D Plot",
         save_path: Optional[str] = None,
     ) -> Any:
         """
-        Advanced 3D visualization with interactive controls.
+        3D visualization with interactive controls.
 
         Args:
             x: X-axis data
@@ -263,7 +267,7 @@ class MultiDimensionalVisualizer:
         title: str,
         save_path: Optional[str],
     ) -> Any:  # type: ignore
-        """Create advanced 3D plot with Plotly."""
+        """Create 3D plot with Plotly."""
         fig = go.Figure()
 
         # 3D scatter
@@ -342,7 +346,7 @@ class MultiDimensionalVisualizer:
         title: str,
         save_path: Optional[str],
     ):
-        """Create advanced 3D plot with Matplotlib."""
+        """Create 3D plot with Matplotlib."""
         if not MATPLOTLIB_AVAILABLE:
             return None
 
@@ -373,18 +377,18 @@ class MultiDimensionalVisualizer:
 
         return fig
 
-    def plot_4d_advanced(
+    def plot_4d(
         self,
         x: Union[pd.Series, np.ndarray],
         y: Union[pd.Series, np.ndarray],
         z: Union[pd.Series, np.ndarray],
         color: Union[pd.Series, np.ndarray],
         size: Optional[Union[pd.Series, np.ndarray]] = None,
-        title: str = "4D Advanced Plot",
+        title: str = "4D Plot",
         save_path: Optional[str] = None,
     ) -> Any:
         """
-        Advanced 4D visualization (3D + color encoding).
+        4D visualization (3D + color encoding).
 
         Args:
             x: X-axis data
@@ -413,7 +417,7 @@ class MultiDimensionalVisualizer:
         title: str,
         save_path: Optional[str],
     ) -> Any:  # type: ignore
-        """Create advanced 4D plot with Plotly."""
+        """Create 4D plot with Plotly."""
         fig = go.Figure()
 
         scatter_kwargs: Dict[str, Any] = {
@@ -467,7 +471,7 @@ class MultiDimensionalVisualizer:
         title: str,
         save_path: Optional[str],
     ):
-        """Create advanced 4D plot with Matplotlib."""
+        """Create 4D plot with Matplotlib."""
         if not MATPLOTLIB_AVAILABLE:
             return None
 
@@ -509,17 +513,17 @@ class MultiDimensionalVisualizer:
 
         return fig
 
-    def plot_5d_advanced(
+    def plot_5d(
         self,
         data: pd.DataFrame,
         dims: List[str],
         color_col: Optional[str] = None,
         size_col: Optional[str] = None,
-        title: str = "5D Advanced Plot",
+        title: str = "5D Plot",
         save_path: Optional[str] = None,
     ) -> Any:
         """
-        Advanced 5D visualization using multiple encoding methods.
+        5D visualization using multiple encoding methods.
 
         Args:
             data: DataFrame with all dimensions
@@ -553,7 +557,7 @@ class MultiDimensionalVisualizer:
         title: str,
         save_path: Optional[str],
     ) -> Any:  # type: ignore
-        """Create advanced 5D plot with Plotly."""
+        """Create 5D plot with Plotly."""
         fig = make_subplots(
             rows=2,
             cols=2,
@@ -684,7 +688,7 @@ class MultiDimensionalVisualizer:
         title: str,
         save_path: Optional[str],
     ):
-        """Create advanced 5D plot with Matplotlib."""
+        """Create 5D plot with Matplotlib."""
         if not MATPLOTLIB_AVAILABLE:
             return None
 

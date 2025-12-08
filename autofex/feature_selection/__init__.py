@@ -1,9 +1,9 @@
 """
-Advanced Feature Selection Module
+Feature Selection Module
 
-NextGen feature selection with multiple strategies.
+Feature selection with multiple strategies.
 """
 
-from .selector import AdvancedFeatureSelector
+from .selector import FeatureSelector
 
-__all__ = ["AdvancedFeatureSelector"]
+__all__ = ["FeatureSelector"]

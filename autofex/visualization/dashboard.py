@@ -382,7 +382,7 @@ class InteractiveDashboard:
                 f"High missing data: {missing_pct:.1f}%. Consider imputation strategies."
             )
             insights_recommendations.append(
-                "Use advanced imputation (KNN, iterative) for missing values"
+                "Use imputation (KNN, iterative) for missing values"
             )
 
         # Feature engineering insights
@@ -397,7 +397,7 @@ class InteractiveDashboard:
             )
         elif expansion_ratio < 2:
             insights_opportunities.append(
-                "Low feature expansion. Consider advanced transformations."
+                "Low feature expansion. Consider transformations."
             )
 
         # Leakage insights

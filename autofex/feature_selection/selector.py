@@ -1,5 +1,5 @@
 """
-Advanced Feature Selection Module
+Feature Selection Module
 
 NextGen feature selection with multiple strategies:
 - L1 regularization (Lasso)
@@ -28,14 +28,14 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 import warnings
 
 
-class AdvancedFeatureSelector:
+class FeatureSelector:
     """
-    Advanced feature selection with multiple strategies and ensemble methods.
+    Feature selection with multiple strategies and ensemble methods.
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """
-        Initialize advanced feature selector.
+        Initialize feature selector.
 
         Args:
             config: Configuration dictionary

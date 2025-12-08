@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/autofe-x/autofe-x/branch/main/graph/badge.svg)](https://codecov.io/gh/autofe-x/autofe-x)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**A next-gen toolkit that becomes the brain of any ML pipeline** by combining automated feature engineering, data quality analysis, leakage detection, auto-benchmarking of feature sets, and graph-based feature lineage.
+**AutoFE-X brings automated feature engineering, data diagnostics, leakage detection, benchmarking, and feature lineage into a unified toolkit designed for modern ML workflows.** It acts as a structured feature ``intelligence layer`` that can be inserted into any pipeline—lightweight, interpretable, and fully transparent.
 
 ## ✨ Key Features
 
@@ -15,40 +15,43 @@
 - 📊 **Auto-Benchmarking**: Automatically compare feature sets across multiple models with ablation studies
 - 🔗 **Graph-based Lineage**: Track feature transformations and dependencies with full provenance
 - ⚡ **Lightweight & Fast**: Minimal dependencies, optimized for performance
-- 🎯 **Interpretable**: No black-box LLMs, full transparency in feature engineering decisions
+- 🎯 **Interpretable**: Full transparency in feature engineering decisions
 
-### 🚀 NextGen Features (v0.2.0+)
+### 🚀 Coming soon (v0.2.0+)
 
-- 🔬 **Advanced Feature Engineering**: Statistical aggregations, time-series features, domain-specific transformations
+- 🔬 **Feature Engineering**: Statistical aggregations, time-series features, domain-specific transformations
 - 🎯 **Intelligent Feature Selection**: L1 regularization, RFE, ensemble selection with voting
 - 📊 **Comprehensive Visualization**: Feature importance plots, data quality dashboards, lineage graphs
 - 📈 **Interactive Dashboards**: Multi-panel dashboards with integrated analysis (beyond basic Plotly)
-- 🔬 **Advanced Statistical Analysis**: Multi-test normality analysis, effect sizes, automated interpretations (beyond basic Scipy)
-- 🚀 **Ultra-Advanced Statistics**: ANOVA/MANOVA, time-series tests, Bayesian analysis, power analysis, bootstrap methods
+- 🔬 **Statistical Analysis**: Multi-test normality analysis, effect sizes, automated interpretations (beyond basic Scipy)
+- 🚀 **Ultra-Statistics**: ANOVA/MANOVA, time-series tests, Bayesian analysis, power analysis, bootstrap methods
 - 📊 **Multi-Dimensional Visualization**: 2D, 3D, 4D, 5D visualizations (beyond Matplotlib/Plotly)
 - 💡 **Actionable Insights**: Automated recommendations and HTML reports
 - ⏱️ **Progress Tracking**: Real-time progress bars, ETA, step-by-step tracking
 - 💾 **Intelligent Caching**: Operation-based caching with TTL, size management, cache statistics
 - ⚡ **Performance Optimized**: Parallel processing support, intelligent caching
 - 🔬 **Mathematical Modeling**: Polynomial, spline, PCA, ICA, clustering, manifold learning features
-- 📊 **Advanced Statistical Transforms**: Box-Cox, Yeo-Johnson, quantile, power transforms
-- 🐼 **Advanced Pandas Operations**: Rolling windows, groupby, datetime, string features, cumulative, differences
-- 🔢 **Advanced Numpy Operations**: Array operations, broadcasting, matrix ops, advanced math functions
-- 🔬 **Advanced Scipy Operations**: Special functions, distance metrics, optimization, signal processing, integration
+- 📊 **Statistical Transforms**: Box-Cox, Yeo-Johnson, quantile, power transforms
+- 🐼 **Pandas Operations**: Rolling windows, groupby, datetime, string features, cumulative, differences
+- 🔢 **Numpy Operations**: Array operations, broadcasting, matrix ops, advanced math functions
+- 🔬 **Scipy Operations**: Special functions, distance metrics, optimization, signal processing, integration
 - 🧠 **Intelligent Orchestration**: Automatic feature engineering selection based on data characteristics
 - 📊 **Feature Quality Scoring**: Multi-dimensional quality scoring (predictive power, stability, uniqueness, efficiency)
 - 💡 **Intelligent Recommendations**: Automatic transformation and strategy recommendations
 
-## 🏗️ Architecture
 
-```
-AutoFE-X
-├── 🔧 Feature Engineering (classic + interactions)
-├── 🔍 Data Profiling (quality + outliers)
-├── 🛡️ Leakage Detection (target + contamination)
-├── 📊 Benchmarking (auto-compare + ablation)
-└── 🔗 Lineage Tracking (graph-based provenance)
-```
+## 📚 Documentation (Coming soon)
+
+<!-- Comprehensive documentation is available in the [`docs/`](docs/) directory:
+
+- **[Getting Started](docs/getting-started/)** - Installation, quick start, and basic usage
+- **[User Guides](docs/guides/)** - Feature engineering, data profiling, leakage detection, benchmarking, lineage tracking
+- **[Advanced Topics](docs/advanced/)** - Advanced capabilities, intelligent features, mathematical & statistical features
+- **[API Reference](docs/api/)** - Complete API documentation
+- **[Examples](docs/examples/)** - Code examples and use cases
+- **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
+
+For a quick overview, start with the [Quick Start Guide](docs/getting-started/quick-start.md). -->
 
 ## 🚀 Quick Start
 
@@ -105,7 +108,7 @@ detector = LeakageDetector()
 leakage_report = detector.detect(X, y)
 ```
 
-### NextGen Features
+<!-- ### Features
 
 ```python
 from autofex import (
@@ -117,16 +120,16 @@ from autofex import (
     UltraAdvancedStatisticalAnalyzer,
     MultiDimensionalVisualizer,
     MathematicalModelingEngine,
-    AdvancedStatisticalTransforms,
-    AdvancedPandasOperations,
-    AdvancedNumpyOperations,
-    AdvancedScipyOperations,
+    StatisticalTransforms,
+    PandasOperations,
+    NumpyOperations,
+    ScipyOperations,
     IntelligentOrchestrator,
     FeatureQualityScorer,
     FeatureEngineeringRecommender
-)
+) -->
 
-# Advanced feature engineering
+<!-- # feature engineering
 advanced_fe = AdvancedFeatureEngineer({
     'statistical_aggregations': True,
     'time_series_features': True,
@@ -139,9 +142,9 @@ selector = AdvancedFeatureSelector({
     'strategies': ['l1', 'rfe', 'variance'],
     'n_features': 50
 })
-selected_features = selector.select_features_ensemble(X_advanced, y)
+selected_features = selector.select_features_ensemble(X_advanced, y) -->
 
-# Visualization
+<!-- # Visualization
 viz = FeatureVisualizer()
 viz.plot_feature_importance(importance_scores, top_n=20)
 viz.plot_data_quality_summary(quality_report)
@@ -157,7 +160,7 @@ norm_result = analyzer.comprehensive_normality_test(X['feature'])
 comp_result = analyzer.comprehensive_comparison_test(group1, group2)
 corr_analysis = analyzer.correlation_analysis_advanced(X, y)
 auto_insights = analyzer.automated_insights(X, y)
-```
+``` -->
 
 ## 📖 Detailed Usage
 
@@ -238,8 +241,8 @@ pip install autofex
 ### From Source
 
 ```bash
-git clone https://github.com/autofe-x/autofe-x.git
-cd autofe-x
+git clone https://github.com/autofex/autofex.git
+cd autofex
 pip install -e .
 ```
 
@@ -249,9 +252,9 @@ pip install -e .
 pip install -e ".[dev]"
 ```
 
-## 🤖 CI/CD Pipeline
+<!-- ## 🤖 CI/CD Pipeline
 
-AutoFE-X uses GitHub Actions for comprehensive continuous integration and deployment:
+ AutoFE-X uses GitHub Actions for comprehensive continuous integration and deployment:
 
 ### Pipeline Features
 - **Multi-Python Testing**: Compatible with Python 3.8-3.15
@@ -264,16 +267,9 @@ AutoFE-X uses GitHub Actions for comprehensive continuous integration and deploy
 ### Pipeline Flow
 ```
 Push/PR → Test → Lint → Security → Build → Publish (releases only)
-```
+``` -->
 
-### Setting up PyPI Publishing
-1. Create a PyPI account and generate an API token
-2. Add repository secrets:
-   - `PYPI_USERNAME`: Your PyPI username
-   - `PYPI_PASSWORD`: Your PyPI API token
-3. Create a release on GitHub to trigger PyPI publishing
-
-### Local Development
+### Software testing
 ```bash
 # Run tests
 pytest
@@ -287,43 +283,15 @@ flake8 autofex/
 mypy autofex/
 ```
 
-## 📊 Example Output
-
-```
-Data Quality Report:
-├── Missing Values: 2.3% overall
-├── Outliers Detected: 45 features with outliers
-├── High Correlations: 3 feature pairs (>0.95)
-└── Data Types: 12 numeric, 5 categorical
-
-Leakage Detection:
-├── Target Leakage: 0 high-risk features
-├── Statistical Anomalies: 2 suspicious patterns
-├── Train-Test Contamination: Low risk
-└── Overall Assessment: Low risk
-
-Feature Engineering:
-├── Original Features: 17
-├── Engineered Features: 42
-├── Transformations Applied: log, sqrt, interactions
-└── Feature Selection: Top 35 features retained
-
-Benchmarking Results:
-├── Best Model: RandomForest (0.87 accuracy)
-├── Best Feature Set: top_25_features
-├── Performance Gain: +12% vs baseline
-└── Ablation Impact: Feature importance stable
-```
-
-## 🎯 Use Cases
+<!-- ## 🎯 Use Cases
 
 - **Kaggle Competitions**: Rapid feature engineering and leakage detection
 - **Production ML**: Automated feature pipeline with quality monitoring
 - **Data Science Teams**: Standardized feature engineering workflows
 - **AutoML Systems**: Feature engineering component for automated pipelines
-- **Model Debugging**: Identify why models perform differently across datasets
+- **Model Debugging**: Identify why models perform differently across datasets 
 
-## 🔬 Advanced Features
+## 🔬 Features
 
 ### Beyond Basic Libraries: Integrated Analysis & Visualization
 
@@ -387,24 +355,24 @@ math_features = math_engine.fit_transform(X, y)
 # Creates: polynomial, spline, PCA, ICA, clustering, manifold features
 
 # Advanced Statistical Transforms
-stat_transforms = AdvancedStatisticalTransforms()
+stat_transforms = StatisticalTransforms()
 transformed_features = stat_transforms.apply_all_transforms(X)
 # Applies: Box-Cox, Yeo-Johnson, quantile, power, rank transforms
 stat_features = stat_transforms.create_statistical_features(X)
 # Creates: mean, std, percentiles, skewness, kurtosis, outlier counts
 
 # Advanced Pandas Operations
-pandas_ops = AdvancedPandasOperations()
+pandas_ops = PandasOperations()
 pandas_features = pandas_ops.fit_transform(X)
 # Creates: rolling windows, datetime, string, cumulative, difference features
 
 # Advanced Numpy Operations
-numpy_ops = AdvancedNumpyOperations()
+numpy_ops = NumpyOperations()
 numpy_features = numpy_ops.fit_transform(X)
 # Creates: array stats, broadcasting, matrix ops, advanced math functions
 
 # Advanced Scipy Operations
-scipy_ops = AdvancedScipyOperations()
+scipy_ops = ScipyOperations()
 scipy_features = scipy_ops.fit_transform(X)
 # Creates: special functions, distance metrics, optimization, signal processing
 
@@ -453,7 +421,7 @@ power_result = analyzer.power_analysis(effect_size=0.5, power=0.8)
 # Bootstrap analysis
 bootstrap_result = analyzer.bootstrap_analysis(data, statistic="mean")
 # Returns: Bootstrap statistics, confidence intervals
-```
+``` -->
 
 **Key Features:**
 - **ANOVA/MANOVA**: Multi-group comparisons with post-hoc tests and effect sizes
@@ -469,17 +437,17 @@ from autofex import MultiDimensionalVisualizer
 
 viz = MultiDimensionalVisualizer(backend="plotly")
 
-# 2D Advanced: Scatter + Density + Hexbin + Marginals
-viz.plot_2d_advanced(x, y, color=target, size=feature3, save_path="2d.html")
+# 2D: Scatter + Density + Hexbin + Marginals
+viz.plot_2d(x, y, color=target, size=feature3, save_path="2d.html")
 
-# 3D Advanced: Interactive 3D scatter + surface rendering
-viz.plot_3d_advanced(x, y, z, color=target, size=feature4, save_path="3d.html")
+# 3D: Interactive 3D scatter + surface rendering
+viz.plot_3d(x, y, z, color=target, size=feature4, save_path="3d.html")
 
-# 4D Advanced: 3D + color encoding (4th dimension)
-viz.plot_4d_advanced(x, y, z, color=dim4, size=dim5, save_path="4d.html")
+# 4D: 3D + color encoding (4th dimension)
+viz.plot_4d(x, y, z, color=dim4, size=dim5, save_path="4d.html")
 
-# 5D Advanced: Multi-panel with PCA, t-SNE, parallel coordinates
-viz.plot_5d_advanced(
+# 5D: Multi-panel with PCA, t-SNE, parallel coordinates
+viz.plot_5d(
     data,
     dims=["dim1", "dim2", "dim3", "dim4", "dim5"],
     color_col="target",
@@ -496,7 +464,8 @@ viz.plot_5d_advanced(
 
 #### 📊 Key Advantages Over Raw Libraries
 
-| Feature | Raw Scipy/Matplotlib/Plotly | AutoFE-X |
+<!-- Scipy/Matplotlib/Plotly -->
+| Feature | Raw | AutoFE-X |
 |---------|---------------------------|----------|
 | Statistical Testing | Single test, manual interpretation | Multi-test with automated interpretation |
 | ANOVA | Basic f_oneway | ANOVA + post-hoc + effect sizes (η²) |
@@ -615,11 +584,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/autofe-x/autofe-x/issues)
+- **Documentation**: See the [`docs/`](docs/) directory for comprehensive guides
+- **Issues**: [GitHub Issues](https://github.com/autofex/autofex/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/autofe-x/autofe-x/discussions)
-- **Documentation**: [Read the Docs](https://autofe-x.readthedocs.io/)
 
----
 
 **Ready to supercharge your ML pipelines?** 🚀
 
@@ -627,4 +595,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 pip install autofex
 ```
 
-*AutoFE-X: Because feature engineering shouldn't be the bottleneck in your ML workflow.*
+<!-- *AutoFE-X: Because feature engineering shouldn't be the bottleneck in your ML workflow.* -->
