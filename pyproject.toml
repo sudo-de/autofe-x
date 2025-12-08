@@ -77,7 +77,7 @@ Issues = "https://github.com/autofe-x/autofe-x/issues"
 [tool.setuptools.packages.find]
 exclude = ["tests*"]
 
-[project.scripts]
+[tool.setuptools.entry-points."console_scripts"]
 autofex = "autofex.cli:main"
 
 [tool.black]
