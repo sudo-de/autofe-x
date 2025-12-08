@@ -1,12 +1,11 @@
 """
-Core AutoFEX class that orchestrates all feature engineering and analysis components.
+Core AutoFE-X class that orchestrates all feature engineering and analysis components.
 """
 
 import pandas as pd
 import numpy as np
 from typing import Dict, List, Optional, Union, Any
 from dataclasses import dataclass
-from .feature_engineering import FeatureEngineer
 from .data_profiling import DataProfiler
 from .leakage_detection import LeakageDetector
 from .benchmarking import FeatureBenchmarker
@@ -14,7 +13,7 @@ from .lineage import FeatureLineageTracker
 from .utils.progress import ProgressTracker, RealTimeFeedback
 from .utils.cache import OperationCache
 
-# NextGen improvements (optional imports)
+# Import FeatureEngineer - try advanced first, fallback to base
 try:
     from .feature_engineering.advanced import FeatureEngineer
     from .feature_selection.selector import FeatureSelector
@@ -23,7 +22,8 @@ try:
     _NEXTGEN_AVAILABLE = True
 except ImportError:
     _NEXTGEN_AVAILABLE = False
-    FeatureEngineer = None  # type: ignore
+    from .feature_engineering import FeatureEngineer
+
     FeatureSelector = None  # type: ignore
     FeatureVisualizer = None  # type: ignore
 
