@@ -69,16 +69,13 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/autofe-x/autofe-x"
-Documentation = "https://github.com/autofe-x/autofe-x#readme"
+Homepage = "https://github.com/sudo-de/autofe-x"
+Documentation = "https://github.com/sudo-de/autofe-x#readme"
 Repository = "https://github.com/autofe-x/autofe-x"
 Issues = "https://github.com/autofe-x/autofe-x/issues"
 
 [tool.setuptools.packages.find]
 exclude = ["tests*"]
-
-[tool.setuptools.entry-points."console_scripts"]
-autofex = "autofex.cli:main"
 
 [tool.black]
 line-length = 88
