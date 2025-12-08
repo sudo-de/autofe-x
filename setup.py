@@ -49,7 +49,7 @@ except FileNotFoundError:
 
 setup(
     name="autofex",
-    version="0.1.0",
+    version="0.1.1",
     author="AutoFE-X",
     author_email="sudo.dev26@gmail.com",
     description="Automated Feature Engineering + Data Profiling + Leakage Detection",
