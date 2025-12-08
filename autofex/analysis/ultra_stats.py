@@ -542,17 +542,17 @@ class UltraStatisticalAnalyzer:
         bootstrap_dict: Dict[str, Any] = results["bootstrap"]  # type: ignore
 
         # Bootstrap samples
-        bootstrap_stats: List[float] = []
+        bootstrap_stats: List[Union[float, np.floating[Any]]] = []
         for _ in range(n_bootstrap):
             sample = np.random.choice(data_clean, size=len(data_clean), replace=True)
             if statistic == "mean":
-                bootstrap_stats.append(np.mean(sample))
+                bootstrap_stats.append(float(np.mean(sample)))
             elif statistic == "median":
-                bootstrap_stats.append(np.median(sample))
+                bootstrap_stats.append(float(np.median(sample)))
             elif statistic == "std":
-                bootstrap_stats.append(np.std(sample))
+                bootstrap_stats.append(float(np.std(sample)))
             else:
-                bootstrap_stats.append(np.mean(sample))
+                bootstrap_stats.append(float(np.mean(sample)))
 
         bootstrap_stats_array: np.ndarray = np.array(bootstrap_stats)
 
