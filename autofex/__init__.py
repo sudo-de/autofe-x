@@ -107,7 +107,7 @@ except ImportError:
     FeatureQualityScorer = None  # type: ignore
     FeatureEngineeringRecommender = None  # type: ignore
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __all__ = [
     "AutoFEX",
     "FeatureEngineer",
