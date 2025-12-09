@@ -11,6 +11,33 @@ Release notes are documents that describe what changed in each version of your s
 
 ---
 
+## Version 0.1.4 (2024-12-09)
+
+### 🐛 Bug Fixes
+
+- **Fixed CI Integration Test**: Resolved AssertionError in integration tests caused by stale cache from previous runs
+  - Disabled caching in CI test workflows to ensure deterministic test results
+  - Tests now run with `enable_cache=False` to prevent cache-related failures
+
+### 🔧 Technical Improvements
+
+- **CI/CD Improvements**: 
+  - Updated integration test to disable caching for reliable test execution
+  - Updated smoke test to disable caching for consistency
+  - Fixed workflow YAML formatting issues
+
+### 🚀 Installation
+
+```bash
+pip install autofex==0.1.4
+```
+
+### 🔄 Migration from 0.1.3
+
+No breaking changes. This is a patch release that fixes CI test reliability.
+
+---
+
 ## Version 0.1.3 (2024-12-09)
 
 ### 🔧 Technical Improvements

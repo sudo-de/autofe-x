@@ -11,7 +11,7 @@ A next-gen toolkit that becomes the brain of any ML pipeline by combining:
 Lightweight, fast, and interpretable. No LLMs.
 """
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 # Lazy loading to avoid import errors when dependencies aren't available
 __all__ = [
