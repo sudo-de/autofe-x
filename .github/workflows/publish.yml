@@ -3,7 +3,9 @@ name: Publish
 on:
   workflow_run:
     workflows: ["CI"]
-    types: [completed]
+    types:
+      - completed
+    branches: [main, develop]
 
 env:
   PYTHON_VERSION: "3.11"
@@ -42,15 +44,13 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install Twine
+      - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install twine
 
-      - name: Validate package
-        run: |
-          python -m twine check dist/*
-          echo "Package validated."
+      - name: Check package
+        run: python -m twine check dist/*
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
