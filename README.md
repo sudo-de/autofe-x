@@ -17,7 +17,7 @@
 - ⚡ **Lightweight & Fast**: Minimal dependencies, optimized for performance
 - 🎯 **Interpretable**: Full transparency in feature engineering decisions
 
-### 🚀 Coming soon... (v0.2.0+)
+### 🚀 Coming soon.... (v0.2.0+)
 
 - 🔬 **Feature Engineering**: Statistical aggregations, time-series features, domain-specific transformations
 - 🎯 **Intelligent Feature Selection**: L1 regularization, RFE, ensemble selection with voting
