@@ -142,7 +142,7 @@ jobs:
           import pandas as pd
           X = pd.DataFrame({'a': [1,2,3]})
           y = pd.Series([1,0,1])
-          afx = AutoFEX(enable_progress=False, enable_cache=False)
+          afx = AutoFEX(enable_progress=False)
           afx.process(X, y)
           print('Smoke test OK')
           "
@@ -170,7 +170,6 @@ jobs:
 
       - name: Run integration test
         run: |
-          # Disable caching in CI to ensure deterministic test results
           python -c "
           import numpy as np
           import pandas as pd
@@ -183,7 +182,7 @@ jobs:
           })
           y = pd.Series(np.random.randint(0, 2, 50))
 
-          afx = AutoFEX(enable_progress=False, enable_cache=False)
+          afx = AutoFEX(enable_progress=False)
           result = afx.process(X, y)
 
           assert result.engineered_features.shape[0] == X.shape[0]
