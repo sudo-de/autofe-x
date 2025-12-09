@@ -170,6 +170,9 @@ jobs:
 
       - name: Run integration test
         run: |
+          # Clear any stale cache from previous runs
+          rm -rf .autofex_cache
+
           python -c "
           import numpy as np
           import pandas as pd
