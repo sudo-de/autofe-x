@@ -3,8 +3,7 @@ name: Publish
 on:
   workflow_run:
     workflows: ["CI"]
-    types:
-      - completed
+    types: [completed]
 
 env:
   PYTHON_VERSION: "3.11"
@@ -12,13 +11,24 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    # CI must succeed AND CI must be triggered from a release event
+    if: >
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.event == 'release' &&
+          github.event.workflow_run.action == 'published' }}
+
     environment:
       name: pypi
       url: https://pypi.org/p/autofex
+
     steps:
-      - uses: actions/checkout@v6
-      - name: Download artifacts from CI
+      - name: Checkout source used by CI run
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Download dist artifact from CI run
         uses: actions/download-artifact@v4
         with:
           name: dist
@@ -32,15 +42,15 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
+      - name: Install Twine
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install twine
 
-      - name: Check package
+      - name: Validate package
         run: |
           python -m twine check dist/*
-          python -c "import autofex; print(f'✅ Building version {autofex.__version__}')"
+          echo "Package validated."
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
