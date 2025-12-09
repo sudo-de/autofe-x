@@ -89,7 +89,7 @@ jobs:
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
+        files: ./coverage.xml
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
@@ -259,7 +259,7 @@ jobs:
       url: https://pypi.org/p/autofex
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       # Checkout the release commit to ensure we build the correct version
       with:
         ref: ${{ github.event.release.tag_name }}
@@ -280,10 +280,7 @@ jobs:
     - name: Check package
       run: |
         python -m twine check dist/*
-        # Install the built package to verify it works
-        pip install dist/*.whl
-        # Check version using pkg_resources (avoids importing source directory)
-        python -c "import pkg_resources; pkg = pkg_resources.get_distribution('autofex'); print(f'✅ Building version {pkg.version}')"
+        python -c "import autofex; print(f'✅ Building version {autofex.__version__}')"
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1

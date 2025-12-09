@@ -18,6 +18,7 @@ jobs:
       name: pypi
       url: https://pypi.org/p/autofex
     steps:
+      - uses: actions/checkout@v6
       - name: Download artifacts from CI
         uses: actions/download-artifact@v4
         with:
@@ -38,10 +39,12 @@ jobs:
           pip install twine
 
       - name: Check package
-        run: python -m twine check dist/*
+        run: |
+          python -m twine check dist/*
+          python -c "import autofex; print(f'✅ Building version {autofex.__version__}')"
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
+          user: ${{ secrets.PYPI_USERNAME }}
           password: ${{ secrets.PYPI_PASSWORD }}
