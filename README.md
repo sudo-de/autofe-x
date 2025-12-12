@@ -17,7 +17,7 @@
 - ⚡ **Lightweight & Fast**: Minimal dependencies, optimized for performance
 - 🎯 **Interpretable**: Full transparency in feature engineering decisions
 
-### 🚀 Coming soon.... (v0.2.0+)
+### 🔜 Coming soon.... (v0.2.0+)
 
 - 🔬 **Feature Engineering**: Statistical aggregations, time-series features, domain-specific transformations
 - 🎯 **Intelligent Feature Selection**: L1 regularization, RFE, ensemble selection with voting
@@ -53,7 +53,7 @@
 
 For a quick overview, start with the [Quick Start Guide](docs/getting-started/quick-start.md). -->
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -257,7 +257,7 @@ pip install -e ".[dev]"
  AutoFE-X uses GitHub Actions for comprehensive continuous integration and deployment:
 
 ### Pipeline Features
-- **Multi-Python Testing**: Compatible with Python 3.8-3.15
+- **Multi-Python Testing**: Compatible with Python 3.8-3.13
 - **Code Quality**: Automated Black formatting, flake8 linting, mypy type checking
 - **Security Scanning**: Bandit security analysis and Safety vulnerability checks
 - **Test Coverage**: Comprehensive test suite with coverage reporting
