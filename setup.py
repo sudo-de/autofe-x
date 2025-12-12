@@ -49,7 +49,7 @@ except FileNotFoundError:
 
 setup(
     name="autofex",
-    version="0.1.5",
+    version="0.1.6",
     author="AutoFE-X",
     author_email="sudo.dev26@gmail.com",
     description="A unified toolkit for automated feature engineering, data diagnostics, leakage detection, benchmarking, and feature lineage for modern ML workflows",

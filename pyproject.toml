@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autofex"
-version = "0.1.5"
+version = "0.1.6"
 description = "A unified toolkit for automated feature engineering, data diagnostics, leakage detection, benchmarking, and feature lineage for modern ML workflows"
 readme = "README.md"
 requires-python = ">=3.8,<3.14"
